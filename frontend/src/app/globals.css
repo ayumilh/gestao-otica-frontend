@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+body {
+  box-sizing: border-box;
+  @apply bg-white;
+}
+
+.dark body {
+  @apply bg-primaria-900;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+span,
+a,
+button,
+input,
+textarea,
+th {
+  color: #404040;
+}
+
+.dark p,
+.dark h1,
+.dark h2,
+.dark h3,
+.dark h4,
+.dark h5,
+.dark h6,
+.dark span,
+.dark a,
+.dark button,
+.dark input,
+.dark textarea
+.dark th{
+  color: #ffff; /* Cor mais clara para o texto no modo escuro */
+}
