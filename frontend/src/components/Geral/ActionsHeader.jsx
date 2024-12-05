@@ -13,7 +13,7 @@ const ActionsHeader = () => {
     return (
         <div className="w-full items-center justify-center lg:flex hidden">
             <div onClick={toggleMenu} className="w-full flex justify-between pl-2 pr-4 py-2 cursor-pointer">
-                <AccountCircleIcon className="h-6 w-6 text-neutral-700" />
+                <AccountCircleIcon className="h-6 w-6 text-neutral-700 dark:text-gray-300" />
                 <button
                     style={{
                         display: "flex",

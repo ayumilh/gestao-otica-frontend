@@ -12,7 +12,6 @@ import { FaTags } from 'react-icons/fa';
 import BtnAtivado from "../Geral/Button/BtnAtivado";
 import BtnSignOut from "./BtnSignOut";
 import DarkModeToggle from "../Geral/Button/DarkModeToggle";
-import PeopleIcon from '@mui/icons-material/People';
 import ActionsHeader from "../Geral/ActionsHeader";
 
 

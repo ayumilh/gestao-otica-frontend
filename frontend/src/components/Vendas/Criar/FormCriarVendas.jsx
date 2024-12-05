@@ -32,9 +32,9 @@ const FormCriarVendas = () => {
     complemento: vendaComplemento,
     lentes: vendaLentes,
     armacao: vendaArmacao,
-    preco: vendaPreco,
-    sinal: vendaSinal,
-    a_pagar: vendaApagar,
+    preco: parseFloat(vendaPreco),
+    sinal: vendaSinal ? parseFloat(vendaSinal) : null,
+    a_pagar: parseFloat(vendaApagar),
     obs: vendaObs,
   };
 
@@ -97,8 +97,8 @@ const FormCriarVendas = () => {
   const handleCriar = async () => {
     console.log(venda);
     try {
-      await axios.post('https://pos-backend-six.vercel.app/api/Vendas/cadastrar', venda)
-      router.push('/Vendas')
+      await axios.post('http://localhost:3001/api/vendas/cadastrar', venda)
+      router.push('/vendas')
       setStatusRequest(true);
     } catch (error) {
       setStatusRequest(false);
@@ -415,7 +415,7 @@ const FormCriarVendas = () => {
             htmlFor="vendaSinal"
             className="block font-medium text-sm text-neutral-700"
           >
-            Sinal <span className="text-red-600">*</span>
+            Sinal
           </label>
           <div className="relative">
             <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-500 font-medium">R$</span>
@@ -433,7 +433,6 @@ const FormCriarVendas = () => {
               value={vendaSinal || ""}
               type="text"
               name="vendaSinal"
-              required
               className={`peer rounded-sm w-full border pl-10 pr-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${isInvalidoVendaSinal
                 ? "outline-red-500 focus:outline-red-500"
                 : ""
@@ -480,7 +479,7 @@ const FormCriarVendas = () => {
             htmlFor="vendaObs"
             className="block font-medium text-sm text-neutral-700"
           >
-            Observação <span className="text-red-600">*</span>
+            Observação
           </label>
           <input
             onChange={(e) => {
@@ -496,7 +495,7 @@ const FormCriarVendas = () => {
             value={vendaObs || ""}
             type="text"
             name="vendaObs"
-            required
+            maxLength={255}
             className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${isInvalidoVendaObs
               ? "outline-red-500 focus:outline-red-500"
               : ""

@@ -1,6 +1,5 @@
 'use client'
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
 import ProductionQuantityLimitsIcon from '@mui/icons-material/ProductionQuantityLimits';
@@ -36,27 +35,52 @@ export default function VendasRow({ vendas }) {
     return (<>
         {isLoading ? (
             <SkeletonLoader numColumns={6} />
-        ) : Vendas.length > 0 ? (
-            Vendas.map((venda, index) => (
+        ) : vendas.length > 0 ? (
+            vendas.map((venda, index) => (
+                console.log(venda),
                 <tr key={index} className="cursor-pointer border-t border-zinc-100 hover:bg-gray-200 dark:bg-primaria-900 dark:hover:bg-primaria-800 dark:border-zinc-800">
                     <td className="px-4 py-4 md:py-5 text-center whitespace-nowrap">
-                        <div className="text-sm text-neutral-800 dark:text-slate-50">{venda.codigo}</div>
+                        <div className="text-sm text-neutral-800 dark:text-slate-50">{venda.nome}</div>
+                    </td>
+                    <td className="px-4 py-4 md:py-5 text-center whitespace-nowrap">
+                        <div className="text-sm text-neutral-800 dark:text-slate-50">{venda.cpf}</div>
+                    </td>
+                    <td className="px-4 py-4 md:py-5 text-center whitespace-nowrap">
+                        <div className="text-sm text-neutral-800 dark:text-slate-50">{venda.telefone}</div>
+                    </td>
+                    {/* <td className="px-4 py-4 md:py-5 text-center whitespace-nowrap">
+                        <div className="text-sm text-neutral-800 dark:text-slate-50">{venda.endereco}</div>
+                    </td> */}
+                    {/* <td className="px-4 py-4 md:py-5 text-center whitespace-nowrap">
+                        <div className="text-sm text-neutral-800 dark:text-slate-50">{venda.complemento}</div>
+                    </td> */}
+                    <td className="px-4 py-4 md:py-5 text-center whitespace-nowrap">
+                        <div className="text-sm text-neutral-800 dark:text-slate-50">{venda.lentes}</div>
+                    </td>
+                    <td className="px-4 py-4 md:py-5 text-center whitespace-nowrap">
+                        <div className="text-sm text-neutral-800 dark:text-slate-50">{venda.armacao}</div>
+                    </td>
+                    <td className="px-4 py-4 md:py-5 text-center whitespace-nowrap">
+                        <div className="text-sm text-neutral-800 dark:text-slate-50">{venda.preco}</div>
+                    </td>
+                    <td className="px-4 py-4 md:py-5 text-center whitespace-nowrap">
+                        <div className="text-sm text-neutral-800 dark:text-slate-50">{venda.sinal}</div>
+                    </td>
+                    <td className="px-4 py-4 md:py-5 text-center whitespace-nowrap">
+                        <div className="text-sm text-neutral-800 dark:text-slate-50">{venda.a_pagar}</div>
+                    </td>
+                    {/* <td className="px-4 py-4 md:py-5 text-center whitespace-nowrap">
+                        <div className="text-sm text-neutral-800 dark:text-slate-50">{venda.obs}</div>
+                    </td> */}
+                    <td className="px-4 py-4 md:py-5 text-center whitespace-nowrap">
+                        <div className="text-sm text-neutral-800 dark:text-slate-50">{new Date(venda.data).toLocaleDateString('pt-BR')}</div>
                     </td>
                     <td className="px-4 py-4 md:py-5 text-start whitespace-nowrap">
-                        <div className="text-sm font-medium text-neutral-800 dark:text-slate-50">{venda.nome}</div>
-                    </td>
-                    <td className="px-4 py-4 md:py-5 text-center whitespace-nowrap">
-                        <div className="text-sm text-neutral-800 dark:text-slate-50">{venda.cargo}</div>
-                    </td>
-                    <td className="px-4 py-4 md:py-5 text-center whitespace-nowrap">
-                        <div className="text-sm text-neutral-800 dark:text-slate-50">{venda.celular}</div>
-                    </td>
-                    <td className="px-4 py-4 md:py-5 text-center whitespace-nowrap">
-                        <div className="text-sm text-neutral-800 dark:text-slate-50">{venda.bairro}</div>
+                        <div className="text-sm font-medium text-neutral-800 dark:text-slate-50">{new Date(venda.entrega).toLocaleDateString('pt-BR')}</div>
                     </td>
                     <td className="px-4 py-4 md:py-5 text-center whitespace-nowrap">
                         <button
-                            onClick={() => handleButtonClick(venda.codigo)}
+                            onClick={() => handleButtonClick(venda.cpf)}
                             className="text-neutral-700 hover:text-neutral-900 dark:text-slate-200 dark:hover:text-slate-50 transition ease-in flex items-center justify-center"
                         >
                             <ModeEditOutlineIcon className="mr-1 h-4 md:h-5 w-4 md:w-5" />

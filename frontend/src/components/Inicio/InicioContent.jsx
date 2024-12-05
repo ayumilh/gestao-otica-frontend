@@ -31,18 +31,19 @@ const InicioContent = () => {
             <div className='mx-auto w-full 2xl:max-w-screen-xl flex flex-col items-center gap-4 justify-center pb-10'>
                 <div className='w-full flex flex-col justify-between gap-10'>
                     <div className='w-full flex flex-col xl:flex-row gap-7'>
-                        <div className='bg-segundaria-700 w-full xl:w-1/2 flex flex-col h-full rounded-xl px-5 py-7 ring-1 ring-gray-100 shadow-md'>
+                        {/* contas a pagar */}
+                        <div className='bg-bg dark:bg-dark-primaria-800 w-full xl:w-1/2 flex flex-col h-full rounded-xl px-5 py-7 ring-1 ring-gray-100 dark:ring-1 dark:ring-black ring-opacity-5 shadow-md'>
                             <div className='flex justify-between items-center'>
                                 <p className='text-neutral-700 font-semibold pt-2 text-start'>Contas a pagar</p>
                                 <div className='flex gap-2'>
-                                    <HelpOutlineIcon className='text-neutral-700 w-6 h-6' />
+                                    <HelpOutlineIcon className='text-neutral-700 dark:text-gray-200 w-6 h-6' />
                                     <DropdownMore />
                                 </div>
                             </div>
 
                             <div className='w-36 bg-red-100 px-4 py-3 rounded-lg mt-2'>
-                                <span className='block font-medium text-red-600'>R$ 0,00</span>
-                                <span className='text-xs font-medium text'>Vencendo hoje</span>
+                                <span className='block font-medium text-red-600 dark:text-red-600'>R$ 0,00</span>
+                                <span className='text-xs font-medium text dark:text-neutral-800'>Vencendo hoje</span>
                             </div>
 
                             <hr className='my-5' />
@@ -62,19 +63,20 @@ const InicioContent = () => {
                                 <BtnAtivado title='Criar Pagamento' onClick="/clientes" page="/clientes/criar" size="sm" rounded="md" />
                             </div>
                         </div>
-
-                        <div className='bg-segundaria-700 w-full xl:w-1/2 flex flex-col h-full rounded-xl px-5 py-7 ring-1 ring-gray-100 shadow-md'>
+                        
+                        {/* contas a receber */}
+                        <div className='bg-bg dark:bg-dark-primaria-800 w-full xl:w-1/2 flex flex-col h-full rounded-xl px-5 py-7 ring-1 ring-gray-100 dark:ring-1 dark:ring-black ring-opacity-5 shadow-md'>
                             <div className='flex justify-between items-center'>
                                 <p className='text-neutral-700 font-semibold pt-2 text-start'>Contas a receber</p>
                                 <div className='flex gap-2'>
-                                    <HelpOutlineIcon className='text-neutral-700 w-6 h-6' />
+                                    <HelpOutlineIcon className='text-neutral-700 dark:text-gray-200 w-6 h-6' />
                                     <DropdownMore />
                                 </div>
                             </div>
 
                             <div className='w-36 bg-green-100 px-4 py-3 rounded-lg mt-2'>
-                                <span className='block font-medium text-green-600'>R$ 0,00</span>
-                                <span className='text-xs font-medium text'>Vencendo hoje</span>
+                                <span className='block font-medium text-green-600 dark:text-green-600'>R$ 0,00</span>
+                                <span className='text-xs font-medium text dark:text-neutral-800'>Vencendo hoje</span>
                             </div>
 
                             <hr className='my-5' />
@@ -104,7 +106,8 @@ const InicioContent = () => {
                             <p className='text-neutral-700 font-semibold text-start'>{saudacao}, User</p>
                         </div>
                         <div className='flex flex-col xl:flex-row gap-5'>
-                            <div className='bg-segundaria-700 w-full xl:w-1/2 flex flex-col h-full rounded-xl px-5 py-7 ring-1 ring-gray-100 shadow-md'>
+                            {/* clientes */}
+                            <div className='bg-bg dark:bg-dark-primaria-800 w-full xl:w-1/2 flex flex-col h-full rounded-xl px-5 py-7 ring-1 ring-gray-100 dark:ring-1 dark:ring-black ring-opacity-5 shadow-md'>
                                 <div className='flex justify-between items-center'>
                                     <div className="flex gap-3">
                                         <div className="flex justify-center items-center bg-amber-400 text-white rounded-full p-2">
@@ -138,7 +141,8 @@ const InicioContent = () => {
                                 </div>
                             </div>
 
-                            <div className='bg-segundaria-700 w-full xl:w-1/2 flex flex-col h-full rounded-xl px-5 py-7 ring-1 ring-gray-100 shadow-md'>
+                            {/* pedidos */}
+                            <div className='bg-bg dark:bg-dark-primaria-800 w-full xl:w-1/2 flex flex-col h-full rounded-xl px-5 py-7 ring-1 ring-gray-100 dark:ring-1 dark:ring-black ring-opacity-5 shadow-md'>
                                 <div className='flex justify-between items-center'>
                                     <div className="flex gap-3">
                                         <div className="flex justify-center items-center bg-green-500 text-white rounded-full p-2">
@@ -172,8 +176,10 @@ const InicioContent = () => {
                                 </div>
                             </div>
                         </div>
+
                         <div className='flex flex-col xl:flex-row gap-5'>
-                            <div className='bg-segundaria-700 w-full xl:w-1/2 flex flex-col h-full rounded-xl px-5 py-7 ring-1 ring-gray-100 shadow-md'>
+                            {/* produtos */}
+                            <div className='bg-bg dark:bg-dark-primaria-800 w-full xl:w-1/2 flex flex-col h-full rounded-xl px-5 py-7 ring-1 ring-gray-100 dark:ring-1 dark:ring-black ring-opacity-5 shadow-md'>
                                 <div className='flex justify-between items-center'>
                                     <div className="flex gap-3">
                                         <div className="flex justify-center items-center bg-blue-400 text-white rounded-full p-2">
@@ -190,7 +196,7 @@ const InicioContent = () => {
                                 </div>
 
                                 <hr className='mb-5 mt-3' />
-
+                                
                                 <div className='flex justify-between mb-5'>
                                     <div className='flex'>
                                         <button className='border border-orange-500 bg-orange-200 bg-opacity-30 rounded-l-full text-orange-500 font-medium text-sm px-3 py-1'>Grafico</button>
@@ -206,7 +212,8 @@ const InicioContent = () => {
                                 </div>
                             </div>
 
-                            <div className='bg-segundaria-700 w-full xl:w-1/2 flex flex-col h-full rounded-xl px-5 py-7 ring-1 ring-gray-100 shadow-md'>
+                            {/* notas fiscais */}
+                            <div className='bg-bg dark:bg-dark-primaria-800 w-full xl:w-1/2 flex flex-col h-full rounded-xl px-5 py-7 ring-1 ring-gray-100 dark:ring-1 dark:ring-black ring-opacity-5 shadow-md'>
                                 <div className='flex justify-between items-center'>
                                     <div className="flex gap-3 items-start">
                                         <div className="flex justify-center items-center bg-red-400 text-white rounded-full p-2">

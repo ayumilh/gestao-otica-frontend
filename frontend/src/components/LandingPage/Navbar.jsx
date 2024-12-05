@@ -47,25 +47,25 @@ const Navbar = () => {
                         <nav className="animate-link flex space-x-4">
                             <a
                                 href="#funcionalidades"
-                                className="text-neutral-800 font-medium text-lg transform hover:-translate-y-0.5 hover:scale-60 transition duration-500 ease-in-out"
+                                className="text-neutral-800 dark:text-neutral-800 font-medium text-lg transform hover:-translate-y-0.5 hover:scale-60 transition duration-500 ease-in-out"
                             >
                                 Funcionalidades
                             </a>
                             <a
                                 href="#integracoes"
-                                className="text-neutral-800 font-medium text-lg transform hover:-translate-y-0.5 hover:scale-60 transition duration-500 ease-in-out"
+                                className="text-neutral-800 dark:text-neutral-800 font-medium text-lg transform hover:-translate-y-0.5 hover:scale-60 transition duration-500 ease-in-out"
                             >
                                 Integrações
                             </a>
                             <a
                                 href="#sobre"
-                                className="text-neutral-800 font-medium text-lg transform hover:-translate-y-0.5 hover:scale-60 transition duration-500 ease-in-out"
+                                className="text-neutral-800 dark:text-neutral-800 font-medium text-lg transform hover:-translate-y-0.5 hover:scale-60 transition duration-500 ease-in-out"
                             >
                                 Sobre
                             </a>
                             <a
                                 href="#planos"
-                                className="text-neutral-800 font-medium text-lg transform hover:-translate-y-0.5 hover:scale-60 transition duration-500 ease-in-out"
+                                className="text-neutral-800 dark:text-neutral-800 font-medium text-lg transform hover:-translate-y-0.5 hover:scale-60 transition duration-500 ease-in-out"
                             >
                                 Planos
                             </a>
@@ -77,25 +77,25 @@ const Navbar = () => {
                 <nav className="animate-link flex flex-col relative top-10 space-y-3">
                     <a
                         href="#funcionalidades"
-                        className="text-neutral-800 font-medium text-lg transform hover:-translate-y-0.5 hover:scale-60 transition duration-500 ease-in-out"
+                        className="text-neutral-800 dark:text-neutral-800 font-medium text-lg transform hover:-translate-y-0.5 hover:scale-60 transition duration-500 ease-in-out"
                     >
                         Funcionalidades
                     </a>
                     <a
                         href="#integracoes"
-                        className="text-neutral-800 font-medium text-lg transform hover:-translate-y-0.5 hover:scale-60 transition duration-500 ease-in-out"
+                        className="text-neutral-800 dark:text-neutral-800 font-medium text-lg transform hover:-translate-y-0.5 hover:scale-60 transition duration-500 ease-in-out"
                     >
                         Integrações
                     </a>
                     <a
                         href="#sobre"
-                        className="text-neutral-800 font-medium text-lg transform hover:-translate-y-0.5 hover:scale-60 transition duration-500 ease-in-out"
+                        className="text-neutral-800 dark:text-neutral-800 font-medium text-lg transform hover:-translate-y-0.5 hover:scale-60 transition duration-500 ease-in-out"
                     >
                         Sobre
                     </a>
                     <a
                         href="#planos"
-                        className="text-neutral-800 font-medium text-lg transform hover:-translate-y-0.5 hover:scale-60 transition duration-500 ease-in-out"
+                        className="text-neutral-800 dark:text-neutral-800 font-medium text-lg transform hover:-translate-y-0.5 hover:scale-60 transition duration-500 ease-in-out"
                     >
                         Planos
                     </a>

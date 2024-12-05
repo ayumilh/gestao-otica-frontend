@@ -1,6 +1,5 @@
 'use client'
 import { createContext, useEffect, useState } from 'react'
-import { createTheme, ThemeProvider as MUIThemeProvider } from '@mui/material/styles';
 
 const getInitialTheme = () => {
   if (typeof window !== 'undefined' && window.localStorage) {
@@ -20,12 +19,7 @@ const getInitialTheme = () => {
 export const ThemeContext = createContext()
 
 export const ThemeProvider = ({ initialTheme, children }) => {
-  const [theme, setTheme] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return getInitialTheme();
-    }
-    return 'light';
-  });
+  const [theme, setTheme] = useState(null);
 
   const rawSetTheme = (rawTheme) => {
     if (typeof window !== 'undefined') {
@@ -40,14 +34,19 @@ export const ThemeProvider = ({ initialTheme, children }) => {
   }
 
   useEffect(() => {
-    if (initialTheme) {
-      rawSetTheme(initialTheme);
-    }
+    const initialThemeValue = initialTheme || getInitialTheme();
+    setTheme(initialThemeValue);
   }, [initialTheme]);
 
   useEffect(() => {
-    rawSetTheme(theme)
+    if (theme) {
+      rawSetTheme(theme)
+    }
   }, [theme])
+
+  if (!theme) {
+    return null;
+  }
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme }}>
