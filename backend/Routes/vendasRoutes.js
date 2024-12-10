@@ -8,5 +8,6 @@ router.get('/', (req, res) => {
 
 router.post('/cadastrar', vendasController.cadastrarVenda);
 router.get('/get', vendasController.listarVendas);
+router.get('/filter', vendasController.filtersData);
 
 module.exports = router;

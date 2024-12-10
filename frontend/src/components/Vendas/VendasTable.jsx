@@ -10,6 +10,11 @@ const VendasTable = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [vendas, setVendas] = useState([]);
 
+    const handleVendasUpdate = (newVendas) => {
+        console.log('Vendas recebidas no componente pai:', newVendas);
+        setVendas(newVendas);
+    };
+
     useEffect(() => {
         const fetchVendas = async () => {
             try {
@@ -82,6 +87,7 @@ const VendasTable = () => {
                 rowsPerPage={rowsPerPage}
                 handlePageChange={handlePageChange}
                 handleRowsPerPageChange={handleRowsPerPageChange}
+                onVendas={handleVendasUpdate}
             />
             <table className="table-auto min-w-full">
                 <thead>

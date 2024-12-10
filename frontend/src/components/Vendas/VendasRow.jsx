@@ -34,10 +34,9 @@ export default function VendasRow({ vendas }) {
 
     return (<>
         {isLoading ? (
-            <SkeletonLoader numColumns={6} />
+            <SkeletonLoader numColumns={11} />
         ) : vendas.length > 0 ? (
             vendas.map((venda, index) => (
-                console.log(venda),
                 <tr key={index} className="cursor-pointer border-t border-zinc-100 hover:bg-gray-200 dark:bg-primaria-900 dark:hover:bg-primaria-800 dark:border-zinc-800">
                     <td className="px-4 py-4 md:py-5 text-center whitespace-nowrap">
                         <div className="text-sm text-neutral-800 dark:text-slate-50">{venda.nome}</div>
@@ -91,7 +90,7 @@ export default function VendasRow({ vendas }) {
             ))
         ) : (
             <tr>
-                <td className="text-center" colSpan="6">
+                <td className="text-center" colSpan="11">
                     <div className="w-52 ml-10 md:ml-0 md:px-10 md:w-full py-12">
                         <span><ProductionQuantityLimitsIcon style={{ width: 46, height: 46 }} /></span>
                         <p className="mt-8">Ei, parece que seu estoque está vazio no momento. Estamos ansiosos para ver o que você tem para oferecer!</p>

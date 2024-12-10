@@ -58,3 +58,27 @@ exports.listarVendas = async (req, res) => {
         res.status(500).json({ message: 'Não foi possível listar as vendas :/', error: error.message });
     }
 }
+
+exports.filtersData = async (req, res) => {
+    const { campo, valor } = req.query;
+
+    const filtros = {};
+
+    if (campo && valor) {
+        filtros[campo] = {
+            contains: valor,
+            mode: 'insensitive',
+        };
+    }
+
+    try {
+        const vendas = await prisma.vendas.findMany({
+            where: filtros,
+        });
+        console.log('Filtros aplicados:', filtros);
+        console.log('Dados retornados:', vendas);
+        res.status(200).json(vendas);
+    } catch (error) {
+        res.status(500).json({ message: 'Erro ao listar vendas', error: error.message });
+    }
+};
