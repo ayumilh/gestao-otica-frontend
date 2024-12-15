@@ -39,16 +39,16 @@ export default function ClientesRow({ clientes }) {
             clientes.map((cliente, index) => (
                 <tr key={index} className="cursor-pointer border-t border-zinc-100 hover:bg-gray-200 dark:bg-primaria-900 dark:hover:bg-primaria-800 dark:border-zinc-800">
                     <td className="px-4 py-4 md:py-5 text-center whitespace-nowrap">
-                        <div className="text-sm text-neutral-800 dark:text-slate-50">{cliente.codigo}</div>
+                        <div className="text-sm text-neutral-800 dark:text-slate-50">{cliente.nome}</div>
                     </td>
                     <td className="px-4 py-4 md:py-5 text-start whitespace-nowrap">
-                        <div className="text-sm font-medium text-neutral-800 dark:text-slate-50">{cliente.nome}</div>
-                    </td>
-                    <td className="px-4 py-4 md:py-5 text-center whitespace-nowrap">
-                        <div className="text-sm text-neutral-800 dark:text-slate-50">{cliente.celular}</div>
+                        <div className="text-sm font-medium text-neutral-800 dark:text-slate-50">{cliente.cpf}</div>
                     </td>
                     <td className="px-4 py-4 md:py-5 text-center whitespace-nowrap">
                         <div className="text-sm text-neutral-800 dark:text-slate-50">{cliente.endereco}</div>
+                    </td>
+                    <td className="px-4 py-4 md:py-5 text-center whitespace-nowrap">
+                        <div className="text-sm text-neutral-800 dark:text-slate-50">{cliente.telefone}</div>
                     </td>
                     <td className="px-4 py-4 md:py-5 text-center whitespace-nowrap">
                         <div className="text-sm text-neutral-800 dark:text-slate-50">{cliente.bairro}</div>

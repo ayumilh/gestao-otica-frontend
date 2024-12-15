@@ -5,17 +5,13 @@ const prisma = new PrismaClient();
 const vendaSchema = Joi.object({
     data: Joi.date().required(),
     entrega: Joi.date().optional(),
-    nome: Joi.string().max(200).required(),
-    cpf: Joi.string().length(11).required(),
-    telefone: Joi.string().max(11).required(),
-    endereco: Joi.string().max(200).required(),
-    complemento: Joi.string().max(100).optional(),
     lentes: Joi.string().max(100).required(),
     armacao: Joi.string().max(100).required(),
     preco: Joi.number().precision(2).required(),
     sinal: Joi.number().precision(2).optional(),
     a_pagar: Joi.number().precision(2).optional(),
-    obs: Joi.string().optional()
+    obs: Joi.string().optional(),
+    cpf: Joi.string().length(11).required()
 });
 
 exports.cadastrarVenda = async (req, res) => {
@@ -24,18 +20,14 @@ exports.cadastrarVenda = async (req, res) => {
         return res.status (400).json({ error: error.details[0].message})
     }
 
-    const { data, entrega, nome, cpf, telefone, endereco, complemento, lentes, armacao, preco, sinal, a_pagar, obs } = value;
+    const { data, entrega, cpf, lentes, armacao, preco, sinal, a_pagar, obs } = value;
 
     try{
         const venda = await prisma.vendas.create({
             data: {
               data,
               entrega,
-              nome,
-              cpf,
-              telefone,
-              endereco,
-              complemento,
+              clienteCpf: cpf,
               lentes,
               armacao,
               preco,
@@ -75,8 +67,6 @@ exports.filtersData = async (req, res) => {
         const vendas = await prisma.vendas.findMany({
             where: filtros,
         });
-        console.log('Filtros aplicados:', filtros);
-        console.log('Dados retornados:', vendas);
         res.status(200).json(vendas);
     } catch (error) {
         res.status(500).json({ message: 'Erro ao listar vendas', error: error.message });

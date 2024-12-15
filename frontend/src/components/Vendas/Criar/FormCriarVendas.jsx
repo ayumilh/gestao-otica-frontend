@@ -1,8 +1,10 @@
 'use client'
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import BtnActions from "@/components/Geral/Button/BtnActions";
 import SearchIcon from '@mui/icons-material/Search';
+import PersonIcon from '@mui/icons-material/Person';
+import CircularProgress from '@mui/material/CircularProgress';
 import SuccessNotification from "@/components/Geral/Notification/SuccessNotification";
 import ErrorNotification from "@/components/Geral/Notification/ErrorNotification";
 import { useRouter } from "next/navigation";
@@ -25,11 +27,7 @@ const FormCriarVendas = () => {
   const venda = {
     data: vendaData,
     entrega: vendaEntrega,
-    nome: vendaNome,
     cpf: vendaCPF,
-    telefone: vendaTelefone,
-    endereco: vendaEndereco,
-    complemento: vendaComplemento,
     lentes: vendaLentes,
     armacao: vendaArmacao,
     preco: parseFloat(vendaPreco),
@@ -94,6 +92,81 @@ const FormCriarVendas = () => {
     }
   }
 
+  // busca do cliente
+  const [isLoading, setIsLoading] = useState(false);
+  const [openFilterCpf, setOpenFilterCpf] = useState(false);
+  const [cliente, setCliente] = useState({});
+  const [filtros, setFiltros] = useState({
+    campo: 'cpf',
+    valor: '',
+  });
+
+  useEffect(() => {
+    const regex = /^[0-9]*$/;
+    if (vendaCPF === "" || regex.test(vendaCPF)) {
+      setIsInvalidoVendaCPF(false);
+    } else {
+      setIsInvalidoVendaCPF(true);
+    }
+  }, [vendaCPF]);
+
+  useEffect(() => {
+    setFiltros((prevFiltros) => ({
+      ...prevFiltros,
+      valor: vendaCPF,
+    }));
+  }, [vendaCPF]);
+
+  const handleChange = (e) => {
+    setOpenFilterCpf(true);
+    const value = e.target.value.replace(/\D/g, '');
+    setVendaCPF(value);
+    setFiltros((prevFiltros) => ({
+      ...prevFiltros,
+      valor: value,
+    }));
+    if (value === "") {
+      setCliente(null);
+      setIsLoading(false);
+      setOpenFilterCpf(false);
+    }
+  };
+
+  const handleClick = async () => {
+    setOpenFilterCpf(true);
+  }
+
+  const handleFocus = () => {
+    setIsLoading(true);
+  };
+
+  const cadastrarCliente = async () => {
+    try {
+      console.log('Cadastrar cliente');
+    } catch (error) {
+      console.error('Erro ao cadastrar cliente:', error);
+    }
+  };
+
+  const filterCpf = async () => {
+    if (vendaCPF.length === 11) {
+      setIsLoading(true);
+      try {
+        const response = await axios.get('http://localhost:3001/api/clientes/filter', { params: filtros });
+        if (response.data.clientes.length === 0) {
+          setCliente({});
+        } else {
+          setCliente(response.data.clientes[0]);
+        }
+      } catch (error) {
+        setCliente({});
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  };
+
+
   const handleCriar = async () => {
     console.log(venda);
     try {
@@ -105,6 +178,24 @@ const FormCriarVendas = () => {
     }
   }
 
+  useEffect(() => {
+    filterCpf();
+  }, [filtros, vendaCPF]);
+
+  const dropdownRef = useRef(null);
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setOpenFilterCpf(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+  }, [dropdownRef]);
+
   return (<>
     <div className="w-full xl:max-w-screen-lg flex flex-col">
       {/* <BtnBackPage title="Voltar" /> */}
@@ -112,39 +203,89 @@ const FormCriarVendas = () => {
         {vendaData || "Data de venda"} - {vendaNome || "Nome do cliente"}
       </h3>
       <div className='flex flex-wrap my-4 transition-transform duration-500 ease-in'>
+
+        {/* <div className="w-full md:w-2/5 mt-3 mb-4 px-3">
+          <label
+            htmlFor="vendaCNPJ"
+            className="block font-medium text-sm text-neutral-700"
+          >
+            Buscar cliente por CPF:
+          </label>
+          <input
+            type="text"
+            className="peer rounded-sm w-full px-3 py-1 font-medium text-neutral-700 bg-transparent border-transparent border-2 border-b--600 focus:border-b-blue-400 focus:rounded-lg focus:outline outline-transparent focus:outline-transparent transition-all duration-500 ease-out"
+            placeholder="Insira o CNPJ"
+            onChange={(e) => setVendaCPF(e.target.value)}
+          />
+        </div> */}
+
         {/* cpf */}
-        <div className="w-full md:w-1/5 mt-3 mb-4 px-3">
+        <div className="w-full mt-3 mb-4 px-3">
           <label
             htmlFor="vendaCPF"
             className="block font-medium text-sm text-neutral-700"
           >
-            CPF: <span className="text-red-600">*</span>
+            Buscar cliente por CPF: <span className="text-red-600">*</span>
           </label>
-          <input
-            onChange={(e) => {
-              const value = e.target.value;
-              const regex = /^[0-9]*$/;
-              if (value === "" || regex.test(value)) {
-                setVendaCPF(value);
-                setIsInvalidoVendaCPF(false);
-              } else {
-                setIsInvalidoVendaCPF(true);
-              }
-            }}
-            value={vendaCPF || ""}
-            type="text"
-            name="vendaCPF"
-            maxLength={11}
-            required
-            className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${isInvalidoVendaCPF
-              ? "outline-red-500 focus:outline-red-500"
-              : ""
-              }`}
-          />
+          <div className="relative">
+            <input
+              onChange={handleChange}
+              onFocus={handleFocus}
+              onClick={handleClick}
+              value={vendaCPF || ""}
+              type="text"
+              name="vendaCPF"
+              maxLength={11}
+              required
+              className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${isInvalidoVendaCPF
+                ? "outline-red-500 focus:outline-red-500"
+                : ""
+                }`}
+            />
+            <button
+              type="button"
+              onClick={filterCpf}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 hover:scale-105 transition duration-500 ease-in-out"
+            >
+              <SearchIcon fontSize="small" className="text-neutral-800 hover:text-black" />
+            </button>
+            {openFilterCpf && (
+              <div ref={dropdownRef} className="bg-gray-200 hover:bg-gray-300 focus:bg-gray-400 active:bg-gray-300 border-gray-200 hover:shadow-sm w-full mt-2 hover:rounded-sm min-h-fit flex z-50 absolute px-6 py-3 items-start justify-center transition duration-500 ease-in-out cursor-pointer">
+                <div
+                  className="bg-orange-400 text-white rounded-full mr-2"
+                >
+                  <PersonIcon fontSize="small" className="m-2" />
+                </div>
+                <div className="flex w-full items-center justify-between">
+                  {isLoading ? (
+                    <div className="flex justify-center items-center w-full mt-2">
+                      <CircularProgress size={24} />
+                    </div>
+                  ) : (
+                    <>
+                      console.log(cliente);
+                      {cliente ? (
+                        <>
+                          <span className="font-medium text-neutral-700 text-lg">{cliente.nome}</span>
+                          <span className="font-medium text-neutral-700 text-sm">{cliente.cpf}</span>
+                        </>
+                      ) : (
+                        <div>
+                          <span className="font-medium text-neutral-700 text-lg">Nenhum cliente encontrado</span>
+                          <button onClick={cadastrarCliente} className="ml-2 bg-blue-500 text-white px-4 py-2 rounded">Cadastrar Cliente</button>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+
         </div>
 
         {/* data */}
-        <div className="w-full md:w-2/5 mt-3 mb-4 px-3">
+        <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
           <label
             htmlFor="vendaData"
             className="block font-medium text-sm text-neutral-700"
@@ -165,7 +306,7 @@ const FormCriarVendas = () => {
         </div>
 
         {/* entrega */}
-        <div className="w-full md:w-2/5 mt-3 mb-4 px-3">
+        <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
           <label
             htmlFor="vendaEntrega"
             className="block font-medium text-sm text-neutral-700"
@@ -185,7 +326,7 @@ const FormCriarVendas = () => {
         </div>
 
         {/* nome */}
-        <div className="w-full md:w-3/5 mt-3 mb-4 px-3">
+        {/* <div className="w-full md:w-3/5 mt-3 mb-4 px-3">
           <label
             htmlFor="vendaNome"
             className="block font-medium text-sm text-neutral-700"
@@ -213,10 +354,10 @@ const FormCriarVendas = () => {
               : ""
               }`}
           />
-        </div>
+        </div> */}
 
         {/* telefone */}
-        <div className="w-full md:w-2/5 mt-3 mb-4 px-3">
+        {/* <div className="w-full md:w-2/5 mt-3 mb-4 px-3">
           <label
             htmlFor="vendaTelefone"
             className="block font-medium text-sm text-neutral-700"
@@ -244,12 +385,10 @@ const FormCriarVendas = () => {
               : ""
               }`}
           />
-        </div>
-
-        {/* add input de numero */}
+        </div> */}
 
         {/* endereco */}
-        <div className="w-full md:w-3/5 mt-3 mb-4 px-3">
+        {/* <div className="w-full md:w-3/5 mt-3 mb-4 px-3">
           <label
             htmlFor="vendaEndereco"
             className="block font-medium text-sm text-neutral-700"
@@ -277,10 +416,10 @@ const FormCriarVendas = () => {
               : ""
               }`}
           />
-        </div>
+        </div> */}
 
         {/* complemento */}
-        <div className="w-full md:w-2/5 mt-3 mb-4 px-3">
+        {/* <div className="w-full md:w-2/5 mt-3 mb-4 px-3">
           <label
             htmlFor="vendaComplemento"
             className="block font-medium text-sm text-neutral-700"
@@ -307,7 +446,7 @@ const FormCriarVendas = () => {
               : ""
               }`}
           />
-        </div>
+        </div> */}
 
         <hr className="w-full my-6 border-t border-neutral-200" />
 
@@ -373,7 +512,7 @@ const FormCriarVendas = () => {
           />
         </div>
       </div>
-      
+
       <hr className="w-full my-6 border-t border-neutral-200" />
       <div className='flex flex-wrap my-4 transition-transform duration-500 ease-in'>
         {/* preço */}

@@ -13,15 +13,14 @@ const ClientesTable = () => {
     useEffect(() => {
         const fetchClientes = async () => {
             try {
-                const response = await axios.get("https://pos-backend-six.vercel.app/api/clientes/get");
+                const response = await axios.get("http://localhost:3001/api/clientes/get");
                 if (response.data && Array.isArray(response.data.clientes)) {
                     const restructuredData = response.data.clientes.map((cliente) => {
                         return {
-                            codigo: cliente.cli_codigo,
-                            nome: cliente.cli_nome,
-                            celular: cliente.cli_celular,
-                            bairro: cliente.cli_bairro,
-                            endereco: cliente.cli_endereco,
+                            nome: cliente.nome,
+                            cpf: cliente.cpf,
+                            endereco: cliente.endereco,
+                            telefone: cliente.telefone,
                         };
                     });
                     setClientes(restructuredData);
@@ -77,11 +76,10 @@ const ClientesTable = () => {
             <table className="table-auto min-w-full">
                 <thead>
                     <tr>
-                        <th className="pr-4 pl-6 py-3 md:py-4 text-sm font-semibold text-neutral-800 dark:text-slate-50">Código</th>
-                        <th className="px-4 py-3 md:py-4 text-sm font-semibold text-start text-neutral-800 dark:text-slate-50">Nome</th>
-                        <th className="px-4 py-3 md:py-4 text-sm font-semibold text-center text-neutral-800 dark:text-slate-50">Celular</th>
+                        <th className="pr-4 pl-6 py-3 md:py-4 text-sm font-semibold text-neutral-800 dark:text-slate-50">Nome</th>
+                        <th className="px-4 py-3 md:py-4 text-sm font-semibold text-center text-neutral-800 dark:text-slate-50">CPF</th>
                         <th className="px-4 py-3 md:py-4 text-sm font-semibold text-center text-neutral-800 dark:text-slate-50">Endereço</th>
-                        <th className="px-4 py-3 md:py-4 text-sm font-semibold text-center text-neutral-800 dark:text-slate-50">Bairro</th>
+                        <th className="px-4 py-3 md:py-4 text-sm font-semibold text-center text-neutral-800 dark:text-slate-50">Telefone</th>
                         <th className="pl-4 pr-6 py-3 md:py-4"></th>
                     </tr>
                 </thead>

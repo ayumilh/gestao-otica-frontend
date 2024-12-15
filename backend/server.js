@@ -1,7 +1,6 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
-const pool = require('./bg');
 
 app.use(express.json());
 app.use(
@@ -14,13 +13,14 @@ app.use(
 
 // routes
 const vendasRoutes = require('./Routes/vendasRoutes');
-
+const clientesRoutes = require('./Routes/clientesRoutes');
 
 // rotas
 app.get("/", (req, res) => {
     res.send("Bem-vindo à página principal, ATUALIZOU 2");
 });
 app.use('/api/vendas', vendasRoutes);
+app.use('/api/clientes', clientesRoutes);
 
 
 app.listen(3001, () => {
