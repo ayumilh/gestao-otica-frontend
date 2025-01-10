@@ -20,7 +20,7 @@ const nextAuthOptions = {
 
       async authorize(credentials, req){
         try {
-          const response = await fetch("https://pos-backend-six.vercel.app/api/auth/login", {
+          const response = await fetch(`${process.env.BACKEND_URL}/api/auth/login`, {
             method: 'POST',
             body: JSON.stringify(credentials),
             headers: { "Content-Type": "application/json" }
