@@ -13,7 +13,7 @@ const ClientesTable = () => {
     useEffect(() => {
         const fetchClientes = async () => {
             try {
-                const response = await axios.get("http://localhost:3001/api/clientes/get");
+                const response = await axios.get(`${process.env.BACKEND_URL}/api/clientes/get`);
                 if (response.data && Array.isArray(response.data.clientes)) {
                     const restructuredData = response.data.clientes.map((cliente) => {
                         return {
