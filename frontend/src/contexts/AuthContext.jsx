@@ -26,27 +26,27 @@ export const AuthContextProvider = ({ children }) => {
     }
   }
   
-  // useEffect(() => {
-  //   const fetchUserId = async () => {
-  //     const loginResponse = Cookies.get('loginResponse') ? JSON.parse(Cookies.get('loginResponse')) : null;
+  useEffect(() => {
+    const fetchUserId = async () => {
+      const loginResponse = Cookies.get('loginResponse') ? JSON.parse(Cookies.get('loginResponse')) : null;
 
-  //     if (loginResponse && loginResponse.token) {
-  //       const decodedToken = jwtDecode(loginResponse.token);
-  //       const userid = decodedToken.userid;
-  //       try {
-  //         const res = await axios.post('https://pos-backend-six.vercel.app/api/auth/userId', { userid });
-  //         console.log(res.data);
-  //       } catch (err) {
-  //         console.error(err);
-  //       }
-  //     }
-  //   };
+      if (loginResponse && loginResponse.token) {
+        const decodedToken = jwtDecode(loginResponse.token);
+        const userid = decodedToken.userid;
+        try {
+          const res = await axios.post(`${process.env.BACKEND_URL}/api/userId`, { userid });
+          console.log(res.data);
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    };
 
-  //   fetchUserId();
-  // }, [currentUser]);
+    fetchUserId();
+  }, [currentUser]);
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, isModalOpen, setIsModalOpen, toggleModal }}>
+    <AuthContext.Provider value={{ isAuthenticated, login, isModalOpen, setIsModalOpen, toggleModal, currentUser }}>
       {children}
     </AuthContext.Provider>
   );

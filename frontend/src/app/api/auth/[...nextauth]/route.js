@@ -1,13 +1,6 @@
 import NextAuth from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 
-const users = [
-  {
-    email: "user@gmail.com",
-    password: "123456",
-  },
-]
-
 const nextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
