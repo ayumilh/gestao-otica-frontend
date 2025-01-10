@@ -18,7 +18,7 @@ export const AuthContextProvider = ({ children }) => {
   
   const login = async (inputs) => {
     try {
-      const res = await axios.post('https://pos-backend-six.vercel.app/api/auth/login', inputs);
+      const res = await axios.post(`${process.env.BACKEND_URL}/api/auth/login`, inputs);
       Cookies.set('loginResponse', JSON.stringify(res.data));
       setCurrentUser(res.data);
     } catch (error) {
