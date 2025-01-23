@@ -1,0 +1,89 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model usuario {
+  id          Int          @id @default(autoincrement())
+  nome        String       @db.VarChar(100)
+  email       String       @unique
+  senha       String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  gastosPessoais GastosPessoais[]
+  gastosPJ    GastosPJ[]
+  lucros      Lucros[]
+}
+
+// tabelas para o sistema de finanças pessoais
+model GastosPessoais {
+  id          Int       @id @default(autoincrement())
+  data        DateTime  @db.Date
+  empresa     String    @db.VarChar(100)
+  valor       Decimal
+  vencimento  DateTime? @db.Date
+  usuarioId   Int
+  usuario     usuario   @relation(fields: [usuarioId], references: [id])
+
+  @@map("gastos_pessoais")
+}
+
+model GastosPJ {
+  id          Int       @id @default(autoincrement())
+  data        DateTime  @db.Date
+  empresa     String    @db.VarChar(100)
+  valor       Decimal
+  usuarioId   Int
+  usuario     usuario   @relation(fields: [usuarioId], references: [id])
+
+  @@map("gastos_pj")
+}
+
+model Lucros {
+  id          Int       @id @default(autoincrement())
+  data        DateTime  @db.Date
+  cliente     String    @db.VarChar(100)
+  valor       Decimal
+  usuarioId   Int
+  usuario     usuario   @relation(fields: [usuarioId], references: [id])
+  vendaId     Int?
+  venda       vendas?  @relation(fields: [vendaId], references: [id])
+
+  @@map("lucros")
+}
+
+
+// tabelas para o sistema de ótica 
+model vendas {
+  id          Int       @id @default(autoincrement())
+  data        DateTime  @db.Date
+  entrega     DateTime? @db.Date
+  lentes      String    @db.VarChar(100)
+  armacao     String    @db.VarChar(100)
+  preco       Decimal
+  sinal       Decimal?
+  a_pagar     Decimal?  @default(0)
+  obs         String?   @db.Text
+  clienteCpf  String    @db.Char(11)
+  cliente     clientes  @relation(fields: [clienteCpf], references: [cpf])
+  lucroId     Lucros[]
+
+  @@map("vendas")
+}
+
+model clientes {
+  id          Int      @id @default(autoincrement())
+  nome        String   @db.VarChar(200)
+  cpf         String   @unique @db.Char(11)
+  endereco    String   @db.VarChar(200)
+  numero      String   @db.VarChar(10)
+  complemento String?  @db.VarChar(100)
+  telefone    String   @db.VarChar(11)
+  vendas      vendas[]
+
+  @@map("clientes")
+}
