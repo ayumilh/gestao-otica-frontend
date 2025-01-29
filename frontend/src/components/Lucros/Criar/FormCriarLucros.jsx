@@ -8,69 +8,69 @@ import ErrorNotification from "@/components/Geral/Notification/ErrorNotification
 import { useRouter } from "next/navigation";
 
 
-export const FormCriarFornecedor = () => {
-  const [for_nome, setFor_nome] = useState('');
-  const [for_razao_social, setFor_razao_social] = useState('');
-  const [for_cnpj, setFor_cnpj] = useState('');
-  const [for_inscricao_estadual, setFor_inscricao_estadual] = useState(null);
-  const [for_endereco, setFor_endereco] = useState('');
-  const [for_bairro, setFor_bairro] = useState('');
-  const [for_cidade, setFor_cidade] = useState('');
-  const [for_estado, setFor_estado] = useState('');
-  const [for_cep, setFor_cep] = useState('');
-  const [for_telefone, setFor_telefone] = useState(null);
-  const [for_email, setFor_email] = useState(null);
-  const [for_contato, setFor_contato] = useState(null);
+export const FormCriarLucros = () => {
+  const [lucros_nome, setLucros_nome] = useState('');
+  const [lucros_razao_social, setLucros_razao_social] = useState('');
+  const [lucros_cnpj, setLucros_cnpj] = useState('');
+  const [lucros_inscricao_estadual, setLucros_inscricao_estadual] = useState(null);
+  const [lucros_endereco, setLucros_endereco] = useState('');
+  const [lucros_bairro, setLucros_bairro] = useState('');
+  const [lucros_cidade, setLucros_cidade] = useState('');
+  const [lucros_estado, setLucros_estado] = useState('');
+  const [lucros_cep, setLucros_cep] = useState('');
+  const [lucros_telefone, setLucros_telefone] = useState(null);
+  const [lucros_email, setLucros_email] = useState(null);
+  const [lucros_contato, setLucros_contato] = useState(null);
 
-  const [for_banco, setFor_banco] = useState(null);
-  const [for_agencia, setFor_agencia] = useState(null);
-  const [for_conta, setFor_conta] = useState(null);
-  const [for_pix, setFor_pix] = useState(null);
+  const [lucros_banco, setLucros_banco] = useState(null);
+  const [lucros_agencia, setLucros_agencia] = useState(null);
+  const [lucros_conta, setLucros_conta] = useState(null);
+  const [lucros_pix, setLucros_pix] = useState(null);
 
-  const [for_observacoes, setFor_observacoes] = useState(null);
-  const [for_ativo, setFor_ativo] = useState(true);
+  const [lucros_observacoes, setLucros_observacoes] = useState(null);
+  const [lucros_ativo, setLucros_ativo] = useState(true);
 
-  const fornecedor = {
-    for_nome,
-    for_razao_social,
-    for_cnpj,
-    for_inscricao_estadual,
-    for_endereco,
-    for_bairro,
-    for_cidade,
-    for_estado,
-    for_cep,
-    for_telefone,
-    for_email,
-    for_contato,
-    for_banco,
-    for_agencia,
-    for_conta,
-    for_pix,
-    for_observacoes,
-    for_ativo
+  const Lucros = {
+    lucros_nome,
+    lucros_razao_social,
+    lucros_cnpj,
+    lucros_inscricao_estadual,
+    lucros_endereco,
+    lucros_bairro,
+    lucros_cidade,
+    lucros_estado,
+    lucros_cep,
+    lucros_telefone,
+    lucros_email,
+    lucros_contato,
+    lucros_banco,
+    lucros_agencia,
+    lucros_conta,
+    lucros_pix,
+    lucros_observacoes,
+    lucros_ativo
   }
 
-  const [isInvalidoFornecedorNome, setIsInvalidoFornecedorNome] = useState(null);
-  const [isInvalidoFornecedorRazaoSocial, setIsInvalidoFornecedorRazaoSocial] = useState(null);
-  const [isInvalidoFornecedorCNPJ, setIsInvalidoFornecedorCNPJ] = useState(null);
-  const [isInvalidoFornecedorTelefone, setIsInvalidoFornecedorTelefone] = useState(null);
-  const [isInvalidoFornecedorEmail, setIsInvalidoFornecedorEmail] = useState(null);
-  const [isInvalidoFornecedorContato, setIsInvalidoFornecedorContato] = useState(null);
-  const [isInvalidoFornecedorInscricaoEstadual, setIsInvalidoFornecedorInscricaoEstadual] = useState(null);
+  const [isInvalidoLucrosNome, setIsInvalidoLucrosNome] = useState(null);
+  const [isInvalidoLucrosRazaoSocial, setIsInvalidoLucrosRazaoSocial] = useState(null);
+  const [isInvalidoLucrosCNPJ, setIsInvalidoLucrosCNPJ] = useState(null);
+  const [isInvalidoLucrosTelefone, setIsInvalidoLucrosTelefone] = useState(null);
+  const [isInvalidoLucrosEmail, setIsInvalidoLucrosEmail] = useState(null);
+  const [isInvalidoLucrosContato, setIsInvalidoLucrosContato] = useState(null);
+  const [isInvalidoLucrosInscricaoEstadual, setIsInvalidoLucrosInscricaoEstadual] = useState(null);
 
-  const [isInvalidoFornecedorEndereco, setIsInvalidoFornecedorEndereco] = useState(null);
-  const [isInvalidoFornecedorBairro, setIsInvalidoFornecedorBairro] = useState(null);
-  const [isInvalidoFornecedorCidade, setIsInvalidoFornecedorCidade] = useState(null);
-  const [isInvalidoFornecedorEstado, setIsInvalidoFornecedorEstado] = useState(null);
-  const [isInvalidoFornecedorCEP, setIsInvalidoFornecedorCEP] = useState(null);
+  const [isInvalidoLucrosEndereco, setIsInvalidoLucrosEndereco] = useState(null);
+  const [isInvalidoLucrosBairro, setIsInvalidoLucrosBairro] = useState(null);
+  const [isInvalidoLucrosCidade, setIsInvalidoLucrosCidade] = useState(null);
+  const [isInvalidoLucrosEstado, setIsInvalidoLucrosEstado] = useState(null);
+  const [isInvalidoLucrosCEP, setIsInvalidoLucrosCEP] = useState(null);
   
-  const [isInvalidoFornecedorBanco, setIsInvalidoFornecedorBanco] = useState(null);
-  const [isInvalidoFornecedorAgencia, setIsInvalidoFornecedorAgencia] = useState(null);
-  const [isInvalidoFornecedorConta, setIsInvalidoFornecedorConta] = useState(null);
-  const [isInvalidoFornecedorPIX, setIsInvalidoFornecedorPIX] = useState(null);
+  const [isInvalidoLucrosBanco, setIsInvalidoLucrosBanco] = useState(null);
+  const [isInvalidoLucrosAgencia, setIsInvalidoLucrosAgencia] = useState(null);
+  const [isInvalidoLucrosConta, setIsInvalidoLucrosConta] = useState(null);
+  const [isInvalidoLucrosPIX, setIsInvalidoLucrosPIX] = useState(null);
 
-  const [isInvalidoFornecedorObservacoes, setIsInvalidoFornecedorObservacoes] = useState(null);
+  const [isInvalidoLucrosObservacoes, setIsInvalidoLucrosObservacoes] = useState(null);
 
   const [secaoAtiva, setSecaoAtiva] = useState("dadosBasicos");
   const [statusRequest, setStatusRequest] = useState('');
@@ -81,15 +81,15 @@ export const FormCriarFornecedor = () => {
     try {
       const response = await axios.post(`https://pos-backend-six.vercel.app/api/utils/cnpj`, { cnpj });
       if(response.data.data === null) {
-        setIsInvalidoFornecedorCNPJ(true);
+        setIsInvalidoLucrosCNPJ(true);
       }else{
-        setFor_nome(response.data.data.nome);
+        setLucros_nome(response.data.data.nome);
         const cepFormatado = response.data.data.cep.replace(/[.-]/g, '');
-        setFor_cep(cepFormatado);
-        setFor_email(response.data.data.email)
+        setLucros_cep(cepFormatado);
+        setLucros_email(response.data.data.email)
       }
     } catch (error) {
-      setIsInvalidoFornecedorCNPJ(true);
+      setIsInvalidoLucrosCNPJ(true);
     }
   };
 
@@ -97,23 +97,23 @@ export const FormCriarFornecedor = () => {
     try {
       const response = await axios.post(`https://pos-backend-six.vercel.app/api/utils/cep`, { cep });
       if(response.data.data === null) {
-        setIsInvalidoFornecedorCEP(true);
+        setIsInvalidoLucrosCEP(true);
       }else{
-        setFor_endereco(response.data.data.logradouro);
-        setFor_bairro(response.data.data.bairro);
-        setFor_cidade(response.data.data.localidade);
-        setFor_estado(response.data.data.uf);
+        setLucros_endereco(response.data.data.logradouro);
+        setLucros_bairro(response.data.data.bairro);
+        setLucros_cidade(response.data.data.localidade);
+        setLucros_estado(response.data.data.uf);
       }
     } catch (error) {
-      setIsInvalidoFornecedorCEP(true);
+      setIsInvalidoLucrosCEP(true);
     }
   }
 
   const handleCriar = async () => {
     try{
-      await axios.post('https://pos-backend-six.vercel.app/api/fornecedores/cadastrar', fornecedor)
+      await axios.post('https://pos-backend-six.vercel.app/api/Lucroses/cadastrar', Lucros)
       setStatusRequest(true);
-      router.push('/fornecedor');
+      router.push('/Lucros');
     } catch (error) {
       console.log(error);
       setStatusRequest(false);
@@ -125,7 +125,7 @@ export const FormCriarFornecedor = () => {
     <div className="w-full xl:max-w-screen-lg flex flex-col">
       {/* <BtnBackPage title="Voltar" /> */}
       <h3 className="text-neutral-800 text-xl font-medium ">
-        {for_nome || "Novo Fornecedor"}
+        {lucros_nome || "Novo Lucros"}
       </h3>
 
       <div className="flex gap-6 mt-5 mb-2 relative">
@@ -165,7 +165,7 @@ export const FormCriarFornecedor = () => {
         <div className='flex flex-wrap my-4 transition-transform duration-500 ease-in'>
           <div className="relative w-full md:w-1/2 mt-3 mb-4 px-3">
             <label
-              htmlFor="for_cnpj"
+              htmlFor="lucros_cnpj"
               className="block font-medium text-sm text-neutral-700"
             >
               CNPJ <span className="text-red-600">*</span>
@@ -176,59 +176,59 @@ export const FormCriarFornecedor = () => {
                   const value = e.target.value;
                   const regex = /^[0-9]*$/;
                   if (value === "" || regex.test(value)) {
-                    setFor_cnpj(value);
-                    setIsInvalidoFornecedorCNPJ(false);
+                    setLucros_cnpj(value);
+                    setIsInvalidoLucrosCNPJ(false);
                     if (value.length === 14) {
                       buscarCNPJ(value);
                     }
                   } else {
-                    setIsInvalidoFornecedorCNPJ(true);
+                    setIsInvalidoLucrosCNPJ(true);
                   }
                 }}
-                value={for_cnpj || ""}
+                value={lucros_cnpj || ""}
                 type="text"
-                name="for_cnpj"
+                name="lucros_cnpj"
                 className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${
-                  isInvalidoFornecedorCNPJ
+                  isInvalidoLucrosCNPJ
                     ? "outline-red-500 focus:outline-red-500"
                     : ""
                 }`}
               />
               <button
-                onClick={() => buscarCNPJ(for_cnpj)}
+                onClick={() => buscarCNPJ(lucros_cnpj)}
                 className="absolute right-2 top-1/2 transform -translate-y-1/2 text-segundaria-900 hover:bg-gray-100 active:bg-gray-200 transition duration-300 ease-in-out font-bold py-1 px-2 text-xs lg:text-sm rounded"
               >
                 <SearchIcon fontSize="20px" />
               </button>
             </div>
-            {isInvalidoFornecedorCNPJ && <span className="absolute right-4 font-medium text-red-600 text-sm mt-1">Não foi possível buscar o CNPJ.</span>}
+            {isInvalidoLucrosCNPJ && <span className="absolute right-4 font-medium text-red-600 text-sm mt-1">Não foi possível buscar o CNPJ.</span>}
           </div>
 
           <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
             <label
-              htmlFor="for_nome"
+              htmlFor="lucros_nome"
               className="block font-medium text-sm text-neutral-700"
             >
-              Nome do fornecedor <span className="text-red-600">*</span>
+              Nome do Lucros <span className="text-red-600">*</span>
             </label>
             <input
               onChange={(e) => {
                 const value = e.target.value;
                 const regex = /^[a-zA-ZÀ-ÿ\s]*$/;
                 if (value === "" || regex.test(value)) {
-                  setFor_nome(value);
-                  setIsInvalidoFornecedorNome(false);
+                  setLucros_nome(value);
+                  setIsInvalidoLucrosNome(false);
                 } else {
-                  setIsInvalidoFornecedorNome(true);
+                  setIsInvalidoLucrosNome(true);
                 }
               }}
-              value={for_nome || ''}
-              name="for_nome"
+              value={lucros_nome || ''}
+              name="lucros_nome"
               type="text"
               required
               maxLength={255}
               className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${
-                isInvalidoFornecedorNome
+                isInvalidoLucrosNome
                   ? "outline-red-500 focus:outline-red-500"
                   : ""
               }`}
@@ -237,7 +237,7 @@ export const FormCriarFornecedor = () => {
 
           <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
             <label
-              htmlFor="for_razao_social"
+              htmlFor="lucros_razao_social"
               className="block font-medium text-sm text-neutral-700"
             >
               Razão Social <span className="text-red-600">*</span>
@@ -247,19 +247,19 @@ export const FormCriarFornecedor = () => {
                 const value = e.target.value;
                 const regex = /^[a-zA-ZÀ-ÿ\s]*$/;
                 if (value === "" || regex.test(value)) {
-                  setFor_razao_social(value);
-                  setIsInvalidoFornecedorRazaoSocial(false);
+                  setLucros_razao_social(value);
+                  setIsInvalidoLucrosRazaoSocial(false);
                 } else {
-                  setIsInvalidoFornecedorRazaoSocial(true);
+                  setIsInvalidoLucrosRazaoSocial(true);
                 }
               }}
-              value={for_razao_social || ''}
-              name="for_razao_social"
+              value={lucros_razao_social || ''}
+              name="lucros_razao_social"
               type="text"
               required
               maxLength={255}
               className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${ 
-                isInvalidoFornecedorRazaoSocial
+                isInvalidoLucrosRazaoSocial
                   ? "outline-red-500 focus:outline-red-500"
                   : ""
               }`}
@@ -268,7 +268,7 @@ export const FormCriarFornecedor = () => {
 
           <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
             <label
-              htmlFor="for_inscricao_estadual"
+              htmlFor="lucros_inscricao_estadual"
               className="block font-medium text-sm text-neutral-700"
             >
               Inscrição Estadual
@@ -278,18 +278,18 @@ export const FormCriarFornecedor = () => {
                 const value = e.target.value;
                 const regex = /^[0-9]*$/;
                 if (regex.test(value)) {
-                  setFor_inscricao_estadual(value);
-                  setIsInvalidoFornecedorInscricaoEstadual(false);
+                  setLucros_inscricao_estadual(value);
+                  setIsInvalidoLucrosInscricaoEstadual(false);
                 } else {
-                  setIsInvalidoFornecedorInscricaoEstadual(true);
+                  setIsInvalidoLucrosInscricaoEstadual(true);
                 }
               }}
-              value={for_inscricao_estadual || ''}
-              name="for_inscricao_estadual"
+              value={lucros_inscricao_estadual || ''}
+              name="lucros_inscricao_estadual"
               type="text"
               maxLength={14}
               className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${
-                isInvalidoFornecedorInscricaoEstadual
+                isInvalidoLucrosInscricaoEstadual
                   ? "outline-red-500 focus:outline-red-500"
                   : ""
               }`}
@@ -298,7 +298,7 @@ export const FormCriarFornecedor = () => {
 
           <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
             <label
-              htmlFor="for_telefone"
+              htmlFor="lucros_telefone"
               className="block font-medium text-sm text-neutral-700"
             >
               Telefone
@@ -308,18 +308,18 @@ export const FormCriarFornecedor = () => {
                 const value = e.target.value;
                 const regex = /^[0-9]*$/;
                 if (regex.test(value)) {
-                  setFor_telefone(value);
-                  setIsInvalidoFornecedorTelefone(false);
+                  setLucros_telefone(value);
+                  setIsInvalidoLucrosTelefone(false);
                 } else {
-                  setIsInvalidoFornecedorTelefone(true);
+                  setIsInvalidoLucrosTelefone(true);
                 }
               }}
-              value={for_telefone || ''}
-              name="for_telefone"
+              value={lucros_telefone || ''}
+              name="lucros_telefone"
               type="text"
               maxLength={14}
               className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${
-                isInvalidoFornecedorTelefone
+                isInvalidoLucrosTelefone
                   ? "outline-red-500 focus:outline-red-500"
                   : ""
               }`}
@@ -328,7 +328,7 @@ export const FormCriarFornecedor = () => {
 
           <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
             <label
-              htmlFor="for_contato"
+              htmlFor="lucros_contato"
               className="block font-medium text-sm text-neutral-700"
             >
               Contato
@@ -338,18 +338,18 @@ export const FormCriarFornecedor = () => {
                 const value = e.target.value;
                 const regex = /^[0-9]*$/;
                 if (regex.test(value)) {
-                  setFor_contato(value);
-                  setIsInvalidoFornecedorContato(false);
+                  setLucros_contato(value);
+                  setIsInvalidoLucrosContato(false);
                 } else {
-                  setIsInvalidoFornecedorContato(true);
+                  setIsInvalidoLucrosContato(true);
                 }
               }}
-              value={for_contato || ''}
-              name="for_contato"
+              value={lucros_contato || ''}
+              name="lucros_contato"
               type="text"
               maxLength={255}
               className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${
-                isInvalidoFornecedorContato
+                isInvalidoLucrosContato
                   ? "outline-red-500 focus:outline-red-500"
                   : ""
               }`}
@@ -358,7 +358,7 @@ export const FormCriarFornecedor = () => {
 
           <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
             <label
-              htmlFor="for_email"
+              htmlFor="lucros_email"
               className="block font-medium text-sm text-neutral-700"
             >
               E-mail 
@@ -368,18 +368,18 @@ export const FormCriarFornecedor = () => {
                 const value = e.target.value;
                 const regex = /^[a-zA-Z0-9@._-]*$/;
                 if (regex.test(value)) {
-                  setFor_email(value);
-                  setIsInvalidoFornecedorEmail(false);
+                  setLucros_email(value);
+                  setIsInvalidoLucrosEmail(false);
                 } else {
-                  setIsInvalidoFornecedorEmail(true);
+                  setIsInvalidoLucrosEmail(true);
                 }
               }}
-              value={for_email || ''}
-              name="for_email"
+              value={lucros_email || ''}
+              name="lucros_email"
               type="email"
               maxLength={255}
               className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${
-                isInvalidoFornecedorEmail
+                isInvalidoLucrosEmail
                   ? "outline-red-500 focus:outline-red-500"
                   : ""
               }`} 
@@ -391,7 +391,7 @@ export const FormCriarFornecedor = () => {
       {secaoAtiva === 'endereco' && (
         <div className='flex flex-wrap my-4 transition-transform duration-500 ease-in'>
           <div className="w-full md:w-1/5 mt-3 mb-4 px-3">
-            <label htmlFor="for_cep" className="block mb-1 font-medium text-sm text-neutral-700">CEP <span className="text-red-600">*</span></label>
+            <label htmlFor="lucros_cep" className="block mb-1 font-medium text-sm text-neutral-700">CEP <span className="text-red-600">*</span></label>
             <div className="relative">
               <div className="relative h-10 w-full">
                 <input
@@ -399,40 +399,40 @@ export const FormCriarFornecedor = () => {
                     const value = e.target.value;
                     const regex = /^[0-9]*$/;
                     if (value === "" || regex.test(value)) {
-                      setFor_cep(value);
-                      setIsInvalidoFornecedorCEP(false);
+                      setLucros_cep(value);
+                      setIsInvalidoLucrosCEP(false);
                       if(value.length === 8) {
                         buscarCEP(value);
                       }
                     } else {
-                      setIsInvalidoFornecedorCEP(true);
+                      setIsInvalidoLucrosCEP(true);
                     }
                   }}
-                  value={for_cep || ''}
+                  value={lucros_cep || ''}
                   type="text"
-                  name="for_cep"
+                  name="lucros_cep"
                   required
                   maxLength={8}
                   className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${
-                    isInvalidoFornecedorCEP
+                    isInvalidoLucrosCEP
                       ? "outline-red-500 focus:outline-red-500"
                       : ""
                   }`}
                 />
                 <button
-                  onClick={() => buscarCEP(for_cep)}
+                  onClick={() => buscarCEP(lucros_cep)}
                   className="absolute right-2 top-1/2 transform -translate-y-1/2 text-segundaria-900 hover:bg-gray-100 active:bg-gray-200 transition duration-300 ease-in-out font-bold py-1 px-2 text-xs lg:text-sm rounded"
                 >
                   <SearchIcon fontSize='20px'/>
                 </button>
               </div>
-              {isInvalidoFornecedorCEP && <span className="absolute right-4 font-medium text-red-600 text-sm mt-1">Não foi possível buscar o CEP.</span>}
+              {isInvalidoLucrosCEP && <span className="absolute right-4 font-medium text-red-600 text-sm mt-1">Não foi possível buscar o CEP.</span>}
             </div>
           </div>
 
           <div className="w-full md:w-4/5 mt-3 mb-4 px-3">
             <label
-              htmlFor="for_endereco"
+              htmlFor="lucros_endereco"
               className="block font-medium text-sm text-neutral-700"
             >
               Logradouro <span className="text-red-600">*</span>
@@ -442,19 +442,19 @@ export const FormCriarFornecedor = () => {
                 const value = e.target.value;
                 const regex = /^[a-zA-Z\s]*$/;
                 if (regex.test(value)) {
-                  setFor_endereco(value);
-                  setIsInvalidoFornecedorEndereco(false);
+                  setLucros_endereco(value);
+                  setIsInvalidoLucrosEndereco(false);
                 } else {
-                  setIsInvalidoFornecedorEndereco(true);
+                  setIsInvalidoLucrosEndereco(true);
                 }
               }}
-              value={for_endereco || ''}
-              name="for_endereco"
+              value={lucros_endereco || ''}
+              name="lucros_endereco"
               type="text"
               maxLength={255}
               required
               className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${
-                isInvalidoFornecedorEndereco
+                isInvalidoLucrosEndereco
                   ? "outline-red-500 focus:outline-red-500"
                   : ""
               }`}
@@ -463,7 +463,7 @@ export const FormCriarFornecedor = () => {
 
           <div className="w-full md:w-2/5 mt-3 mb-4 px-3">
             <label
-              htmlFor="for_bairro"
+              htmlFor="lucros_bairro"
               className="block font-medium text-sm text-neutral-700"
             >
               Bairro <span className="text-red-600">*</span>
@@ -473,19 +473,19 @@ export const FormCriarFornecedor = () => {
                 const value = e.target.value;
                 const regex = /^[a-zA-Z\s]*$/;
                 if (regex.test(value)) {
-                  setFor_bairro(value);
-                  setIsInvalidoFornecedorBairro(false);
+                  setLucros_bairro(value);
+                  setIsInvalidoLucrosBairro(false);
                 } else {
-                  setIsInvalidoFornecedorBairro(true);
+                  setIsInvalidoLucrosBairro(true);
                 }
               }}
-              value={for_bairro || ''}
-              name="for_bairro"
+              value={lucros_bairro || ''}
+              name="lucros_bairro"
               type="text"
               maxLength={255}
               required
               className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${
-                isInvalidoFornecedorBairro
+                isInvalidoLucrosBairro
                   ? "outline-red-500 focus:outline-red-500"
                   : ""
               }`}
@@ -494,7 +494,7 @@ export const FormCriarFornecedor = () => {
 
           <div className="w-full md:w-2/5 mt-3 mb-4 px-3">
             <label
-              htmlFor="for_cidade"
+              htmlFor="lucros_cidade"
               className="block font-medium text-sm text-neutral-700"  
             >
               Cidade <span className="text-red-600">*</span>
@@ -504,19 +504,19 @@ export const FormCriarFornecedor = () => {
                 const value = e.target.value;
                 const regex = /^[a-zA-Z\s]*$/;
                 if (regex.test(value)) {
-                  setFor_cidade(value);
-                  setIsInvalidoFornecedorCidade(false);
+                  setLucros_cidade(value);
+                  setIsInvalidoLucrosCidade(false);
                 } else {
-                  setIsInvalidoFornecedorCidade(true);
+                  setIsInvalidoLucrosCidade(true);
                 }
               }}
-              value={for_cidade || ''}
-              name="for_cidade"
+              value={lucros_cidade || ''}
+              name="lucros_cidade"
               type="text"
               maxLength={255}
               required
               className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${
-                isInvalidoFornecedorCidade
+                isInvalidoLucrosCidade
                   ? "outline-red-500 focus:outline-red-500"
                   : ""
               }`}
@@ -525,7 +525,7 @@ export const FormCriarFornecedor = () => {
 
           <div className="w-full md:w-1/5 mt-3 mb-4 px-3">
             <label
-              htmlFor="for_estado"
+              htmlFor="lucros_estado"
               className="block font-medium text-sm text-neutral-700"
             >
               Estado <span className="text-red-600">*</span>
@@ -535,19 +535,19 @@ export const FormCriarFornecedor = () => {
                 const value = e.target.value;
                 const regex = /^[a-zA-Z]*$/;
                 if (regex.test(value)) {
-                  setFor_estado(value);
-                  setIsInvalidoFornecedorEstado(false);
+                  setLucros_estado(value);
+                  setIsInvalidoLucrosEstado(false);
                 } else {
-                  setIsInvalidoFornecedorEstado(true);
+                  setIsInvalidoLucrosEstado(true);
                 }
               }}
-              value={for_estado || ''}
-              name="for_estado"
+              value={lucros_estado || ''}
+              name="lucros_estado"
               type="text"
               maxLength={2}
               required
               className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${
-                isInvalidoFornecedorEstado
+                isInvalidoLucrosEstado
                   ? "outline-red-500 focus:outline-red-500"
                   : ""
               }`}
@@ -560,7 +560,7 @@ export const FormCriarFornecedor = () => {
         <div className='flex flex-wrap my-4 transition-transform duration-500 ease-in'>
           <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
             <label
-              htmlFor="for_banco"
+              htmlFor="lucros_banco"
               className="block font-medium text-sm text-neutral-700"
             >
               Banco
@@ -570,18 +570,18 @@ export const FormCriarFornecedor = () => {
                 const value = e.target.value;
                 const regex = /^[a-zA-Z\s]*$/;
                 if (regex.test(value)) {
-                  setFor_banco(value);
-                  setIsInvalidoFornecedorBanco(false);
+                  setLucros_banco(value);
+                  setIsInvalidoLucrosBanco(false);
                 } else {
-                  setIsInvalidoFornecedorBanco(true);
+                  setIsInvalidoLucrosBanco(true);
                 }
               }}
-              value={for_banco || ''}
-              name="for_banco"
+              value={lucros_banco || ''}
+              name="lucros_banco"
               type="text"
               maxLength={255}
               className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${
-                isInvalidoFornecedorBanco
+                isInvalidoLucrosBanco
                   ? "outline-red-500 focus:outline-red-500"
                   : ""
               }`}
@@ -590,7 +590,7 @@ export const FormCriarFornecedor = () => {
 
           <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
             <label
-              htmlFor="for_agencia"
+              htmlFor="lucros_agencia"
               className="block font-medium text-sm text-neutral-700"
             >
               Agência
@@ -600,18 +600,18 @@ export const FormCriarFornecedor = () => {
                 const value = e.target.value;
                 const regex = /^[0-9-]*$/;
                 if (regex.test(value)) {
-                  setFor_agencia(value);
-                  setIsInvalidoFornecedorAgencia(false);
+                  setLucros_agencia(value);
+                  setIsInvalidoLucrosAgencia(false);
                 } else {
-                  setIsInvalidoFornecedorAgencia(true);
+                  setIsInvalidoLucrosAgencia(true);
                 }
               }}
-              value={for_agencia || ''}
-              name="for_agencia"
+              value={lucros_agencia || ''}
+              name="lucros_agencia"
               type="text"
               maxLength={4}
               className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${
-                isInvalidoFornecedorAgencia
+                isInvalidoLucrosAgencia
                   ? "outline-red-500 focus:outline-red-500"
                   : ""
               }`}
@@ -620,7 +620,7 @@ export const FormCriarFornecedor = () => {
 
           <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
             <label
-              htmlFor="for_conta"
+              htmlFor="lucros_conta"
               className="block font-medium text-sm text-neutral-700"
             >
               Conta
@@ -630,18 +630,18 @@ export const FormCriarFornecedor = () => {
                 const value = e.target.value;
                 const regex = /^[0-9]*$/;
                 if (regex.test(value)) {
-                  setFor_conta(value);
-                  setIsInvalidoFornecedorConta(false);
+                  setLucros_conta(value);
+                  setIsInvalidoLucrosConta(false);
                 } else {
-                  setIsInvalidoFornecedorConta(true);
+                  setIsInvalidoLucrosConta(true);
                 }
               }}
-              value={for_conta || ''}
-              name="for_conta"
+              value={lucros_conta || ''}
+              name="lucros_conta"
               type="text"
               maxLength={12}
               className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${
-                isInvalidoFornecedorConta
+                isInvalidoLucrosConta
                   ? "outline-red-500 focus:outline-red-500"
                   : ""
               }`}
@@ -650,7 +650,7 @@ export const FormCriarFornecedor = () => {
 
           <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
             <label
-              htmlFor="for_pix"
+              htmlFor="lucros_pix"
               className="block font-medium text-sm text-neutral-700"
             >
               PIX
@@ -660,18 +660,18 @@ export const FormCriarFornecedor = () => {
                 const value = e.target.value;
                 const regex = /^[a-zA-Z0-9@._-]*$/;
                 if (regex.test(value)) {
-                  setFor_pix(value);
-                  setIsInvalidoFornecedorPIX(false);
+                  setLucros_pix(value);
+                  setIsInvalidoLucrosPIX(false);
                 } else {
-                  setIsInvalidoFornecedorPIX(true);
+                  setIsInvalidoLucrosPIX(true);
                 }
               }}
-              value={for_pix || ''}
-              name="for_pix"
+              value={lucros_pix || ''}
+              name="lucros_pix"
               type="text"
               maxLength={255}
               className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${
-                isInvalidoFornecedorPIX
+                isInvalidoLucrosPIX
                   ? "outline-red-500 focus:outline-red-500"
                   : ""
               }`}
@@ -680,7 +680,7 @@ export const FormCriarFornecedor = () => {
 
           <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
             <label
-              htmlFor="for_observacoes"
+              htmlFor="lucros_observacoes"
               className="block font-medium text-sm text-neutral-700"
             >
               Observações
@@ -690,18 +690,18 @@ export const FormCriarFornecedor = () => {
                 const value = e.target.value;
                 const regex = /^[a-zA-Z0-9\s]*$/;
                 if (regex.test(value)) {
-                  setFor_observacoes(value);
-                  setIsInvalidoFornecedorObservacoes(false);
+                  setLucros_observacoes(value);
+                  setIsInvalidoLucrosObservacoes(false);
                 } else {
-                  setIsInvalidoFornecedorObservacoes(true);
+                  setIsInvalidoLucrosObservacoes(true);
                 }
               }}
-              value={for_observacoes || ''}
-              name="for_observacoes"
+              value={lucros_observacoes || ''}
+              name="lucros_observacoes"
               type="text"
               maxLength={255}
               className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${
-                isInvalidoFornecedorObservacoes
+                isInvalidoLucrosObservacoes
                   ? "outline-red-500 focus:outline-red-500"
                   : ""
               }`}
@@ -717,37 +717,37 @@ export const FormCriarFornecedor = () => {
             </label>
 
             <div className="flex flex-col md:flex-row gap-3 mt-3">
-              <label htmlFor="for_ativo_true" className="flex items-center">
+              <label htmlFor="lucros_ativo_true" className="flex items-center">
                 <div
                   className={`ml-2 h-4 w-4 rounded-full border bg-gray-100 ${
-                    for_ativo === true ? "border-orange-500 bg-orange-400" : "border-gray-300"
+                    lucros_ativo === true ? "border-orange-500 bg-orange-400" : "border-gray-300"
                   }`}
                 ></div>
                 <input
                   type="radio"
                   value={true}
-                  checked={for_ativo === true}
-                  id="for_ativo_true"
-                  name="for_ativo"
-                  onChange={(e) => setFor_ativo(true)}
+                  checked={lucros_ativo === true}
+                  id="lucros_ativo_true"
+                  name="lucros_ativo"
+                  onChange={(e) => setLucros_ativo(true)}
                   className="opacity-0 absolute h-4 w-4"
                 />
                 <span className="font-normal ml-2">Ativo</span>
               </label>
 
-              <label htmlFor="for_ativo_false" className="flex items-center">
+              <label htmlFor="lucros_ativo_false" className="flex items-center">
                 <div
                   className={`ml-2 h-4 w-4 rounded-full border bg-gray-100 ${
-                    for_ativo === false ? "border-orange-500 bg-orange-400" : "border-gray-300"
+                    lucros_ativo === false ? "border-orange-500 bg-orange-400" : "border-gray-300"
                   }`}
                 ></div>
                 <input
                   type="radio"
                   value={false}
-                  checked={for_ativo === false}
-                  id="for_ativo_false"
-                  name="for_ativo"
-                  onChange={(e) => setFor_ativo(false)}
+                  checked={lucros_ativo === false}
+                  id="lucros_ativo_false"
+                  name="lucros_ativo"
+                  onChange={(e) => setLucros_ativo(false)}
                   className="opacity-0 absolute h-4 w-4"
                 />
                 <span className="font-normal ml-2">Inativo</span>
@@ -763,10 +763,10 @@ export const FormCriarFornecedor = () => {
     </div>
 
     {statusRequest === true && (
-      <SuccessNotification message="Fornecedor criado com sucesso!" />
+      <SuccessNotification message="Lucros criado com sucesso!" />
     )}
     {statusRequest === false && (
-      <ErrorNotification message="Não foi possível criar o fornecedor!" />
+      <ErrorNotification message="Não foi possível criar o Lucros!" />
     )}
   </>);
 }

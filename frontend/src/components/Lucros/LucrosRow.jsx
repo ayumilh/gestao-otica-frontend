@@ -7,25 +7,27 @@ import ModalEditarProduto from "@/components/Produtos/Editar/ModalEditarProduto"
 import ProductionQuantityLimitsIcon from '@mui/icons-material/ProductionQuantityLimits';
 import SkeletonLoader from "@/components/Geral/SkeletonTableRow"
 
-export default function FornecedorRow({ fornecedores }) {
+export default function LucrosRow({ lucrosData }) {
     const [isOpen, setIsOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const router = useRouter();
 
     useEffect(() => {
-        if (fornecedores.length > 0) {
+        if (lucrosData.length > 0) {
             setIsLoading(false);
         }
-    }, [fornecedores]);
+    }, [lucrosData]);
 
     const toggleDrawer = (open) => () => {
         setIsOpen(open);
     };
 
-    const handleButtonClick = (fornecedor) => {
+    console.log(lucrosData);
+
+    const handleButtonClick = (lucros) => {
         try {
-            Cookies.set('selectedFornecedor', fornecedor);
-            router.push('/fornecedor/editar');
+            Cookies.set('selectedLucros', lucros);
+            router.push('/luros/editar');
         } catch (error) {
             console.error(`Error: ${error}`);
         }
@@ -34,29 +36,26 @@ export default function FornecedorRow({ fornecedores }) {
     return (<>
         {isLoading ? (
             <SkeletonLoader numColumns={6} />
-        ) : fornecedores.length > 0 ? (
-            fornecedores.map((fornecedor, index) => (
+        ) : lucrosData.length > 0 ? (
+            lucrosData.map((lucros, index) => (
                 <tr key={index} className="cursor-pointer border-t border-zinc-100 hover:bg-gray-200 dark:bg-primaria-900 dark:hover:bg-primaria-800 dark:border-b dark:border-zinc-800">
                     <td className="pr-4 pl-6 py-4 md:py-5 text-center whitespace-nowrap">
-                        <div className="text-sm text-neutral-800 dark:text-slate-50">{fornecedor.codigo}</div>
+                        <div className="text-sm text-neutral-800 dark:text-slate-50">{lucros.id}</div>
                     </td>
                     <td className="px-4 py-2 md:py-5 text-sm text-center whitespace-nowrap">
                         <div className="flex items-center">
-                            <div className="text-sm font-medium text-center text-neutral-800 dark:text-slate-50">{fornecedor.nome}</div>
+                            <div className="text-sm font-medium text-center text-neutral-800 dark:text-slate-50">{lucros.cliente}</div>
                         </div>
                     </td>
                     <td className="px-4 py-4 md:py-5 text-center whitespace-nowrap">
-                        <div className="text-sm text-neutral-800 dark:text-slate-50">{fornecedor.cnpj}</div>
+                        <div className="text-sm text-neutral-800 dark:text-slate-50">{lucros.valor}</div>
                     </td>
                     <td className="px-4 py-4 md:py-5 text-center whitespace-nowrap">
-                        <div className="text-sm text-neutral-800 dark:text-slate-50">{fornecedor.contato}</div>
-                    </td>
-                    <td className="px-4 py-4 md:py-5 text-center whitespace-nowrap">
-                        <div className="text-sm text-neutral-800 dark:text-slate-50">{fornecedor.endereco}</div>
+                        <div className="text-sm text-neutral-800 dark:text-slate-50">{lucros.data}</div>
                     </td>
                     <td className="px-4 py-4 md:py-5 text-center whitespace-nowrap">
                         <button
-                            onClick={() => handleButtonClick(fornecedor.codigo)}
+                            onClick={() => handleButtonClick(lucros.id)}
                             className="text-neutral-700 hover:text-neutral-900 dark:text-slate-200 dark:hover:text-slate-50 transition ease-in flex items-center justify-center"
                         >
                             <ModeEditOutlineIcon className="mr-1 h-4 md:h-5 w-4 md:w-5" />

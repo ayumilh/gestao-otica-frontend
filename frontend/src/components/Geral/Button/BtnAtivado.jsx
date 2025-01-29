@@ -58,7 +58,7 @@ export default function BtnAtivado({ title, onClick, page, size, rounded, paddin
             {isLogging ? (
                 <><CircularProgress color="inherit" className="text-white mr-1" size={12} /></>
             ) : (<>
-                {title === 'Novo cliente' || title === 'Novo produto' || title === 'Criar NF' || title === 'Criar pedido' || title === 'Novo fornecedor' || title === 'Nova venda' || title === 'Criar Pagamento' || title === 'Criar Recebimento' ? (
+                {title === 'Novo cliente' || title === 'Novo produto' || title === 'Criar NF' || title === 'Criar pedido' || title === 'Novo lucro' || title === 'Nova venda' || title === 'Criar Pagamento' || title === 'Criar Recebimento' ? (
                     <span>
                         <MdAdd className='text-white w-4 h-4' />
                     </span>

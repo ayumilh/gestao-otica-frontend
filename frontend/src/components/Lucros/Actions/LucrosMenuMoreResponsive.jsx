@@ -9,7 +9,7 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 
 
-export const FornecedorMenuMoreResponsive = ({ currentPage, totalPages, rowsPerPage, handlePageChange, handleRowsPerPageChange }) => {
+export const LucrosMenuMoreResponsive = ({ currentPage, totalPages, rowsPerPage, handlePageChange, handleRowsPerPageChange }) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const [isOpenMenu, setIsOpenMenu] = useState(false);

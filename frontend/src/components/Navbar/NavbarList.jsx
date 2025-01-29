@@ -13,16 +13,17 @@ import BtnAtivado from "../Geral/Button/BtnAtivado";
 import BtnSignOut from "./BtnSignOut";
 import DarkModeToggle from "../Geral/Button/DarkModeToggle";
 import ActionsHeader from "../Geral/ActionsHeader";
+import SavingsOutlinedIcon from '@mui/icons-material/SavingsOutlined';
 
 
 const iconsNav = [
     <Groups2OutlinedIcon key="Clientes" sx={{ width: 24 }} />,
     <FaTags key="Vendas" sx={{ width: 24 }} />,
-    <FaBox key="Produtos" sx={{ width: 24 }} />,
-    <LocalShippingOutlinedIcon key="Fornecedor" sx={{ width: 24 }} />,
+    // <FaBox key="Produtos" sx={{ width: 24 }} />,
+    <SavingsOutlinedIcon key="Lucros" sx={{ width: 24 }} />,
     <AssignmentOutlinedIcon key="pedidos" sx={{ width: 24 }} />,
     <ShoppingCartOutlinedIcon key="pedidos" sx={{ width: 24 }} />,
-    <SpeedOutlinedIcon key="Desempenho" sx={{ width: 24 }} />,
+    // <SpeedOutlinedIcon key="Desempenho" sx={{ width: 24 }} />,
 ];
 
 const NavbarList = () => {
@@ -45,7 +46,7 @@ const NavbarList = () => {
                     </div>
                 </li>
                 <h3 className="w-40 text-sm font-normal opacity-80 mb-2">Dia a dia</h3>
-                {["Clientes", "Vendas", "Produtos", "Fornecedor", "NF", "Pedidos", "Relatórios"].map(
+                {["Clientes", "Vendas", "Lucros", "Pedidos"].map(
                     (text, index) => (
                         <li key={text} className="w-36 flex flex-col justify-center mb-4">
                             <Link className="w-36" href={`/${text.toLowerCase()}`}>

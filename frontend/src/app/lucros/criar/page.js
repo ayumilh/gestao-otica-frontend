@@ -1,9 +1,9 @@
 import { redirect } from 'next/navigation';
-import { nextAuthOptions } from '../../../app/api/auth/[...nextauth]/route';
+import { nextAuthOptions } from '../../api/auth/[...nextauth]/route';
 import { getServerSession } from 'next-auth';
 
 import BtnBackPage from '@/components/Geral/Button/BtnBackPage';
-import { FormCriarFornecedor } from '@/components/Fornecedor/Criar/FormCriarFornecedor';
+import { FormCriarLucros } from '@/components/Lucros/Criar/FormCriarLucros';
 import NavbarMobile from '@/components/Navbar/Mobile/NavbarMobile';
 import NavbarContent from "@/components/Navbar/NavbarContent";
 
@@ -23,7 +23,7 @@ export default async function Editar() {
       <div className='w-full flex flex-col justify-center lg:px-0 lg:mx-4 lg:mt-4 xl:mx-8'>
         <BtnBackPage title="Voltar" />
         <div className="w-full flex flex-col items-center mt-6 md:mt-10">
-          <FormCriarFornecedor />
+          <FormCriarLucros />
         </div>
       </div>
     </div>

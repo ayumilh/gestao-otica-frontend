@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import ClientesRow from './ClientesRow';
+import { searchUserId } from '@/utils/searchUserId';
 import { ClientesMenuMoreResponsive } from './Actions/ClientesMenuMoreResponsive';
 
 const ClientesTable = () => {
@@ -12,8 +13,16 @@ const ClientesTable = () => {
 
     useEffect(() => {
         const fetchClientes = async () => {
+            const token = await searchUserId();
             try {
-                const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/clientes/get`);
+                const response = await axios.get(
+                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/clientes/get`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
+                );
                 if (response.data && Array.isArray(response.data.clientes)) {
                     const restructuredData = response.data.clientes.map((cliente) => {
                         return {

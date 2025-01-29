@@ -3,42 +3,51 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 import SearchIcon from '@mui/icons-material/Search';
-import FornecedorRow from './FornecedorRow';
-import { FornecedorMenuMoreResponsive } from './Actions/FornecedorMenuMoreResponsive';
+import LucrosRow from './LucrosRow';
+import { LucrosMenuMoreResponsive } from './Actions/LucrosMenuMoreResponsive';
+import { searchUserId } from '@/utils/searchUserId';
+import Cookies from 'js-cookie';
 
-const FornecedorTable = () => {
+const LucrosTable = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [totalPages, setTotalPages] = useState(1);
-    const [fornecedor, setFornecedor] = useState([]);
+    const [Lucros, setLucros] = useState([]);
 
     useEffect(() => {
-        const fetchFornecedor = async () => {
+        const fetchLucros = async () => {
+            const token = await searchUserId();
             try {
-                const response = await axios.get("https://pos-backend-six.vercel.app/api/fornecedores/get");
-                if (response.data && Array.isArray(response.data.fornecedores)) {
-                    const restructuredData = response.data.fornecedores.map((fornecedor) => {
+                const response = await axios.get(
+                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/lucros/listar`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
+                );
+                if (response.data && Array.isArray(response.data)) {
+                    const restructuredData = response.data.map((lucros) => {
                         return {
-                            codigo: fornecedor.for_codigo,
-                            nome: fornecedor.for_nome,
-                            cnpj: fornecedor.for_cnpj,
-                            contato: fornecedor.for_contato,
-                            endereco: fornecedor.for_endereco,
+                            id: lucros.id,
+                            data: lucros.data,
+                            cliente: lucros.cliente,
+                            valor: lucros.valor,
                         };
                     });
-                    setFornecedor(restructuredData);
+                    setLucros(restructuredData);
                     setTotalPages(Math.ceil(restructuredData.length / rowsPerPage));
                 } else {
-                    setFornecedor([]);
+                    setLucros([]);
                     setTotalPages(1);
                 }
             } catch (error) {
-                setFornecedor([]);
+                setLucros([]);
                 setTotalPages(1);
             }
         };
 
-        fetchFornecedor();
+        fetchLucros();
     }, [rowsPerPage, currentPage]);
 
     useEffect(() => {
@@ -55,7 +64,7 @@ const FornecedorTable = () => {
         }
     };
 
-    const paginatedFornecedor = fornecedor.slice(
+    const paginatedLucros = Lucros.slice(
         (currentPage - 1) * rowsPerPage,
         currentPage * rowsPerPage
     );
@@ -63,12 +72,12 @@ const FornecedorTable = () => {
     const handleRowsPerPageChange = (event) => {
         const newRowsPerPage = Number(event.target.value);
         setRowsPerPage(newRowsPerPage);
-        setTotalPages(Math.ceil(fornecedor.length / newRowsPerPage));
+        setTotalPages(Math.ceil(Lucros.length / newRowsPerPage));
         handlePageChange(1);
     };
     return (
         <div className="bg-segundaria-700 dark:bg-primaria-900 dark:border dark:border-zinc-800 shadow-lg rounded-2xl w-[345px] md:w-[728px] lg:w-[800px] xl:w-[1270px] flex flex-col my-10 overflow-x-auto">
-            <FornecedorMenuMoreResponsive
+            <LucrosMenuMoreResponsive
                 currentPage={currentPage}
                 totalPages={totalPages}
                 rowsPerPage={rowsPerPage}
@@ -79,19 +88,18 @@ const FornecedorTable = () => {
                 <thead>
                     <tr>
                         <th className="pr-4 pl-6 py-2 md:py-5 text-sm font-semibold text-neutral-800 dark:text-slate-50">Código</th>
-                        <th className="px-4 py-2 md:py-5 text-sm text-start font-semibold text-neutral-800 dark:text-slate-50">Nome</th>
-                        <th className="px-4 py-2 md:py-5 text-sm font-semibold text-center text-neutral-800 dark:text-slate-50">CNPJ</th>
-                        <th className="px-4 py-2 md:py-5 text-sm font-semibold text-center text-neutral-800 dark:text-slate-50">Contato</th>
-                        <th className="px-4 py-4 md:py-5 text-sm font-semibold text-center text-neutral-800 dark:text-slate-50">Endereço</th>
+                        <th className="px-4 py-2 md:py-5 text-sm text-start font-semibold text-neutral-800 dark:text-slate-50">cliente</th>
+                        <th className="px-4 py-2 md:py-5 text-sm font-semibold text-center text-neutral-800 dark:text-slate-50">valor</th>
+                        <th className="px-4 py-2 md:py-5 text-sm font-semibold text-center text-neutral-800 dark:text-slate-50">data</th>
                         <th className="pr-6 pl-4 py-2 md:py-5"></th>
                     </tr>
                 </thead>
                 <tbody>
-                    <FornecedorRow fornecedores={paginatedFornecedor} />
+                    <LucrosRow lucrosData={paginatedLucros} />
                 </tbody>
             </table>
         </div>
     );
 };
 
-export default FornecedorTable;
+export default LucrosTable;
