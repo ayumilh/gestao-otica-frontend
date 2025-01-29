@@ -45,7 +45,7 @@ const FormCriarClientes = () => {
 
     const handleNomeChange = (e) => {
         const value = e.target.value.trimStart();
-        const regex = /[^a-zA-ZÀ-ÿ\s'-]/g;
+        const regex = /[^a-zA-ZÀ-ÿ0-9\s'.-]/g;
         const sanitizedValue = sanitizeInput(value, regex, false);
 
         if (value === sanitizedValue) {
@@ -66,7 +66,7 @@ const FormCriarClientes = () => {
 
     const handleEnderecoChange = (e) => {
         const value = e.target.value.trimStart();
-        const regex = /[^a-zA-ZÀ-ÿ\s'-]/g;
+        const regex = /[^a-zA-ZÀ-ÿ0-9\s'-]/g;
         const sanitizedValue = sanitizeInput(value, regex, false);
 
         if (value === sanitizedValue) {
@@ -108,7 +108,7 @@ const FormCriarClientes = () => {
 
     const handleComplementoChange = (e) => {
         const value = e.target.value.trimStart();
-        const regex = /[^a-zA-ZÀ-ÿ\s'-]/g;
+        const regex = /[^a-zA-ZÀ-ÿ0-9\s'.-]/g;
         const sanitizedValue = sanitizeInput(value, regex, false);
 
         if (value === sanitizedValue) {
@@ -176,7 +176,6 @@ const FormCriarClientes = () => {
     };
 
     const handleCriar = async () => {
-        console.log(cliente);
         const token = searchUserId();
         try {
             await axios.post(

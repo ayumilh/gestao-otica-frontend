@@ -84,7 +84,7 @@ const LucrosTable = () => {
             <table className="table-auto min-w-full">
                 <thead>
                     <tr>
-                        <th className="pr-4 pl-6 py-2 md:py-5 text-sm text-start font-semibold text-neutral-800 dark:text-slate-50">Código</th>
+                        <th className="pr-4 pl-6 py-2 md:py-5 text-sm text-end font-semibold text-neutral-800 dark:text-slate-50">Código</th>
                         <th className="px-4 py-2 md:py-5 text-sm text-start font-semibold text-neutral-800 dark:text-slate-50">Cliente</th>
                         <th className="px-4 py-2 md:py-5 text-sm font-semibold text-start text-neutral-800 dark:text-slate-50">Valor</th>
                         <th className="px-4 py-2 md:py-5 text-sm font-semibold text-start text-neutral-800 dark:text-slate-50">Data</th>

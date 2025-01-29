@@ -37,7 +37,7 @@ export default function LucrosRow({ lucrosData }) {
         ) : lucrosData.length > 0 ? (
             lucrosData.map((lucros, index) => (
                 <tr key={index} className="cursor-pointer border-t border-zinc-100 hover:bg-gray-200 dark:bg-primaria-900 dark:hover:bg-primaria-800 dark:border-b dark:border-zinc-800">
-                    <td className="pr-4 pl-6 py-4 md:py-5 text-start whitespace-nowrap">
+                    <td className="pr-4 pl-6 py-4 md:py-5 text-end whitespace-nowrap">
                         <div className="text-sm text-neutral-800 dark:text-slate-50">{lucros.id}</div>
                     </td>
                     <td className="px-4 py-2 md:py-5 text-sm text-start whitespace-nowrap">
