@@ -13,7 +13,7 @@ const nextAuthOptions = {
 
       async authorize(credentials, req){
         try {
-          const response = await fetch(`${process.env.BACKEND_URL}/api/auth/login`, {
+          const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/login`, {
             method: 'POST',
             body: JSON.stringify(credentials),
             headers: { "Content-Type": "application/json" }

@@ -152,7 +152,7 @@ const FormCriarVendas = () => {
     if (vendaCPF.length === 11) {
       setIsLoading(true);
       try {
-        const response = await axios.get(`${process.env.BACKEND_URL}/api/clientes/filter`, { params: filtros }); 
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/clientes/filter`, { params: filtros }); 
         if (response.data.clientes.length === 0) {
           setCliente({});
         } else {
@@ -170,7 +170,7 @@ const FormCriarVendas = () => {
   const handleCriar = async () => {
     console.log(venda);
     try {
-      await axios.post(`${process.env.BACKEND_URL}/api/vendas/cadastrar`, venda) 
+      await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/vendas/cadastrar`, venda) 
       router.push('/vendas')
       setStatusRequest(true);
     } catch (error) {

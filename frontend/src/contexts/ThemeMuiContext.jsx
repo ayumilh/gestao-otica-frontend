@@ -9,37 +9,27 @@ export const ThemeMuiContext = createContext();
 const lightTheme = createTheme({
   palette: {
     mode: 'light',
-    background: {
-      default: '#F6F6FB',
-      paper: '#F6F6FB',
-    },
-    text: {
-      primary: '#000000',
-    },
   },
 });
 
 const darkTheme = createTheme({
   palette: {
     mode: 'dark',
-    background: {
-      default: '#23262F',
-      paper: '#23262F',
-    },
     text: {
       primary: '#e5e7eb',
+      secondary: '#e5e7eb',
     },
   },
 });
 
 export const ThemeProvider = ({ children }) => {
-  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: light)');
-  const [themeMode, setThemeMode] = useState(prefersDarkMode ? 'light' : 'dark');
+  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+  const [themeMode, setThemeMode] = useState(prefersDarkMode ? 'dark' : 'light');
   const theme = useMemo(() => (themeMode === 'light' ? lightTheme : darkTheme), [themeMode]);
 
   const toggleTheme = () => {
     setThemeMode((prevMode) => {
-      const newMode = prevMode === 'light' ? 'light' : 'dark';
+      const newMode = prevMode === 'light' ? 'dark' : 'light';
       localStorage.setItem('themeMode', newMode);
       return newMode;
     });

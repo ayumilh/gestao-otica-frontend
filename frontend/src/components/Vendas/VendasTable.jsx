@@ -18,7 +18,7 @@ const VendasTable = () => {
     useEffect(() => {
         const fetchVendas = async () => {
             try {
-                const response = await axios.get(`${process.env.BACKEND_URL}/api/vendas/get`);
+                const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/vendas/get`);
                 if (response.data && Array.isArray(response.data.vendas)) {
                     const restructuredData = response.data.vendas.map((venda) => {
                         return {

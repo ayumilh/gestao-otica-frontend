@@ -9,6 +9,7 @@ import { IconButton } from "@mui/material"
 import CircularProgress from '@mui/material/CircularProgress';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import Cookies from 'js-cookie'
 
 
 const FormContent = () => {
@@ -18,14 +19,22 @@ const FormContent = () => {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [loggingLoading, setLoggingLoading] = useState(false)
-
+  const [errors, setErrors] = useState({});
 
   const handleLogin = async (event) => {
     event.preventDefault()
     setLoggingLoading(true)
     setErrorMessage('')
+
     try {
       await login({ email, senha })
+      const getUserId = Cookies.get('userId') ? JSON.parse(Cookies.get('userId')) : null;
+
+      if (getUserId === null) {
+        setErrors({ login: 'Usuário não encontrado. Por favor, verifique as informações inseridas e tente novamente. Se o problema persistir, entre em contato com nosso suporte.' });
+        return;
+      }
+
       const result = await signIn('credentials', {
         email,
         senha,
@@ -39,9 +48,22 @@ const FormContent = () => {
         router.push('/inicio')
       }
 
-    } catch (validationError) {
-      setErrorMessage('Login inválido. Verifique seu e-mail e senha.')
-      router.push('/login')
+    } catch (error) {
+      if (error.response) {
+        if (error.response.status === 401) {
+          setErrors({ login: 'Credenciais inválidas. Por favor, verifique seu email e senha.' })
+        } else if (error.response.status === 500) {
+          setErrors({ login: 'Erro interno do servidor. Por favor, tente novamente mais tarde.' })
+        } else {
+          setErrors({ login: `Erro: ${error.response.status}. ${error.response.data.message || 'Por favor, tente novamente mais tarde.'}` })
+        }
+      } else if (error.request) {
+        // A requisição foi feita, mas nenhuma resposta foi recebida
+        setErrors({ login: 'Nenhuma resposta do servidor. Por favor, verifique sua conexão e tente novamente.' })
+      } else {
+        // Algo aconteceu ao configurar a requisição que acionou um erro
+        setErrors({ login: `Erro: ${error.message}. Por favor, tente novamente mais tarde.` })
+      }
     } finally {
       setLoggingLoading(false)
     }
@@ -120,6 +142,8 @@ const FormContent = () => {
           </div>
           <p><a href="#" className='text-blue-600 dark:text-blue-600 hover:underline text-sm font-medium'>Esqueceu a senha?</a></p>
         </div>
+
+        {errors.login && <span className='text-red-500 text-sm'>{errors.login}</span>}
 
         <button type='submit' onClick={handleLogin} className="w-full text-white bg-orange-400 hover:bg-segundaria-900 active:scale-90 active:bg-segundaria-900 active:ring active:ring-orange-400 font-medium p-3 transition duration-500 ease-in-out text-lg rounded-full shadow shadow-orange">
           {loggingLoading ? (

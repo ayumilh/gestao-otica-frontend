@@ -12,7 +12,7 @@ const VendasSelectFilter = ({ onVendas }) => {
 
     const filterData = async () => {
         try {
-            const response = await axios.get(`${process.env.BACKEND_URL}/api/vendas/filter`, { params: filtros });
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/vendas/filter`, { params: filtros });
             if (response.data && Array.isArray(response.data)) {
                 onVendas(response.data);
             } else {
