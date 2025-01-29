@@ -1,12 +1,9 @@
 'use client'
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
-import SearchIcon from '@mui/icons-material/Search';
 import LucrosRow from './LucrosRow';
 import { LucrosMenuMoreResponsive } from './Actions/LucrosMenuMoreResponsive';
 import { searchUserId } from '@/utils/searchUserId';
-import Cookies from 'js-cookie';
 
 const LucrosTable = () => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -87,10 +84,10 @@ const LucrosTable = () => {
             <table className="table-auto min-w-full">
                 <thead>
                     <tr>
-                        <th className="pr-4 pl-6 py-2 md:py-5 text-sm font-semibold text-neutral-800 dark:text-slate-50">Código</th>
-                        <th className="px-4 py-2 md:py-5 text-sm text-start font-semibold text-neutral-800 dark:text-slate-50">cliente</th>
-                        <th className="px-4 py-2 md:py-5 text-sm font-semibold text-center text-neutral-800 dark:text-slate-50">valor</th>
-                        <th className="px-4 py-2 md:py-5 text-sm font-semibold text-center text-neutral-800 dark:text-slate-50">data</th>
+                        <th className="pr-4 pl-6 py-2 md:py-5 text-sm text-start font-semibold text-neutral-800 dark:text-slate-50">Código</th>
+                        <th className="px-4 py-2 md:py-5 text-sm text-start font-semibold text-neutral-800 dark:text-slate-50">Cliente</th>
+                        <th className="px-4 py-2 md:py-5 text-sm font-semibold text-start text-neutral-800 dark:text-slate-50">Valor</th>
+                        <th className="px-4 py-2 md:py-5 text-sm font-semibold text-start text-neutral-800 dark:text-slate-50">Data</th>
                         <th className="pr-6 pl-4 py-2 md:py-5"></th>
                     </tr>
                 </thead>

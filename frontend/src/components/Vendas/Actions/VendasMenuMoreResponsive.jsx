@@ -20,7 +20,6 @@ export const VendasMenuMoreResponsive = ({ currentPage, totalPages, rowsPerPage,
     }
     
     useEffect(() => {
-        console.log('Vendas atualizadas:', vendas);
         onVendas(vendas);
     }, [vendas]);
 

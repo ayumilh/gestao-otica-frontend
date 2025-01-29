@@ -26,9 +26,12 @@ const ClientesTable = () => {
                 if (response.data && Array.isArray(response.data.clientes)) {
                     const restructuredData = response.data.clientes.map((cliente) => {
                         return {
+                            id: cliente.id,
                             nome: cliente.nome,
                             cpf: cliente.cpf,
                             endereco: cliente.endereco,
+                            numero: cliente.numero,
+                            complemento: cliente.complemento,
                             telefone: cliente.telefone,
                         };
                     });
@@ -85,10 +88,11 @@ const ClientesTable = () => {
             <table className="table-auto min-w-full">
                 <thead>
                     <tr>
-                        <th className="pr-4 pl-6 py-3 md:py-4 text-sm font-semibold text-neutral-800 dark:text-slate-50">Nome</th>
-                        <th className="px-4 py-3 md:py-4 text-sm font-semibold text-center text-neutral-800 dark:text-slate-50">CPF</th>
-                        <th className="px-4 py-3 md:py-4 text-sm font-semibold text-center text-neutral-800 dark:text-slate-50">Endereço</th>
-                        <th className="px-4 py-3 md:py-4 text-sm font-semibold text-center text-neutral-800 dark:text-slate-50">Telefone</th>
+                        <th className="pr-4 pl-6 py-3 md:py-4 text-sm text-end font-semibold text-neutral-800 dark:text-slate-50">Código</th>
+                        <th className="px-4 py-3 md:py-4 text-sm font-semibold text-start text-neutral-800 dark:text-slate-50">Nome</th>
+                        <th className="px-4 py-3 md:py-4 text-sm font-semibold text-start text-neutral-800 dark:text-slate-50">CPF</th>
+                        <th className="px-4 py-3 md:py-4 text-sm font-semibold text-start text-neutral-800 dark:text-slate-50">Telefone</th>
+                        <th className="px-4 py-3 md:py-4 text-sm font-semibold text-start text-neutral-800 dark:text-slate-50">Endereço</th>
                         <th className="pl-4 pr-6 py-3 md:py-4"></th>
                     </tr>
                 </thead>

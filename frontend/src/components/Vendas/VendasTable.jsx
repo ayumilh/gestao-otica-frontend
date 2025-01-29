@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import VendasRow from './VendasRow';
+import { searchUserId } from '@/utils/searchUserId';
 import { VendasMenuMoreResponsive } from './Actions/VendasMenuMoreResponsive';
 
 const VendasTable = () => {
@@ -11,46 +12,10 @@ const VendasTable = () => {
     const [vendas, setVendas] = useState([]);
 
     const handleVendasUpdate = (newVendas) => {
-        console.log('Vendas recebidas no componente pai:', newVendas);
+        console.log('Vendas recebidas:', newVendas);
         setVendas(newVendas);
+        setTotalPages(Math.ceil(newVendas.length / rowsPerPage));
     };
-
-    useEffect(() => {
-        const fetchVendas = async () => {
-            try {
-                const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/vendas/get`);
-                if (response.data && Array.isArray(response.data.vendas)) {
-                    const restructuredData = response.data.vendas.map((venda) => {
-                        return {
-                            data: venda.data,
-                            entrega: venda.entrega,
-                            nome: venda.nome,
-                            cpf: venda.cpf,
-                            telefone: venda.telefone,
-                            endereco: venda.endereco,
-                            complemento: venda.complemento,
-                            lentes: venda.lentes,
-                            armacao: venda.armacao,
-                            preco: venda.preco,
-                            sinal: venda.sinal,
-                            a_pagar: venda.a_pagar,
-                            obs: venda.obs,
-                        };
-                    });
-                    setVendas(restructuredData);
-                    setTotalPages(Math.ceil(restructuredData.length / rowsPerPage));
-                } else {
-                    setVendas([]);
-                    setTotalPages(1);
-                }
-            } catch (error) {
-                setVendas([]);
-                setTotalPages(1);
-            }
-        };
-
-        fetchVendas();
-    }, [rowsPerPage, currentPage]);
 
     useEffect(() => {
         if (currentPage > totalPages && totalPages > 0) {
@@ -92,19 +57,16 @@ const VendasTable = () => {
             <table className="table-auto min-w-full">
                 <thead>
                     <tr>
-                        <th className="px-4 py-3 md:py-4 text-sm font-semibold text-center text-neutral-800 dark:text-slate-50">Nome</th>
-                        <th className="px-4 py-3 md:py-4 text-sm font-semibold text-center text-neutral-800 dark:text-slate-50">CPF</th>
-                        <th className="px-4 py-3 md:py-4 text-sm font-semibold text-center text-neutral-800 dark:text-slate-50">Telefone</th>
-                        {/* <th className="px-4 py-3 md:py-4 text-sm font-semibold text-center text-neutral-800 dark:text-slate-50">Endereço</th> */}
-                        {/* <th className="px-4 py-3 md:py-4 text-sm font-semibold text-center text-neutral-800 dark:text-slate-50">Complemento</th> */}
-                        <th className="px-4 py-3 md:py-4 text-sm font-semibold text-center text-neutral-800 dark:text-slate-50">Lentes</th>
-                        <th className="px-4 py-3 md:py-4 text-sm font-semibold text-center text-neutral-800 dark:text-slate-50">Armação</th>
-                        <th className="px-4 py-3 md:py-4 text-sm font-semibold text-center text-neutral-800 dark:text-slate-50">Preço</th>
-                        <th className="px-4 py-3 md:py-4 text-sm font-semibold text-center text-neutral-800 dark:text-slate-50">Sinal</th>
-                        <th className="px-4 py-3 md:py-4 text-sm font-semibold text-center text-neutral-800 dark:text-slate-50">A Pagar</th>
-                        {/* <th className="px-4 py-3 md:py-4 text-sm font-semibold text-center text-neutral-800 dark:text-slate-50">Obs</th> */}
-                        <th className="pr-4 pl-6 py-3 md:py-4 text-sm font-semibold text-neutral-800 dark:text-slate-50">Data</th>
+                        <th className="px-4 py-3 md:py-4 text-sm font-semibold text-end text-neutral-800 dark:text-slate-50">Código</th>
+                        <th className="px-4 py-3 md:py-4 text-sm font-semibold text-start text-neutral-800 dark:text-slate-50">CPF</th>
+                        <th className="px-4 py-3 md:py-4 text-sm font-semibold text-start text-neutral-800 dark:text-slate-50">Lentes</th>
+                        <th className="px-4 py-3 md:py-4 text-sm font-semibold text-start text-neutral-800 dark:text-slate-50">Armação</th>
+                        <th className="px-4 py-3 md:py-4 text-sm font-semibold text-end text-neutral-800 dark:text-slate-50">Preço</th>
+                        <th className="px-4 py-3 md:py-4 text-sm font-semibold text-start text-neutral-800 dark:text-slate-50">Sinal</th>
+                        <th className="px-4 py-3 md:py-4 text-sm font-semibold text-start text-neutral-800 dark:text-slate-50">A_Pagar</th>
+                        <th className="pr-4 pl-6 py-3 md:py-4 text-sm font-semibold text-end text-neutral-800 dark:text-slate-50">Data</th>
                         <th className="px-4 py-3 md:py-4 text-sm font-semibold text-start text-neutral-800 dark:text-slate-50">Entrega</th>
+                        <th className="px-4 py-3 md:py-4 text-sm font-semibold text-start text-neutral-800 dark:text-slate-50">Obs</th>
                         <th className="pl-4 pr-6 py-3 md:py-4"></th>
                     </tr>
                 </thead>

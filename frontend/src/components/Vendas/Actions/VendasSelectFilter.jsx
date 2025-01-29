@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import axios from 'axios';
 import ErrorEmpty from '@/components/Geral/Notification/ErrorEmpty';
+import { searchUserId } from '@/utils/searchUserId';
 
 const VendasSelectFilter = ({ onVendas }) => {
     const [filtros, setFiltros] = useState({
@@ -11,15 +12,22 @@ const VendasSelectFilter = ({ onVendas }) => {
     const [statusRequest, setStatusRequest] = useState(null);
 
     const filterData = async () => {
+        const token = await searchUserId();
         try {
-            const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/vendas/filter`, { params: filtros });
+            const response = await axios.get(
+                `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/vendas/filter`, 
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                },
+                { params: filtros }
+            );
             if (response.data && Array.isArray(response.data)) {
                 onVendas(response.data);
             } else {
                 onVendas([]);
             }
-            console.log('Filtros aplicados:', filtros);
-            console.log('Dados retornados:', response.data);
         } catch (error) {
             setStatusRequest(false);
             onVendas([]);

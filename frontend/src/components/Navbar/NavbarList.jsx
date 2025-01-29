@@ -22,7 +22,7 @@ const iconsNav = [
     // <FaBox key="Produtos" sx={{ width: 24 }} />,
     <SavingsOutlinedIcon key="Lucros" sx={{ width: 24 }} />,
     <AssignmentOutlinedIcon key="pedidos" sx={{ width: 24 }} />,
-    <ShoppingCartOutlinedIcon key="pedidos" sx={{ width: 24 }} />,
+    // <ShoppingCartOutlinedIcon key="pedidos" sx={{ width: 24 }} />,
     // <SpeedOutlinedIcon key="Desempenho" sx={{ width: 24 }} />,
 ];
 
@@ -46,7 +46,7 @@ const NavbarList = () => {
                     </div>
                 </li>
                 <h3 className="w-40 text-sm font-normal opacity-80 mb-2">Dia a dia</h3>
-                {["Clientes", "Vendas", "Lucros", "Pedidos"].map(
+                {["Clientes", "Vendas", "Lucros"].map(
                     (text, index) => (
                         <li key={text} className="w-36 flex flex-col justify-center mb-4">
                             <Link className="w-36" href={`/${text.toLowerCase()}`}>
