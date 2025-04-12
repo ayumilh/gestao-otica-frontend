@@ -31,7 +31,7 @@ const FormContent = () => {
       const getUserId = Cookies.get('userId') ? JSON.parse(Cookies.get('userId')) : null;
 
       if (getUserId === null) {
-        setErrors({ login: 'Usuário não encontrado. Por favor, verifique as informações inseridas e tente novamente. Se o problema persistir, entre em contato com nosso suporte.' });
+        setErrorMessage('Usuário não encontrado. Por favor, verifique as informações inseridas e tente novamente. Se o problema persistir, entre em contato com nosso suporte.');
         return;
       }
 
@@ -88,7 +88,7 @@ const FormContent = () => {
 
         <p className="text-3xl font-medium text-start dark:text-neutral-800">Entrar</p>
 
-        <div className="flex flex-col space-y-8 items-end">
+        <div className="flex flex-col space-y-6 items-end">
 
           <div className="w-full">
             <label className="block text-sm font-normal mb-2 dark:text-neutral-800" htmlFor="email">
@@ -140,7 +140,6 @@ const FormContent = () => {
             </div>
             {errorMessage && <p className="text-red-500 dark:text-red-500 text-sm">{errorMessage}</p>}
           </div>
-          <p><a href="#" className='text-blue-600 dark:text-blue-600 hover:underline text-sm font-medium'>Esqueceu a senha?</a></p>
         </div>
 
         {errors.login && <span className='text-red-500 text-sm'>{errors.login}</span>}
