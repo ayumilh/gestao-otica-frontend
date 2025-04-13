@@ -1,11 +1,14 @@
-import Cookies from 'js-cookie';
+'use client';
+import { useSession } from "next-auth/react";
 
 export const searchUserId = () => {
-    try {
-        const tokenId = Cookies.get("userId") ? JSON.parse(Cookies.get("userId")) : null;
-        return tokenId ? tokenId.token : null;
-    } catch (error) {
-        console.error("Erro ao buscar o token do usuário:", error);
-        return null;
-    }
+  const { data: session } = useSession();
+
+  try {
+    const token = session?.user?.token || null;
+    return token;
+  } catch (error) {
+    console.error("Erro ao buscar o token do usuário via NextAuth:", error);
+    return null;
+  }
 };

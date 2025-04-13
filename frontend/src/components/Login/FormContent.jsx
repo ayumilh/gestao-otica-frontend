@@ -9,7 +9,6 @@ import { IconButton } from "@mui/material"
 import CircularProgress from '@mui/material/CircularProgress';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import Cookies from 'js-cookie'
 
 
 const FormContent = () => {
@@ -27,14 +26,6 @@ const FormContent = () => {
     setErrorMessage('')
 
     try {
-      // await login({ email, senha })
-      // const getUserId = Cookies.get('userId') ? JSON.parse(Cookies.get('userId')) : null;
-
-      // if (getUserId === null) {
-      //   setErrorMessage('Usuário não encontrado. Por favor, verifique as informações inseridas e tente novamente. Se o problema persistir, entre em contato com nosso suporte.');
-      //   return;
-      // }
-
       const result = await signIn('credentials', {
         email,
         password: senha, // 👈 aqui está o segredo

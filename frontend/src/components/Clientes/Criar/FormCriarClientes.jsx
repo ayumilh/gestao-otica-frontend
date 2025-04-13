@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { searchUserId } from "@/utils/searchUserId";
 
 const FormCriarClientes = () => {
+    const token = searchUserId();
     const [cli_nome, setCli_nome] = useState("");
     const [cli_cpf, setCli_cpf] = useState("");
     const [cli_endereco, setCli_endereco] = useState("");
@@ -17,7 +18,7 @@ const FormCriarClientes = () => {
     const [cli_telefone, setCli_telefone] = useState("");
 
     const [errorsInput, setErrorsInput] = useState({});
-
+    
     const cliente = {
         nome: cli_nome,
         cpf: cli_cpf,
@@ -176,7 +177,6 @@ const FormCriarClientes = () => {
     };
 
     const handleCriar = async () => {
-        const token = searchUserId();
         try {
             await axios.post(
                 `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/clientes/cadastrar`,

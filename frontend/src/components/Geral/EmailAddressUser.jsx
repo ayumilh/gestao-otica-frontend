@@ -1,10 +1,14 @@
 'use client'
 import { useContext, useRef, useEffect } from "react";
+import { useSession } from "next-auth/react";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LinkIcon from '@mui/icons-material/Link';
 
 export const EmailAddressUser = ({ menuOpen, toggleMenu }) => {
+    const { data: session } = useSession();
+    const nome = session?.user?.nome;
+
     const dropdownRef = useRef(null);
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -22,12 +26,12 @@ export const EmailAddressUser = ({ menuOpen, toggleMenu }) => {
     return (
         <>
             <span
-                className="font-medium w-[92px] overflow-hidden"
+                className="font-medium w-[92px] overflow-hidden text-start "
                 style={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
             >
-                user@gmail.com
+                {nome}
             </span>
-            <div className="relative" ref={dropdownRef}>
+            {/* <div className="relative" ref={dropdownRef}>
                 <KeyboardArrowDownIcon sx={{
                     width: '20px',
                     transform: menuOpen ? 'rotate(180deg)' : 'rotate(0deg)',
@@ -49,7 +53,7 @@ export const EmailAddressUser = ({ menuOpen, toggleMenu }) => {
                         </div>
                     </div>
                 )}
-            </div>
+            </div> */}
         </>
     );
 };

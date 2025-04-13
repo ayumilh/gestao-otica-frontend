@@ -6,6 +6,7 @@ import { LucrosMenuMoreResponsive } from './Actions/LucrosMenuMoreResponsive';
 import { searchUserId } from '@/utils/searchUserId';
 
 const LucrosTable = () => {
+    const token = searchUserId();
     const [currentPage, setCurrentPage] = useState(1);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [totalPages, setTotalPages] = useState(1);
@@ -13,7 +14,6 @@ const LucrosTable = () => {
 
     useEffect(() => {
         const fetchLucros = async () => {
-            const token = await searchUserId();
             try {
                 const response = await axios.get(
                     `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/lucros/listar`,

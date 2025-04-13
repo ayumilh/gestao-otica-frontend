@@ -66,16 +66,14 @@ const NavbarList = () => {
                 )}
             </ul>
             <hr className="w-full" />
-            <ul className="w-full mt-4 mb-20">
-                <li className="w-full">
+            <ul className="w-full mt-4 lg:mt-6 mb-5">
+                <li className="flex flex-col justify-center mb-1">
                     <ActionsHeader />
                 </li>
-            </ul>
-            <ul className="w-full mt-4 lg:mt-6 mb-5">
                 <li className="flex flex-col justify-center mb-1">
                     <DarkModeToggle />
                 </li>
-                <li className="flex flex-col justify-center">
+                <li className="flex flex-col justify-center mb-1 ml-1">
                     <BtnSignOut />
                 </li>
             </ul>

@@ -5,6 +5,7 @@ import ErrorEmpty from '@/components/Geral/Notification/ErrorEmpty';
 import { searchUserId } from '@/utils/searchUserId';
 
 const VendasSelectFilter = ({ onVendas }) => {
+    const token = searchUserId();
     const [filtros, setFiltros] = useState({
         campo: 'nome',
         valor: '',
@@ -12,7 +13,6 @@ const VendasSelectFilter = ({ onVendas }) => {
     const [statusRequest, setStatusRequest] = useState(null);
 
     const filterData = async () => {
-        const token = await searchUserId();
         try {
             const response = await axios.get(
                 `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/vendas/filter`, 
