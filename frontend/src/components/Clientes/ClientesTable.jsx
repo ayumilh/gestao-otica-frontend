@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import ClientesRow from './ClientesRow';
 import { useUserToken } from '@/utils/useUserToken';
+import ModalGrauCliente from './Actions/ModalGrauCliente';
 import { ClientesMenuMoreResponsive } from './Actions/ClientesMenuMoreResponsive';
 
 const ClientesTable = () => {
@@ -10,6 +11,10 @@ const ClientesTable = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [totalPages, setTotalPages] = useState(1);
+
+    const [isOpenModalGrau, setIsOpenModalGrau] = useState(false);
+    const [grauData, setGrauData] = useState([]);
+    const [selectedCPF, setSelectedCPF] = useState("");
     const [clientes, setClientes] = useState([]);
 
     useEffect(() => {
@@ -20,7 +25,7 @@ const ClientesTable = () => {
                     `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/clientes/get`,
                     {
                         headers: {
-                            authorization: `Bearer ${token}`
+                            Authorization: `Bearer ${token}`
                         }
                     }
                 );
@@ -98,9 +103,20 @@ const ClientesTable = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    <ClientesRow clientes={paginatedClientes} />
+                    <ClientesRow
+                        clientes={paginatedClientes}
+                        setIsOpenModalGrau={setIsOpenModalGrau}
+                        setGrauData={setGrauData}
+                        setSelectedCPF={setSelectedCPF}
+                    />
                 </tbody>
             </table>
+
+            <ModalGrauCliente
+                isOpen={isOpenModalGrau}
+                onClose={() => setIsOpenModalGrau(false)}
+                data={grauData}
+            />
         </div>
     );
 };

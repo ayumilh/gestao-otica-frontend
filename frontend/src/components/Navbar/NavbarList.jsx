@@ -45,6 +45,11 @@ const NavbarList = () => {
                         </div>
                     </div>
                 </li>
+                <li className="w-40 mb-10">
+                    <div className="w-40 flex items-center rounded-full py-2 relative">
+                        <BtnAtivado title='Criar O.S' onClick="/clientes" page="/os" size="sm" rounded="lg" />
+                    </div>
+                </li>
                 <h3 className="w-40 text-sm font-normal opacity-80 mb-2">Dia a dia</h3>
                 {["Clientes", "Vendas", "Lucros"].map(
                     (text, index) => (

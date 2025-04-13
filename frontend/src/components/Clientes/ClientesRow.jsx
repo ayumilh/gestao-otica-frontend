@@ -2,12 +2,15 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
+import { useUserToken } from '@/utils/useUserToken';
 import ProductionQuantityLimitsIcon from '@mui/icons-material/ProductionQuantityLimits';
 import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
 import SkeletonLoader from "@/components/Geral/SkeletonTableRow"
 import ModalEditarClientes from './Editar/ModalEditarClientes';
+import axios from 'axios';
 
-export default function ClientesRow({ clientes }) {
+export default function ClientesRow({ clientes, setIsOpenModalGrau, setGrauData, setSelectedCPF }) {
+    const { token } = useUserToken();
     const [isOpen, setIsOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const router = useRouter();
@@ -24,6 +27,7 @@ export default function ClientesRow({ clientes }) {
 
 
     const handleButtonClick = (cliente) => {
+        console.log("cliente", cliente);
         try {
             Cookies.set('selectedCliente', cliente);
             router.push('/clientes/editar');
@@ -32,12 +36,36 @@ export default function ClientesRow({ clientes }) {
         }
     }
 
+    const handleRowClick = async (cpf) => {
+        try {
+            const res = await axios.get(
+                `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/graus/listar?cpf=${cpf}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+            const data = res.data;
+
+            if (data) {
+                setGrauData(data);
+                setSelectedCPF(cpf);
+                setIsOpenModalGrau(true);
+            } else {
+                alert("Não foi possível buscar os dados do grau.");
+            }
+        } catch (err) {
+            console.error("Erro:", err);
+        }
+    };
+
     return (<>
         {isLoading ? (
             <SkeletonLoader numColumns={6} />
         ) : clientes.length > 0 ? (
             clientes.map((cliente, index) => (
-                <tr key={index} className="cursor-pointer border-t border-zinc-100 hover:bg-gray-200 dark:bg-primaria-900 dark:hover:bg-primaria-800 dark:border-zinc-800">
+                <tr key={index} onClick={() => handleRowClick(cliente.cpf)} className="cursor-pointer border-t border-zinc-100 hover:bg-gray-200 dark:bg-primaria-900 dark:hover:bg-primaria-800 dark:border-zinc-800">
                     <td className="px-4 py-4 md:py-5 text-end whitespace-nowrap">
                         <div className="text-sm text-neutral-800 dark:text-slate-50">{cliente.id}</div>
                     </td>
@@ -53,15 +81,15 @@ export default function ClientesRow({ clientes }) {
                     <td className="px-4 py-4 md:py-5 text-start whitespace-nowrap">
                         <div className="text-sm text-neutral-800 dark:text-slate-50">{cliente.endereco}, {cliente.numero}, {cliente.complemento}</div>
                     </td>
-                    <td className="px-4 py-4 md:py-5 text-center whitespace-nowrap">
+                    {/* <td className="px-4 py-4 md:py-5 text-center whitespace-nowrap">
                         <button
-                            onClick={() => handleButtonClick(cliente.codigo)}
+                            onClick={() => handleButtonClick(cliente.cpf)}
                             className="text-neutral-700 hover:text-neutral-900 dark:text-slate-200 dark:hover:text-slate-50 transition ease-in flex items-center justify-center"
                         >
                             <ModeEditOutlineIcon className="mr-1 h-4 md:h-5 w-4 md:w-5" />
                         </button>
                         <ModalEditarClientes isOpen={isOpen} onToggle={toggleDrawer} />
-                    </td>
+                    </td> */}
                 </tr>
             ))
         ) : (

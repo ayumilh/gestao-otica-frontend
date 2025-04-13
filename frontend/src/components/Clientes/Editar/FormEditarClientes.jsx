@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import BtnActions from "@/components/Geral/Button/BtnActions";
+import { useUserToken } from '@/utils/useUserToken';
 import SuccessNotification from "@/components/Geral/Notification/SuccessNotification";
 import ErrorNotification from "@/components/Geral/Notification/ErrorNotification";
 
@@ -47,10 +48,12 @@ const FormEditarClientes = () => {
     cli_observacoes: '',
   });
 
+  const { token } = useUserToken();
+
   const [statusRequest, setStatusRequest] = useState('');
   const [activeStep, setActiveStep] = useState(0);
 
-  const cli_codigo = Cookies.get('selectedCliente');
+  const cli_codigo = "34367699838";
 
   const inputChange = (event) => {
     setInputs((prev) => ({ ...prev, [event.target.name]: event.target.value }));
@@ -58,16 +61,22 @@ const FormEditarClientes = () => {
 
   useEffect(() => {
     const fetchCliente = async () => {
+      console.log(cli_codigo);
       try {
         const response = await axios.get(
-          `https://pos-backend-six.vercel.app/api/clientes/getId/${cli_codigo}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/clientes/listar?cpf=${cli_codigo}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
         );
         setInputs(response.data.cliente);
-      }catch (error) {
+      } catch (error) {
         console.log(error);
       }
     };
-  
+
     if (cli_codigo) {
       fetchCliente();
     }
@@ -75,15 +84,15 @@ const FormEditarClientes = () => {
 
   const handleEditar = async () => {
     const { cli_data_atualizacao, cli_data_cadastro, cli_data_excluido, cli_excluido, cli_data_nascimento, ...clienteSemDatas } = input;
-  
+
     const dataNascimentoFormatada = cli_data_nascimento ? new Date(cli_data_nascimento).toISOString().split('T')[0] : null;
-    
+
     if (dataNascimentoFormatada) {
       clienteSemDatas.cli_data_nascimento = dataNascimentoFormatada;
     }
-  
+
     try {
-      const res = await axios.put('https://pos-backend-six.vercel.app/api/clientes/editar', {
+      const res = await axios.put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/clientes/editar`, {
         ...clienteSemDatas,
         cli_codigo
       });

@@ -79,7 +79,7 @@ export const FormCriarLucros = () => {
 
   const buscarCNPJ = async (cnpj) => {
     try {
-      const response = await axios.post(`https://pos-backend-six.vercel.app/api/utils/cnpj`, { cnpj });
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/utils/cnpj`, { cnpj });
       if(response.data.data === null) {
         setIsInvalidoLucrosCNPJ(true);
       }else{
@@ -95,7 +95,7 @@ export const FormCriarLucros = () => {
 
   const buscarCEP = async (cep) => {
     try {
-      const response = await axios.post(`https://pos-backend-six.vercel.app/api/utils/cep`, { cep });
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/utils/cep`, { cep });
       if(response.data.data === null) {
         setIsInvalidoLucrosCEP(true);
       }else{

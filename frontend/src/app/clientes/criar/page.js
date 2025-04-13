@@ -1,6 +1,4 @@
-import { redirect } from 'next/navigation';
-import { nextAuthOptions } from '@/utils/nextAuthOptions';
-import { getServerSession } from 'next-auth';
+import { checkSession } from '@/utils/checkSession';
 
 import BtnBackPage from '@/components/Geral/Button/BtnBackPage';
 import FormCriarClientes from '@/components/Clientes/Criar/FormCriarClientes';
@@ -9,10 +7,8 @@ import NavbarContent from "@/components/Navbar/NavbarContent";
 
 
 export default async function Criar() {
-  const session = await getServerSession(nextAuthOptions)
-  if(!session) {
-    redirect('/login')
-  }
+  const session = await checkSession();
+
 
   return (        
     <div className="w-full flex flex-col lg:flex-row px-4 mt-4">

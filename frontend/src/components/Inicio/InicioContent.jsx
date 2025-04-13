@@ -22,10 +22,13 @@ const InicioContent = () => {
 
     return (
         <div className='w-full mt-4 lg:mt-6 lg:px-8 px-5'>
-            <div className="w-full px-4 pb-4 lg:px-0 lg:mx-4 lg:mt-4 xl:mx-8 xl:flex xl:flex-col">
-                <div className="flex items-center">
-                    <NavbarMobile />
-                    <TitlePage title='Home' />
+            <div className="w-full px-4 pb-4 lg:px-0 lg:mx-4 lg:mt-4 xl:mx-auto flex justify-between items-center h-12 pt-5">
+                <div className='w-full flex items-center justify-between mx-auto mb-4'>
+                    <div className="flex items-center">
+                        <NavbarMobile />
+                        <TitlePage title='Home' />
+                    </div>
+                    <BtnAtivado title='Criar O.S' onClick="/clientes" page="/os" size="sm" rounded="lg" />
                 </div>
             </div>
             <div className='mx-auto w-full 2xl:max-w-screen-xl flex flex-col items-center gap-4 justify-center pb-10'>
