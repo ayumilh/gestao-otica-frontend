@@ -23,18 +23,18 @@ export const nextAuthOptions = {
               senha: credentials.password
             })
           });
+
+          if (!response.ok) {
+            console.error("Erro ao autenticar:", response.status);
+            return null;
+          }
       
           const user = await response.json()
 
           console.log('RESPOSTA DA API:', user);
       
-          if (user && user.id) {
-            console.log('Usuário autenticado:', user);
-            return user; // ✅ NextAuth cria a sessão com base nesse objeto
-          } else {
-            console.warn('Credenciais inválidas ou user.id ausente:', user);
-            return null;
-          }
+          if (user && user.id) return user; // Retorna o usuário se tudo estiver certo
+          return null; // Retorna null se não houver usuário ou erro na autenticação
         } catch (error) {
           console.error('Erro no authorize:', error);
           return null;
