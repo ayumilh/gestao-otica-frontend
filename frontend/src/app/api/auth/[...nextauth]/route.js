@@ -13,20 +13,32 @@ const nextAuthOptions = {
 
       async authorize(credentials, req){
         try {
-          const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/login`, {
+          const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/userauth/login`, {
             method: 'POST',
-            body: JSON.stringify(credentials),
-            headers: { "Content-Type": "application/json" }
-          })
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            credentials: 'include', // 👈 isso garante que cookies e headers sejam mantidos
+            body: JSON.stringify({
+              email: credentials.email,
+              senha: credentials.password
+            })
+          });
       
           const user = await response.json()
+
+          console.log('RESPOSTA DA API:', user);
       
-          if (response.ok && user) {
-            console.log('User:', user)
-            return user
-          } 
+          if (user && user.id) {
+            console.log('Usuário autenticado:', user);
+            return user; // ✅ NextAuth cria a sessão com base nesse objeto
+          } else {
+            console.warn('Credenciais inválidas ou user.id ausente:', user);
+            return null;
+          }
         } catch (error) {
-          console.error('Next-Auth:', error)
+          console.error('Erro no authorize:', error);
+          return null;
         }
       },
     }),
@@ -37,16 +49,30 @@ const nextAuthOptions = {
   },
 
   callbacks: {
-    session: async (session, user) => {
-      if(user) {
-        return Promise.resolve(session)
-      } else {
-        return Promise.resolve({
-          redirect: '/login'
-        })
+    async session({ session, token }) {
+      // Adiciona o ID do usuário na sessão
+      if (token) {
+        session.user.id = token.id;
+        session.user.nome = token.nome; // opcional
+        session.user.email = token.email;
+        session.user.token = token.token; // se quiser usar no client depois
       }
+  
+      return session;
+    },
+    async jwt({ token, user }) {
+      // Quando o usuário loga, "user" está disponível
+      if (user) {
+        token.id = user.id;
+        token.nome = user.nome;
+        token.email = user.email;
+        token.token = user.token; // token JWT do backend, se quiser usar
+      }
+  
+      return token;
     }
-  },
+  }
+  
 }
 
 const handler = NextAuth(nextAuthOptions)

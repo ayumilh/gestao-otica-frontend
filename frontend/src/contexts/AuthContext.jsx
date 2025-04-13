@@ -19,12 +19,18 @@ export const AuthContextProvider = ({ children }) => {
   };
 
   const login = async (inputs) => {
+    console.log(inputs);
     try {
-      const res = await axios.post('https://gestao-otica-backend.vercel.app/api/auth/login',
+      const res = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/userauth/login`,
         inputs,
-        { withCredentials: true }
+        {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
       );
-      Cookies.set("userId", JSON.stringify(res.data));
+      // Cookies.set("userId", JSON.stringify(res.data));
       setCurrentUser(res.data);
       setIsAuthenticated(true);
     } catch (error) {
