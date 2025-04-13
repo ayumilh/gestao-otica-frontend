@@ -30,7 +30,7 @@ export const AuthContextProvider = ({ children }) => {
           }
         }
       );
-      // Cookies.set("userId", JSON.stringify(res.data));
+      Cookies.set("userId", JSON.stringify(res.data));
       setCurrentUser(res.data);
       setIsAuthenticated(true);
     } catch (error) {
@@ -38,27 +38,27 @@ export const AuthContextProvider = ({ children }) => {
     }
   };
 
-  // useEffect(() => {
-  //   const fetchUserId = async () => {
-  //     const userId = Cookies.get('userId')
-  //       ? JSON.parse(Cookies.get('userId'))
-  //       : null;
+  useEffect(() => {
+    const fetchUserId = async () => {
+      const userId = Cookies.get('userId')
+        ? JSON.parse(Cookies.get('userId'))
+        : null;
 
-  //     if (userId && userId.token) {
-  //       const decodedToken = jwtDecode(userId.token);
-  //       const userid = decodedToken.userid;
-  //       try {
-  //         const res = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/userId`, { userid });
-  //       } catch (err) {
-  //         console.error(err);
-  //       }
-  //     }
-  //   };
+      if (userId && userId.token) {
+        const decodedToken = jwtDecode(userId.token);
+        const userid = decodedToken.userid;
+        try {
+          const res = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/userId`, { userid });
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    };
 
-  //   if (currentUser) {
-  //     fetchUserId();
-  //   }
-  // }, [currentUser]);
+    if (currentUser) {
+      fetchUserId();
+    }
+  }, [currentUser]);
 
   useEffect(() => {
     if (session) {
