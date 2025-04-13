@@ -3,10 +3,10 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import LucrosRow from './LucrosRow';
 import { LucrosMenuMoreResponsive } from './Actions/LucrosMenuMoreResponsive';
-import { searchUserId } from '@/utils/searchUserId';
+import { useUserToken } from '@/utils/useUserToken';
 
 const LucrosTable = () => {
-    const token = searchUserId();
+    const {token} = useUserToken();
     const [currentPage, setCurrentPage] = useState(1);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [totalPages, setTotalPages] = useState(1);
@@ -45,7 +45,7 @@ const LucrosTable = () => {
         };
 
         fetchLucros();
-    }, [rowsPerPage, currentPage]);
+    }, [rowsPerPage, currentPage, token]);
 
     useEffect(() => {
         if (currentPage > totalPages && totalPages > 0) {

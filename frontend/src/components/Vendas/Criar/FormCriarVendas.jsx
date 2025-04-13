@@ -148,7 +148,7 @@ const FormCriarVendas = () => {
     }
   };
 
-  const filterCpf = async () => {
+  const filterCpf = useCallback(async () => {
     if (vendaCPF.length === 11) {
       setIsLoading(true);
       try {
@@ -164,7 +164,7 @@ const FormCriarVendas = () => {
         setIsLoading(false);
       }
     }
-  };
+  }, [filtros, vendaCPF.length]);
 
 
   const handleCriar = async () => {
@@ -180,7 +180,7 @@ const FormCriarVendas = () => {
 
   useEffect(() => {
     filterCpf();
-  }, [filtros, vendaCPF]);
+  }, [filterCpf]);
 
   const dropdownRef = useRef(null);
   useEffect(() => {

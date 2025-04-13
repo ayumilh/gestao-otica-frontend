@@ -13,7 +13,7 @@ const poppins = Poppins({
 });
 
 const metadata = {
-  title: "Sistema - POS",
+  title: "Realeza",
   description: "Sistema de gerenciamento de vendas e estoque",
 };
 

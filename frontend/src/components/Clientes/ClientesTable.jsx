@@ -2,24 +2,25 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import ClientesRow from './ClientesRow';
-import { searchUserId } from '@/utils/searchUserId';
+import { useUserToken } from '@/utils/useUserToken';
 import { ClientesMenuMoreResponsive } from './Actions/ClientesMenuMoreResponsive';
 
 const ClientesTable = () => {
-    const token = searchUserId();
+    const { token } = useUserToken();
     const [currentPage, setCurrentPage] = useState(1);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [totalPages, setTotalPages] = useState(1);
     const [clientes, setClientes] = useState([]);
 
     useEffect(() => {
+        if (!token) return
         const fetchClientes = async () => {
             try {
                 const response = await axios.get(
                     `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/clientes/get`,
                     {
                         headers: {
-                            Authorization: `Bearer ${token}`
+                            authorization: `Bearer ${token}`
                         }
                     }
                 );
@@ -48,7 +49,7 @@ const ClientesTable = () => {
         };
 
         fetchClientes();
-    }, [rowsPerPage, currentPage]);
+    }, [rowsPerPage, currentPage, token]);
 
     useEffect(() => {
         if (currentPage > totalPages && totalPages > 0) {

@@ -16,7 +16,7 @@ const steps = [
 ];
 
 
-export const FormEditarFornecedor = () => {
+export const FormEditarLucros = () => {
   const [input, setInputs] = useState({
     for_nome: '',
     for_razao_social: '',

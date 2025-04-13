@@ -1,18 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import axios from 'axios';
 import ErrorEmpty from '@/components/Geral/Notification/ErrorEmpty';
-import { searchUserId } from '@/utils/searchUserId';
+import { useUserToken } from '@/utils/useUserToken';
 
 const VendasSelectFilter = ({ onVendas }) => {
-    const token = searchUserId();
+    const {token} = useUserToken();
     const [filtros, setFiltros] = useState({
         campo: 'nome',
         valor: '',
     });
     const [statusRequest, setStatusRequest] = useState(null);
 
-    const filterData = async () => {
+    const filterData = useCallback(async () => {
         try {
             const response = await axios.get(
                 `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/vendas/filter`, 
@@ -32,11 +32,11 @@ const VendasSelectFilter = ({ onVendas }) => {
             setStatusRequest(false);
             onVendas([]);
         }
-    };
+    }, [filtros, token, onVendas]);
 
     useEffect(() => {
         filterData();
-    }, [filtros]);
+    }, [filterData]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;

@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import { nextAuthOptions } from '../../app/api/auth/[...nextauth]/route';
+import { nextAuthOptions } from '@/utils/nextAuthOptions';
 import { getServerSession } from 'next-auth';
 
 import NavbarContent from "@/components/Navbar/NavbarContent";

@@ -6,10 +6,10 @@ import BtnActions from "@/components/Geral/Button/BtnActions";
 import SuccessNotification from "@/components/Geral/Notification/SuccessNotification";
 import ErrorNotification from "@/components/Geral/Notification/ErrorNotification";
 import { useRouter } from "next/navigation";
-import { searchUserId } from "@/utils/searchUserId";
+import { useUserToken } from "@/utils/useUserToken";
 
 const FormCriarClientes = () => {
-    const token = searchUserId();
+    const {token} = useUserToken();
     const [cli_nome, setCli_nome] = useState("");
     const [cli_cpf, setCli_cpf] = useState("");
     const [cli_endereco, setCli_endereco] = useState("");
@@ -17,8 +17,16 @@ const FormCriarClientes = () => {
     const [cli_complemento, setCli_complemento] = useState(null);
     const [cli_telefone, setCli_telefone] = useState("");
 
+    const [preco, setPreco] = useState("");
+    const [sinal, setSinal] = useState("");
+    const [aPagar, setAPagar] = useState("");
+    const [obs, setObs] = useState("");
+    const [vendaLentes, setVendaLentes] = useState('');
+    const [vendaArmacao, setVendaArmacao] = useState('');
+
+
     const [errorsInput, setErrorsInput] = useState({});
-    
+
     const cliente = {
         nome: cli_nome,
         cpf: cli_cpf,
@@ -34,6 +42,9 @@ const FormCriarClientes = () => {
     const [isInvalidoClienteNumero, setIsInvalidoClienteNumero] = useState(false);
     const [isInvalidoClienteComplemento, setIsInvalidoClienteComplemento] = useState(false);
     const [isInvalidoClienteTelefone, setIsInvalidoClienteTelefone] = useState(false);
+
+    const [isInvalidoVendaLentes, setIsInvalidoVendaLentes] = useState(false);
+    const [isInvalidoVendaArmacao, setIsInvalidoVendaArmacao] = useState(false);
 
     const [statusRequest, setStatusRequest] = useState("");
     const router = useRouter();
@@ -132,7 +143,7 @@ const FormCriarClientes = () => {
         const value = e.target.value.trimStart();
         const regex = /[^0-9]/g;
         const sanitizedValue = sanitizeInput(value, regex);
-        
+
         if (value == sanitizedValue) {
             setCli_cpf(sanitizedValue);
             setErrorsInput((prevErrors) => {
@@ -182,11 +193,11 @@ const FormCriarClientes = () => {
                 `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/clientes/cadastrar`,
                 cliente,
                 {
-                  headers: {
-                    Authorization: `Bearer ${token}`
-                  }
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
                 }
-              );
+            );
             setStatusRequest(true);
             router.push("/clientes");
         } catch (error) {
@@ -357,7 +368,190 @@ const FormCriarClientes = () => {
                         )}
                     </div>
                 </div>
+
+                {/* formulário para cadastrar Lentes e Armação (venda) */}
+                <div className="w-full flex flex-wrap mt-5 mb-7 border-t pt-6">
+                    <div className="w-full flex items-center justify-start gap-2 mb-3">
+                        <span className="text-neutral-800 text-xl font-medium">Lentes e Armação</span>
+                    </div>
+                    {/* lentes */}
+                    <div className="w-full mt-3 mb-4 px-3">
+                        <label
+                            htmlFor="vendaLentes"
+                            className="block font-medium text-sm text-neutral-700"
+                        >
+                            Lentes <span className="text-red-600">*</span>
+                        </label>
+                        <input
+                            onChange={(e) => {
+                                const value = e.target.value;
+                                const regex = /^[A-Za-z0-9\s]+$/;
+                                if (value === "" || regex.test(value)) {
+                                    setVendaLentes(value);
+                                    setIsInvalidoVendaLentes(false);
+                                } else {
+                                    setIsInvalidoVendaLentes(true);
+                                }
+                            }}
+                            value={vendaLentes || ""}
+                            type="text"
+                            name="vendaLentes"
+                            maxLength={100}
+                            required
+                            className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${isInvalidoVendaLentes
+                                ? "outline-red-500 focus:outline-red-500"
+                                : ""
+                                }`}
+                        />
+                    </div>
+
+                    {/* armação */}
+                    <div className="w-full mt-3 mb-4 px-3">
+                        <label
+                            htmlFor="vendaArmacao"
+                            className="block font-medium text-sm text-neutral-700"
+                        >
+                            Armação: <span className="text-red-600">*</span>
+                        </label>
+                        <input
+                            onChange={(e) => {
+                                const value = e.target.value;
+                                const regex = /^[A-Za-z0-9\s]+$/;
+                                if (value === "" || regex.test(value)) {
+                                    setVendaArmacao(value);
+                                    setIsInvalidoVendaArmacao(false);
+                                } else {
+                                    setIsInvalidoVendaArmacao(true);
+                                }
+                            }}
+                            value={vendaArmacao || ""}
+                            type="text"
+                            name="vendaArmacao"
+                            maxLength={100}
+                            required
+                            className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${isInvalidoVendaArmacao
+                                ? "outline-red-500 focus:outline-red-500"
+                                : ""
+                                }`}
+                        />
+                    </div>
+
+                    <hr className="w-full my-6 border-t border-neutral-200" />
+
+                    <div className="w-full flex items-center justify-start gap-2 mb-3">
+                        <span className="text-neutral-800 text-xl font-medium">Lentes e Armação</span>
+                    </div>
+
+                    {/* Preço */}
+                    <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
+                        <label className="block font-medium text-sm text-neutral-700">
+                            Preço Total <span className="text-red-600">*</span>
+                        </label>
+                        <input
+                            type="number"
+                            value={preco}
+                            onChange={(e) => setPreco(e.target.value)}
+                            className="peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-blue-400 transition-all"
+                            required
+                        />
+                    </div>
+
+                    {/* Sinal */}
+                    <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
+                        <label className="block font-medium text-sm text-neutral-700">
+                            Sinal (opcional)
+                        </label>
+                        <input
+                            type="number"
+                            value={sinal}
+                            onChange={(e) => setSinal(e.target.value)}
+                            className="peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-blue-400 transition-all"
+                        />
+                    </div>
+
+                    {/* A pagar */}
+                    <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
+                        <label className="block font-medium text-sm text-neutral-700">
+                            Valor a Pagar (opcional)
+                        </label>
+                        <input
+                            type="number"
+                            value={aPagar}
+                            onChange={(e) => setAPagar(e.target.value)}
+                            className="peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-blue-400 transition-all"
+                        />
+                    </div>
+
+                    {/* Observação */}
+                    <div className="w-full mt-3 mb-4 px-3">
+                        <label className="block font-medium text-sm text-neutral-700">
+                            Observações
+                        </label>
+                        <textarea
+                            value={obs}
+                            onChange={(e) => setObs(e.target.value)}
+                            className="peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-blue-400 transition-all"
+                        ></textarea>
+                    </div>
+                </div>
+
+                <div className="w-full flex flex-col mt-5 mb-7 border-t pt-6">
+                    <h4 className="text-neutral-700 font-medium px-3 mb-4 text-lg">Informações de Grau</h4>
+                    <div className="overflow-x-auto">
+                        <table className="min-w-full border text-sm text-left text-neutral-800">
+                            <thead className="bg-neutral-200">
+                                <tr>
+                                    <th className="px-4 py-2 border">Lentes</th>
+                                    <th className="px-4 py-2 border">Olho</th>
+                                    <th className="px-4 py-2 border">Esférico</th>
+                                    <th className="px-4 py-2 border">Cilíndrico</th>
+                                    <th className="px-4 py-2 border">Eixo</th>
+                                    <th className="px-4 py-2 border">ADD</th>
+                                    <th className="px-4 py-2 border">DP / DNP</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {[
+                                    { lente: 'Longe', olho: 'OD' },
+                                    { lente: 'Longe', olho: 'OE' },
+                                    { lente: 'Perto', olho: 'OD' },
+                                    { lente: 'Perto', olho: 'OE' },
+                                ].map((item, index) => (
+                                    <tr key={index} className="bg-white">
+                                        <td className="px-4 py-2 border">{item.lente}</td>
+                                        <td className="px-4 py-2 border">{item.olho}</td>
+                                        <td className="px-2 py-1 border">
+                                            <input type="text" name={`esferico_${item.lente}_${item.olho}`} className="w-full px-2 py-1 border rounded" />
+                                        </td>
+                                        <td className="px-2 py-1 border">
+                                            <input type="text" name={`cilindrico_${item.lente}_${item.olho}`} className="w-full px-2 py-1 border rounded" />
+                                        </td>
+                                        <td className="px-2 py-1 border">
+                                            <input type="text" name={`eixo_${item.lente}_${item.olho}`} className="w-full px-2 py-1 border rounded" />
+                                        </td>
+                                        <td className="px-2 py-1 border">
+                                            <input type="text" name={`add_${item.lente}_${item.olho}`} className="w-full px-2 py-1 border rounded" />
+                                        </td>
+                                        <td className="px-2 py-1 border">
+                                            <input type="text" name={`dp_${item.lente}_${item.olho}`} className="w-full px-2 py-1 border rounded" />
+                                        </td>
+                                    </tr>
+                                ))}
+
+                                {/* Altura Pupilar */}
+                                <tr className="bg-white">
+                                    <td className="px-4 py-2 border" colSpan={6}>Altura Pupilar</td>
+                                    <td className="px-2 py-1 border">
+                                        <input type="text" name="altura_pupilar" className="w-full px-2 py-1 border rounded" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
             </div>
+
         </div>
         <div className="w-60 flex justify-start gap-3 my-9 px-4">
             <BtnActions title="Criar" onClick={handleCriar} color="ativado" />

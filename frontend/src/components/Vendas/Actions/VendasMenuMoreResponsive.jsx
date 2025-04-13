@@ -21,7 +21,7 @@ export const VendasMenuMoreResponsive = ({ currentPage, totalPages, rowsPerPage,
     
     useEffect(() => {
         onVendas(vendas);
-    }, [vendas]);
+    }, [onVendas, vendas]);
 
     const menuMoreVertRef = useRef(null);
     useEffect(() => {

@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import VendasRow from './VendasRow';
-import { searchUserId } from '@/utils/searchUserId';
+import { useUserToken } from '@/utils/useUserToken';
 import { VendasMenuMoreResponsive } from './Actions/VendasMenuMoreResponsive';
 
 const VendasTable = () => {
