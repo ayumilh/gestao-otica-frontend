@@ -31,8 +31,6 @@ export const nextAuthOptions = {
       
           const user = await response.json()
 
-          console.log('RESPOSTA DA API:', user);
-      
           if (user && user.id) return user; // Retorna o usuário se tudo estiver certo
           return null; // Retorna null se não houver usuário ou erro na autenticação
         } catch (error) {

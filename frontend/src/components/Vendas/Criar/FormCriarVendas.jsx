@@ -96,10 +96,8 @@ const FormCriarVendas = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [openFilterCpf, setOpenFilterCpf] = useState(false);
   const [cliente, setCliente] = useState({});
-  const [filtros, setFiltros] = useState({
-    campo: 'cpf',
-    valor: '',
-  });
+  const [campoBusca, setCampoBusca] = useState('cpf'); // ou 'nome'
+  const [filtros, setFiltros] = useState({ campo: 'cpf', valor: '' });
 
   useEffect(() => {
     const regex = /^[0-9]*$/;
@@ -111,11 +109,9 @@ const FormCriarVendas = () => {
   }, [vendaCPF]);
 
   useEffect(() => {
-    setFiltros((prevFiltros) => ({
-      ...prevFiltros,
-      valor: vendaCPF,
-    }));
-  }, [vendaCPF]);
+    setFiltros({ campo: campoBusca, valor: vendaCPF });
+  }, [vendaCPF, campoBusca]);
+
 
   const handleChange = (e) => {
     setOpenFilterCpf(true);
@@ -152,7 +148,7 @@ const FormCriarVendas = () => {
     if (vendaCPF.length === 11) {
       setIsLoading(true);
       try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/clientes/filter`, { params: filtros }); 
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/clientes/filter`, { params: filtros });
         if (response.data.clientes.length === 0) {
           setCliente({});
         } else {
@@ -170,7 +166,7 @@ const FormCriarVendas = () => {
   const handleCriar = async () => {
     console.log(venda);
     try {
-      await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/vendas/cadastrar`, venda) 
+      await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/vendas/cadastrar`, venda)
       router.push('/vendas')
       setStatusRequest(true);
     } catch (error) {
@@ -198,91 +194,53 @@ const FormCriarVendas = () => {
 
   return (<>
     <div className="w-full xl:max-w-screen-lg flex flex-col">
-      {/* <BtnBackPage title="Voltar" /> */}
       <h3 className="text-neutral-800 text-xl font-medium ">
         {vendaData || "Data de venda"} - {vendaNome || "Nome do cliente"}
       </h3>
       <div className='flex flex-wrap my-4 transition-transform duration-500 ease-in'>
-
-        {/* <div className="w-full md:w-2/5 mt-3 mb-4 px-3">
-          <label
-            htmlFor="vendaCNPJ"
-            className="block font-medium text-sm text-neutral-700"
-          >
-            Buscar cliente por CPF:
-          </label>
-          <input
-            type="text"
-            className="peer rounded-sm w-full px-3 py-1 font-medium text-neutral-700 bg-transparent border-transparent border-2 border-b--600 focus:border-b-blue-400 focus:rounded-lg focus:outline outline-transparent focus:outline-transparent transition-all duration-500 ease-out"
-            placeholder="Insira o CNPJ"
-            onChange={(e) => setVendaCPF(e.target.value)}
-          />
-        </div> */}
-
-        {/* cpf */}
+        {/* Buscar client */}
         <div className="w-full mt-3 mb-4 px-3">
-          <label
-            htmlFor="vendaCPF"
-            className="block font-medium text-sm text-neutral-700"
-          >
-            Buscar cliente por CPF: <span className="text-red-600">*</span>
+          <label className="block font-medium text-sm text-neutral-700 mb-1">
+            Buscar cliente por: <span className="text-red-600">*</span>
           </label>
-          <div className="relative">
-            <input
-              onChange={handleChange}
-              onFocus={handleFocus}
-              onClick={handleClick}
-              value={vendaCPF || ""}
-              type="text"
-              name="vendaCPF"
-              maxLength={11}
-              required
-              className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${isInvalidoVendaCPF
-                ? "outline-red-500 focus:outline-red-500"
-                : ""
-                }`}
-            />
-            <button
-              type="button"
-              onClick={filterCpf}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 hover:scale-105 transition duration-500 ease-in-out"
+          <div className="w-full flex items-center gap-2 mb-4 px-3">
+            {/* Select pequeno */}
+            <select
+              value={campoBusca}
+              onChange={(e) => setCampoBusca(e.target.value)}
+              className="border px-2 py-2 rounded text-sm font-medium text-neutral-700 flex-shrink-0 w-auto"
             >
-              <SearchIcon fontSize="small" className="text-neutral-800 hover:text-black" />
-            </button>
-            {openFilterCpf && (
-              <div ref={dropdownRef} className="bg-gray-200 hover:bg-gray-300 focus:bg-gray-400 active:bg-gray-300 border-gray-200 hover:shadow-sm w-full mt-2 hover:rounded-sm min-h-fit flex z-50 absolute px-6 py-3 items-start justify-center transition duration-500 ease-in-out cursor-pointer">
-                <div
-                  className="bg-orange-400 text-white rounded-full mr-2"
-                >
-                  <PersonIcon fontSize="small" className="m-2" />
-                </div>
-                <div className="flex w-full items-center justify-between">
-                  {isLoading ? (
-                    <div className="flex justify-center items-center w-full mt-2">
-                      <CircularProgress size={24} />
-                    </div>
-                  ) : (
-                    <>
-                      console.log(cliente);
-                      {cliente ? (
-                        <>
-                          <span className="font-medium text-neutral-700 text-lg">{cliente.nome}</span>
-                          <span className="font-medium text-neutral-700 text-sm">{cliente.cpf}</span>
-                        </>
-                      ) : (
-                        <div>
-                          <span className="font-medium text-neutral-700 text-lg">Nenhum cliente encontrado</span>
-                          <button onClick={cadastrarCliente} className="ml-2 bg-blue-500 text-white px-4 py-2 rounded">Cadastrar Cliente</button>
-                        </div>
-                      )}
-                    </>
-                  )}
-                </div>
-              </div>
-            )}
+              <option value="cpf">CPF</option>
+              <option value="nome">Nome</option>
+            </select>
+
+            {/* Input que ocupa o restante */}
+            <div className="relative flex-grow">
+              <input
+                onChange={handleChange}
+                onFocus={handleFocus}
+                onClick={handleClick}
+                value={vendaCPF || ""}
+                type="text"
+                name="vendaCPF"
+                placeholder={`Digite o ${campoBusca === "cpf" ? "CPF" : "Nome"}`}
+                maxLength={campoBusca === "cpf" ? 11 : 200}
+                required
+                className={`peer w-full border px-3 py-2 rounded font-medium text-neutral-600 focus:outline-2 outline-blue-400 transition-all duration-300 ${isInvalidoVendaCPF ? "outline-red-500 focus:outline-red-500" : ""}`}
+              />
+              <button
+                type="button"
+                onClick={filterCpf}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 hover:scale-105 transition"
+              >
+                <SearchIcon fontSize="small" className="text-neutral-800 hover:text-black" />
+              </button>
+            </div>
           </div>
 
+
         </div>
+
 
         {/* data */}
         <div className="w-full md:w-1/2 mt-3 mb-4 px-3">

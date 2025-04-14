@@ -22,7 +22,7 @@ const ClientesTable = () => {
         const fetchClientes = async () => {
             try {
                 const response = await axios.get(
-                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/clientes/get`,
+                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/clientes/listar`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`
@@ -99,7 +99,7 @@ const ClientesTable = () => {
                         <th className="px-4 py-3 md:py-4 text-sm font-semibold text-start text-neutral-800 dark:text-slate-50">CPF</th>
                         <th className="px-4 py-3 md:py-4 text-sm font-semibold text-start text-neutral-800 dark:text-slate-50">Telefone</th>
                         <th className="px-4 py-3 md:py-4 text-sm font-semibold text-start text-neutral-800 dark:text-slate-50">Endereço</th>
-                        <th className="pl-4 pr-6 py-3 md:py-4"></th>
+                        {/* <th className="pl-4 pr-6 py-3 md:py-4"></th> */}
                     </tr>
                 </thead>
                 <tbody>

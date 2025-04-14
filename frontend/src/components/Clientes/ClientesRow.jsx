@@ -6,7 +6,7 @@ import { useUserToken } from '@/utils/useUserToken';
 import ProductionQuantityLimitsIcon from '@mui/icons-material/ProductionQuantityLimits';
 import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
 import SkeletonLoader from "@/components/Geral/SkeletonTableRow"
-import ModalEditarClientes from './Editar/ModalEditarClientes';
+// import ModalEditarClientes from './Editar/ModalEditarClientes';
 import axios from 'axios';
 
 export default function ClientesRow({ clientes, setIsOpenModalGrau, setGrauData, setSelectedCPF }) {
@@ -27,10 +27,8 @@ export default function ClientesRow({ clientes, setIsOpenModalGrau, setGrauData,
 
 
     const handleButtonClick = (cliente) => {
-        console.log("cliente", cliente);
         try {
-            Cookies.set('selectedCliente', cliente);
-            router.push('/clientes/editar');
+            router.push(`/clientes/editar?cpf=${cliente}`);
         } catch (error) {
             console.error(`Error: ${error}`);
         }
@@ -65,15 +63,15 @@ export default function ClientesRow({ clientes, setIsOpenModalGrau, setGrauData,
             <SkeletonLoader numColumns={6} />
         ) : clientes.length > 0 ? (
             clientes.map((cliente, index) => (
-                <tr key={index} onClick={() => handleRowClick(cliente.cpf)} className="cursor-pointer border-t border-zinc-100 hover:bg-gray-200 dark:bg-primaria-900 dark:hover:bg-primaria-800 dark:border-zinc-800">
+                <tr key={index} onClick={() => handleButtonClick(cliente.cpf)} className="cursor-pointer border-t border-zinc-100 hover:bg-gray-200 dark:bg-primaria-900 dark:hover:bg-primaria-800 dark:border-zinc-800">
                     <td className="px-4 py-4 md:py-5 text-end whitespace-nowrap">
                         <div className="text-sm text-neutral-800 dark:text-slate-50">{cliente.id}</div>
                     </td>
                     <td className="px-4 py-4 md:py-5 text-start whitespace-nowrap">
-                        <div className="text-sm text-neutral-800 dark:text-slate-50">{cliente.nome}</div>
+                        <div className="text-sm text-neutral-800 dark:text-slate-50 font-semibold">{cliente.nome}</div>
                     </td>
                     <td className="px-4 py-4 md:py-5 text-start whitespace-nowrap">
-                        <div className="text-sm font-medium text-neutral-800 dark:text-slate-50">{cliente.cpf}</div>
+                        <div className="text-sm text-neutral-800 dark:text-slate-50">{cliente.cpf}</div>
                     </td>
                     <td className="px-4 py-4 md:py-5 text-start whitespace-nowrap">
                         <div className="text-sm text-neutral-800 dark:text-slate-50">{cliente.telefone}</div>
@@ -88,7 +86,6 @@ export default function ClientesRow({ clientes, setIsOpenModalGrau, setGrauData,
                         >
                             <ModeEditOutlineIcon className="mr-1 h-4 md:h-5 w-4 md:w-5" />
                         </button>
-                        <ModalEditarClientes isOpen={isOpen} onToggle={toggleDrawer} />
                     </td> */}
                 </tr>
             ))

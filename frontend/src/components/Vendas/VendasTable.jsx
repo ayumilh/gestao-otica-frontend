@@ -1,8 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import VendasRow from './VendasRow';
-import { useUserToken } from '@/utils/useUserToken';
 import { VendasMenuMoreResponsive } from './Actions/VendasMenuMoreResponsive';
 
 const VendasTable = () => {
@@ -12,7 +10,6 @@ const VendasTable = () => {
     const [vendas, setVendas] = useState([]);
 
     const handleVendasUpdate = (newVendas) => {
-        console.log('Vendas recebidas:', newVendas);
         setVendas(newVendas);
         setTotalPages(Math.ceil(newVendas.length / rowsPerPage));
     };
@@ -58,7 +55,7 @@ const VendasTable = () => {
                 <thead>
                     <tr>
                         <th className="px-4 py-3 md:py-4 text-sm font-semibold text-end text-neutral-800 dark:text-slate-50">Código</th>
-                        <th className="px-4 py-3 md:py-4 text-sm font-semibold text-start text-neutral-800 dark:text-slate-50">CPF</th>
+                        <th className="px-4 py-3 md:py-4 text-sm font-semibold text-start text-neutral-800 dark:text-slate-50">Cliente</th>
                         <th className="px-4 py-3 md:py-4 text-sm font-semibold text-start text-neutral-800 dark:text-slate-50">Lentes</th>
                         <th className="px-4 py-3 md:py-4 text-sm font-semibold text-start text-neutral-800 dark:text-slate-50">Armação</th>
                         <th className="px-4 py-3 md:py-4 text-sm font-semibold text-end text-neutral-800 dark:text-slate-50">Preço</th>
@@ -66,8 +63,8 @@ const VendasTable = () => {
                         <th className="px-4 py-3 md:py-4 text-sm font-semibold text-start text-neutral-800 dark:text-slate-50">A_Pagar</th>
                         <th className="pr-4 pl-6 py-3 md:py-4 text-sm font-semibold text-end text-neutral-800 dark:text-slate-50">Data</th>
                         <th className="px-4 py-3 md:py-4 text-sm font-semibold text-start text-neutral-800 dark:text-slate-50">Entrega</th>
-                        <th className="px-4 py-3 md:py-4 text-sm font-semibold text-start text-neutral-800 dark:text-slate-50">Obs</th>
-                        <th className="pl-4 pr-6 py-3 md:py-4"></th>
+                        {/* <th className="px-4 py-3 md:py-4 text-sm font-semibold text-start text-neutral-800 dark:text-slate-50">Obs</th> */}
+                        {/* <th className="pl-4 pr-6 py-3 md:py-4"></th> */}
                     </tr>
                 </thead>
                 <tbody>

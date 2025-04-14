@@ -15,7 +15,7 @@ const FormCriarOs = () => {
 
     // variáveis para os dados do cliente
     const [cli_nome, setCli_nome] = useState("");
-    const [cli_cpf, setCli_cpf] = useState("");
+    const [cli_cpf, setCli_cpf] = useState(null);
     const [cli_endereco, setCli_endereco] = useState("");
     const [cli_numero, setCli_numero] = useState("");
     const [cli_complemento, setCli_complemento] = useState(null);
@@ -201,6 +201,7 @@ const FormCriarOs = () => {
     };
 
     const handleSalvarCliente = async () => {
+        console.log("Salvando cliente:", cliente);
         try {
             await axios.post(
                 `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/clientes/cadastrar`,
@@ -350,7 +351,7 @@ const FormCriarOs = () => {
                             htmlFor="cli_cpf"
                             className="block font-medium text-sm text-neutral-700"
                         >
-                            CPF <span className="text-red-600">*</span>
+                            CPF
                         </label>
                         <input
                             onChange={handleCpfChange}
@@ -358,7 +359,6 @@ const FormCriarOs = () => {
                             name="cli_cpf"
                             type="text"
                             maxLength={11}
-                            required
                             className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${isInvalidoClienteCpf
                                 ? "outline-red-500 focus:outline-red-500"
                                 : ""

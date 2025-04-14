@@ -11,9 +11,9 @@ const LucrosContent = () => {
           <NavbarMobile />
           <TitlePage title='Lucros'/>
         </div>
-        <div>
+        {/* <div>
           <BtnAtivado title='Novo Lucro' onClick="/lucros/criar" page="/lucros/criar" size="sm"/>
-        </div>
+        </div> */}
       </div>
       <div className="w-full flex flex-col items-center" style={{height: '850px'}}>
         <LucrosTable />

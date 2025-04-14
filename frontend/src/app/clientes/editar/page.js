@@ -1,22 +1,35 @@
 import { redirect } from 'next/navigation';
-import { nextAuthOptions } from '@/utils/nextAuthOptions';
-import { getServerSession } from 'next-auth';
 import FormEditarClientes from '@/components/Clientes/Editar/FormEditarClientes';
-import BtnBackPage from '@/components/Geral/Button/BtnBackPage';
 
-export default async function Editar() {
-  const session = await getServerSession(nextAuthOptions)
-  if(!session) {
-    redirect('/login')
+import { checkSession } from '@/utils/checkSession';
+
+import BtnBackPage from '@/components/Geral/Button/BtnBackPage';
+import NavbarMobile from '@/components/Navbar/Mobile/NavbarMobile';
+import NavbarContent from "@/components/Navbar/NavbarContent";
+
+export default async function Editar({ searchParams }) {
+  const session = await checkSession();
+
+  const cliCpf = searchParams?.cpf;
+
+  if (!cliCpf) {
+    redirect('/clientes');
   }
 
   return (
-    <main className="px-4 pt-4 lg:px-6 mx-auto flex flex-col items-center">
-      <div className="w-full xl:max-w-[1300px] flex justify-between items-center h-12 mb-6 md:mb-8 lg:mb-10">
-        <BtnBackPage title="Editar Clientes" modal={false} />
+    <div className="w-full flex flex-col lg:flex-row px-4 mt-4">
+      <div className="flex items-center">
+        <NavbarMobile />
+        <NavbarContent />
       </div>
 
-      <FormEditarClientes />
-    </main>
+      <div className='w-full flex flex-col justify-center lg:px-0 lg:mx-4 lg:mt-4 xl:mx-8'>
+        <BtnBackPage title="Editar Clientes" />
+        <div className="w-full flex flex-col items-center mt-6 md:mt-10">
+
+          <FormEditarClientes cliCpf={cliCpf} />
+        </div>
+      </div>
+    </div>
   );
 }
