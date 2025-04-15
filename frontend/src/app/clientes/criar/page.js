@@ -18,7 +18,7 @@ export default async function Criar() {
       </div>
       
       <div className='w-full flex flex-col justify-center lg:px-0 lg:mx-4 lg:mt-4 xl:mx-8'>
-        <BtnBackPage title="Voltar" />
+        <BtnBackPage title="Criar cliente" />
         <div className="w-full flex flex-col items-center mt-6 md:mt-10">
           <FormCriarClientes />
         </div>

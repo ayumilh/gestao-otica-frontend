@@ -33,11 +33,6 @@ const FormCriarClientes = () => {
 
     const [alturaPupilar, setAlturaPupilar] = useState("");
 
-    // variáveis para controlar a exibição das seções
-    const [showLentesArmacao, setShowLentesArmacao] = useState(false);
-    const [showVendaDetails, setShowVendaDetails] = useState(false);
-    const [showGrauSection, setShowGrauSection] = useState(false);
-
     const [errorsInput, setErrorsInput] = useState({});
 
     const cliente = {
@@ -55,9 +50,6 @@ const FormCriarClientes = () => {
     const [isInvalidoClienteNumero, setIsInvalidoClienteNumero] = useState(false);
     const [isInvalidoClienteComplemento, setIsInvalidoClienteComplemento] = useState(false);
     const [isInvalidoClienteTelefone, setIsInvalidoClienteTelefone] = useState(false);
-
-    const [isInvalidoVendaLentes, setIsInvalidoVendaLentes] = useState(false);
-    const [isInvalidoVendaArmacao, setIsInvalidoVendaArmacao] = useState(false);
 
     const [statusRequest, setStatusRequest] = useState("");
     const router = useRouter();
@@ -212,6 +204,10 @@ const FormCriarClientes = () => {
                 }
             );
             setStatusRequest(true);
+            setTimeout(() => {
+                setStatusRequest("");
+                router.push("/clientes");
+            }, 2000);
         } catch (error) {
             setStatusRequest(false);
         }
@@ -350,7 +346,7 @@ const FormCriarClientes = () => {
                             htmlFor="cli_cpf"
                             className="block font-medium text-sm text-neutral-700"
                         >
-                            CPF <span className="text-red-600">*</span>
+                            CPF 
                         </label>
                         <input
                             onChange={handleCpfChange}
@@ -358,7 +354,6 @@ const FormCriarClientes = () => {
                             name="cli_cpf"
                             type="text"
                             maxLength={11}
-                            required
                             className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${isInvalidoClienteCpf
                                 ? "outline-red-500 focus:outline-red-500"
                                 : ""

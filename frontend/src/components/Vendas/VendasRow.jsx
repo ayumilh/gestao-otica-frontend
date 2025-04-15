@@ -23,21 +23,21 @@ export default function VendasRow({ vendas }) {
 
     const handleButtonClick = (venda) => {
         try {
-            router.push(`/vendas/editar?cpf=${venda}`);
+            router.push(`/vendas/editar?id=${venda}`);
         } catch (error) {
             console.error(`Error: ${error}`);
         }
     }
+    console.log(vendas)
 
     return (<>
         {isLoading ? (
             <SkeletonLoader numColumns={11} />
         ) : vendas.length > 0 ? (
-            console.log(vendas),
             vendas.map((venda, index) => (
-                <tr key={index} onClick={() => handleButtonClick(venda.cpf)} className="cursor-pointer border-t border-zinc-100 hover:bg-gray-200 dark:bg-primaria-900 dark:hover:bg-primaria-800 dark:border-zinc-800">
+                <tr key={index} onClick={() => handleButtonClick(venda.clienteId)} className="cursor-pointer border-t border-zinc-100 hover:bg-gray-200 dark:bg-primaria-900 dark:hover:bg-primaria-800 dark:border-zinc-800">
                     <td className="px-4 py-4 md:py-5 text-end whitespace-nowrap">
-                        <div className="text-sm text-neutral-800 dark:text-slate-50">{venda.id}</div>
+                        <div className="text-sm text-neutral-800 dark:text-slate-50">{venda.clienteId}</div>
                     </td>
                     <td className="px-4 py-4 md:py-5 text-start whitespace-nowrap">
                         <div className="text-sm text-neutral-800 dark:text-slate-50 font-semibold">{venda.cliente?.nome}</div>

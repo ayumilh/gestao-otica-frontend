@@ -28,42 +28,18 @@ export default function ClientesRow({ clientes, setIsOpenModalGrau, setGrauData,
 
     const handleButtonClick = (cliente) => {
         try {
-            router.push(`/clientes/editar?cpf=${cliente}`);
+            router.push(`/clientes/editar?id=${cliente}`);
         } catch (error) {
             console.error(`Error: ${error}`);
         }
     }
-
-    const handleRowClick = async (cpf) => {
-        try {
-            const res = await axios.get(
-                `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/graus/listar?cpf=${cpf}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
-            const data = res.data;
-
-            if (data) {
-                setGrauData(data);
-                setSelectedCPF(cpf);
-                setIsOpenModalGrau(true);
-            } else {
-                alert("Não foi possível buscar os dados do grau.");
-            }
-        } catch (err) {
-            console.error("Erro:", err);
-        }
-    };
 
     return (<>
         {isLoading ? (
             <SkeletonLoader numColumns={6} />
         ) : clientes.length > 0 ? (
             clientes.map((cliente, index) => (
-                <tr key={index} onClick={() => handleButtonClick(cliente.cpf)} className="cursor-pointer border-t border-zinc-100 hover:bg-gray-200 dark:bg-primaria-900 dark:hover:bg-primaria-800 dark:border-zinc-800">
+                <tr key={index} onClick={() => handleButtonClick(cliente.id)} className="cursor-pointer border-t border-zinc-100 hover:bg-gray-200 dark:bg-primaria-900 dark:hover:bg-primaria-800 dark:border-zinc-800">
                     <td className="px-4 py-4 md:py-5 text-end whitespace-nowrap">
                         <div className="text-sm text-neutral-800 dark:text-slate-50">{cliente.id}</div>
                     </td>

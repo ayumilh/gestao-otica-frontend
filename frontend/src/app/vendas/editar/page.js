@@ -11,10 +11,10 @@ import FormEditarVendas from '@/components/Vendas/Editar/FormEditarVendas';
 export default async function Editar({ searchParams }) {
   const session = await checkSession();
 
-  const cliCpf = searchParams?.cpf;
+  const cliId = searchParams?.id;
 
-  if (!cliCpf) {
-    redirect('/clientes');
+  if (!cliId) {
+    redirect('/vendas');
   }
 
   return (
@@ -28,7 +28,7 @@ export default async function Editar({ searchParams }) {
         <BtnBackPage title="Editar Venda" />
         <div className="w-full flex flex-col items-center mt-6 md:mt-10">
 
-          <FormEditarVendas cliCpf={cliCpf} />
+          <FormEditarVendas cliId={cliId} />
         </div>
       </div>
     </div>

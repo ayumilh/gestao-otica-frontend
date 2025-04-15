@@ -1,15 +1,20 @@
 'use client'
 import { useState, useEffect, useRef, useCallback } from "react";
 import axios from "axios";
+import { useUserToken } from "@/utils/useUserToken";
 import BtnActions from "@/components/Geral/Button/BtnActions";
 import SearchIcon from '@mui/icons-material/Search';
 import PersonIcon from '@mui/icons-material/Person';
 import CircularProgress from '@mui/material/CircularProgress';
 import SuccessNotification from "@/components/Geral/Notification/SuccessNotification";
 import ErrorNotification from "@/components/Geral/Notification/ErrorNotification";
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { useRouter } from "next/navigation";
 
 const FormCriarVendas = () => {
+  const { token } = useUserToken();
+  const router = useRouter();
   const [vendaData, setVendaData] = useState(null);
   const [vendaEntrega, setVendaEntrega] = useState(null);
   const [vendaNome, setVendaNome] = useState('');
@@ -23,10 +28,26 @@ const FormCriarVendas = () => {
   const [vendaSinal, setVendaSinal] = useState(0.00);
   const [vendaApagar, setVendaApagar] = useState(0.00);
   const [vendaObs, setVendaObs] = useState('');
+  const [vendaId, setVendaId] = useState(null);
+
+  const [alturaPupilar, setAlturaPupilar] = useState("");
+
+  // busca do cliente
+  const [isLoading, setIsLoading] = useState(false);
+  const [openFilterCpf, setOpenFilterCpf] = useState(false);
+  const [cliente, setCliente] = useState({});
+  const [clienteId, setClienteId] = useState(null);
+
+  const [campoBusca, setCampoBusca] = useState('cpf'); // ou 'nome'
+  const [filtros, setFiltros] = useState({ campo: 'cpf', valor: '' });
+
+  const [showLentesArmacao, setShowLentesArmacao] = useState(false);
+
 
   const venda = {
     data: vendaData,
     entrega: vendaEntrega,
+    clienteId: clienteId,
     cpf: vendaCPF,
     lentes: vendaLentes,
     armacao: vendaArmacao,
@@ -50,54 +71,8 @@ const FormCriarVendas = () => {
   const [isInvalidoVendaApagar, setIsInvalidoVendaApagar] = useState(false);
   const [isInvalidoVendaObs, setIsInvalidoVendaObs] = useState(false);
 
-
   const [statusRequest, setStatusRequest] = useState('');
-  const [secaoAtiva, setSecaoAtiva] = useState("dadosPessoais");
-  const router = useRouter();
 
-  const buscarCNPJ = async (cnpj) => {
-    try {
-      const response = await axios.post(`https://pos-backend-six.vercel.app/api/utils/cnpj`, { cnpj });
-      if (response.data.data === null) {
-        alert('CNPJ não encontrado!');
-        return;
-      } else {
-        setVendaData(response.data.data.nome);
-        setVendaArmacao(response.data.data.Armacao);
-
-        const cepFormatado = response.data.data.cep.replace(/[.-]/g, '');
-        setFunc_cep(cepFormatado);
-        setVendaApagar(response.data.data.complemento);
-        setVendaSinal(response.data.data.Preco);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const buscarCEP = async (cep) => {
-    try {
-      const response = await axios.post(`https://pos-backend-six.vercel.app/api/utils/cep`, { cep });
-      if (response.data.data === null) {
-        alert('CEP não encontrado!');
-        return;
-      } else {
-        setVendaPreco(response.data.data.logradouro);
-        setVendaObs(response.data.data.Sinal);
-        setFunc_Apagar(response.data.data.localidade);
-        setFunc_Obs(response.data.data.uf);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  // busca do cliente
-  const [isLoading, setIsLoading] = useState(false);
-  const [openFilterCpf, setOpenFilterCpf] = useState(false);
-  const [cliente, setCliente] = useState({});
-  const [campoBusca, setCampoBusca] = useState('cpf'); // ou 'nome'
-  const [filtros, setFiltros] = useState({ campo: 'cpf', valor: '' });
 
   useEffect(() => {
     const regex = /^[0-9]*$/;
@@ -114,19 +89,30 @@ const FormCriarVendas = () => {
 
 
   const handleChange = (e) => {
+    const value = e.target.value;
     setOpenFilterCpf(true);
-    const value = e.target.value.replace(/\D/g, '');
-    setVendaCPF(value);
-    setFiltros((prevFiltros) => ({
-      ...prevFiltros,
-      valor: value,
-    }));
+  
     if (value === "") {
       setCliente(null);
+      setClienteId(null); // limpa também o ID do cliente
+      setVendaCPF(""); // limpa o campo
+      setFiltros({ campo: campoBusca, valor: "" });
       setIsLoading(false);
-      setOpenFilterCpf(false);
+      return;
     }
+  
+    if (campoBusca === 'cpf') {
+      const somenteNumeros = value.replace(/\D/g, '');
+      setVendaCPF(somenteNumeros);
+      setFiltros({ campo: 'cpf', valor: somenteNumeros });
+    } else {
+      setVendaCPF(value); // <- reusando mesmo campo para busca por nome
+      setFiltros({ campo: 'nome', valor: value });
+    }
+  
+    setIsLoading(true);
   };
+  
 
   const handleClick = async () => {
     setOpenFilterCpf(true);
@@ -136,42 +122,102 @@ const FormCriarVendas = () => {
     setIsLoading(true);
   };
 
-  const cadastrarCliente = async () => {
-    try {
-      console.log('Cadastrar cliente');
-    } catch (error) {
-      console.error('Erro ao cadastrar cliente:', error);
-    }
-  };
-
   const filterCpf = useCallback(async () => {
-    if (vendaCPF.length === 11) {
-      setIsLoading(true);
-      try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/clientes/filter`, { params: filtros });
-        if (response.data.clientes.length === 0) {
-          setCliente({});
-        } else {
-          setCliente(response.data.clientes[0]);
-        }
-      } catch (error) {
+    if (!vendaCPF || vendaCPF.length < 2) return;
+
+    setIsLoading(true);
+    try {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/clientes/filter`, { params: filtros });
+      if (response.data.clientes.length === 0) {
         setCliente({});
-      } finally {
-        setIsLoading(false);
+      } else {
+        setCliente(response.data.clientes[0]);
+        setClienteId(response.data.clientes[0].id);
       }
+    } catch (error) {
+      console.error("Erro ao buscar cliente", error);
+      setCliente({});
+    } finally {
+      setIsLoading(false);
     }
-  }, [filtros, vendaCPF.length]);
+  }, [filtros, vendaCPF]);
 
 
   const handleCriar = async () => {
-    console.log(venda);
-    try {
-      await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/vendas/cadastrar`, venda)
-      router.push('/vendas')
-      setStatusRequest(true);
-    } catch (error) {
-      setStatusRequest(false);
+    if (!clienteId) {
+      alert("Selecione um cliente válido.");
+      return;
     }
+  
+    const grauData = [];
+  
+    const lentesTipos = ['Longe', 'Perto'];
+    const olhos = ['OD', 'OE'];
+  
+    lentesTipos.forEach((lente) => {
+      olhos.forEach((olho) => {
+        const esferico = document.querySelector(`[name=esferico_${lente}_${olho}]`)?.value || "";
+        const cilindrico = document.querySelector(`[name=cilindrico_${lente}_${olho}]`)?.value || "";
+        const eixo = document.querySelector(`[name=eixo_${lente}_${olho}]`)?.value || "";
+        const add = document.querySelector(`[name=add_${lente}_${olho}]`)?.value || "";
+        const dp = document.querySelector(`[name=dp_${lente}_${olho}]`)?.value || "";
+  
+        // Só adiciona se algum campo tiver valor
+        if (esferico || cilindrico || eixo || add || dp) {
+          grauData.push({
+            lente,
+            olho,
+            esferico,
+            cilindrico,
+            eixo,
+            add,
+            dp
+          });
+        }
+      });
+    });
+  
+    const payload = {
+      data: vendaData,
+      entrega: vendaEntrega,
+      clienteId,
+      clienteCpf: vendaCPF,
+      lentes: vendaLentes,
+      armacao: vendaArmacao,
+      preco: parseFloat(vendaPreco),
+      sinal: vendaSinal ? parseFloat(vendaSinal) : null,
+      a_pagar: parseFloat(vendaApagar),
+      obs: vendaObs,
+      alturaPupilar,
+      graus: grauData
+    };
+    console.log("Payload:", payload);
+  
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/vendas/criar-com-grau`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(payload)
+      });
+  
+      const result = await response.json();
+  
+      if (!response.ok) throw new Error(result.message);
+  
+      alert(result.message);
+      router.push('/vendas');
+    } catch (error) {
+      console.error(error);
+      alert("Erro ao cadastrar a venda.");
+    }
+  };
+  
+
+  const cadastrarCliente = async () => {
+    router.push('/clientes/cadastrar')
   }
 
   useEffect(() => {
@@ -222,7 +268,7 @@ const FormCriarVendas = () => {
                 onClick={handleClick}
                 value={vendaCPF || ""}
                 type="text"
-                name="vendaCPF"
+                name="vendaBusca"
                 placeholder={`Digite o ${campoBusca === "cpf" ? "CPF" : "Nome"}`}
                 maxLength={campoBusca === "cpf" ? 11 : 200}
                 required
@@ -237,8 +283,64 @@ const FormCriarVendas = () => {
               </button>
             </div>
           </div>
-
-
+          {openFilterCpf && (
+            <div
+              ref={dropdownRef}
+              className="bg-gray-100 shadow-lg rounded-md w-full max-w-lg absolute z-50 mt-1 p-3"
+            >
+              {isLoading ? (
+                <div className="flex justify-center items-center">
+                  <CircularProgress size={24} />
+                </div>
+              ) : cliente && cliente.nome ? (
+                <div
+                onClick={() => {
+                  const c = cliente;
+                  if (!c?.id) {
+                    alert("Cliente inválido");
+                    return;
+                  }
+                
+                  setVendaNome(c.nome);
+                  setVendaCPF(c.cpf);
+                  setVendaTelefone(c.telefone);
+                  setVendaEndereco(c.endereco);
+                  setVendaComplemento(c.complemento);
+                  setClienteId(c.id); // ESSENCIAL
+                  setOpenFilterCpf(false);
+                
+                  console.log("Cliente ID selecionado:", c.id);
+                }}
+                  className="cursor-pointer flex gap-3 items-center hover:bg-gray-200 transition rounded p-2"
+                >
+                  <div className="bg-orange-400 text-white rounded-full p-2">
+                    <PersonIcon fontSize="small" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-base font-semibold text-neutral-800">
+                      {cliente.nome}
+                    </span>
+                    <span className="text-sm text-neutral-600">
+                      CPF: {cliente.cpf}
+                    </span>
+                    <span className="text-sm text-neutral-600">
+                      Tel: {cliente.telefone}
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-sm text-neutral-600">
+                  Nenhum cliente encontrado.
+                  <button
+                    onClick={cadastrarCliente}
+                    className="ml-2 bg-orange-500 text-white px-3 py-1 rounded text-xs"
+                  >
+                    Cadastrar novo
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
 
@@ -283,196 +385,144 @@ const FormCriarVendas = () => {
           />
         </div>
 
-        {/* nome */}
-        {/* <div className="w-full md:w-3/5 mt-3 mb-4 px-3">
-          <label
-            htmlFor="vendaNome"
-            className="block font-medium text-sm text-neutral-700"
-          >
-            Nome: <span className="text-red-600">*</span>
-          </label>
-          <input
-            onChange={(e) => {
-              const value = e.target.value;
-              const regex = /^[A-Za-z0-9\s]+$/;
-              if (value === "" || regex.test(value)) {
-                setVendaNome(value);
-                setIsInvalidoVendaNome(false);
-              } else {
-                setIsInvalidoVendaNome(true);
-              }
-            }}
-            value={vendaNome || ""}
-            type="text"
-            name="vendaNome"
-            maxLength={200}
-            required
-            className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${isInvalidoVendaNome
-              ? "outline-red-500 focus:outline-red-500"
-              : ""
-              }`}
-          />
-        </div> */}
-
-        {/* telefone */}
-        {/* <div className="w-full md:w-2/5 mt-3 mb-4 px-3">
-          <label
-            htmlFor="vendaTelefone"
-            className="block font-medium text-sm text-neutral-700"
-          >
-            Telefone: <span className="text-red-600">*</span>
-          </label>
-          <input
-            type="text"
-            name="vendaTelefone"
-            onChange={(e) => {
-              const value = e.target.value;
-              const regex = /^[0-9]*$/;
-              if (value === "" || regex.test(value)) {
-                setVendaTelefone(value);
-                setIsInvalidoVendaTelefone(false);
-              } else {
-                setIsInvalidoVendaTelefone(true);
-              }
-            }}
-            value={vendaTelefone || ""}
-            maxLength={11}
-            required
-            className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${isInvalidoVendaTelefone
-              ? "outline-red-500 focus:outline-red-500"
-              : ""
-              }`}
-          />
-        </div> */}
-
-        {/* endereco */}
-        {/* <div className="w-full md:w-3/5 mt-3 mb-4 px-3">
-          <label
-            htmlFor="vendaEndereco"
-            className="block font-medium text-sm text-neutral-700"
-          >
-            Endereço: <span className="text-red-600">*</span>
-          </label>
-          <input
-            onChange={(e) => {
-              const value = e.target.value;
-              const regex = /^[A-Za-z0-9\s]+$/;
-              if (value === "" || regex.test(value)) {
-                setVendaEndereco(value);
-                setIsInvalidoVendaEndereco(false);
-              } else {
-                setIsInvalidoVendaEndereco(true);
-              }
-            }}
-            value={vendaEndereco || ""}
-            type="text"
-            name="vendaEndereco"
-            maxLength={200}
-            required
-            className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${isInvalidoVendaEndereco
-              ? "outline-red-500 focus:outline-red-500"
-              : ""
-              }`}
-          />
-        </div> */}
-
-        {/* complemento */}
-        {/* <div className="w-full md:w-2/5 mt-3 mb-4 px-3">
-          <label
-            htmlFor="vendaComplemento"
-            className="block font-medium text-sm text-neutral-700"
-          >
-            Complemento:
-          </label>
-          <input
-            onChange={(e) => {
-              const value = e.target.value;
-              const regex = /^[A-Za-z0-9\s]+$/;
-              if (value === "" || regex.test(value)) {
-                setVendaComplemento(value);
-                setIsInvalidoVendaComplemento(false);
-              } else {
-                setIsInvalidoVendaComplemento(true);
-              }
-            }}
-            value={vendaComplemento || ""}
-            type="text"
-            name="vendaComplemento"
-            maxLength={100}
-            className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${isInvalidoVendaComplemento
-              ? "outline-red-500 focus:outline-red-500"
-              : ""
-              }`}
-          />
-        </div> */}
-
-        <hr className="w-full my-6 border-t border-neutral-200" />
-
-        {/* lentes */}
-        <div className="w-full mt-3 mb-4 px-3">
-          <label
-            htmlFor="vendaLentes"
-            className="block font-medium text-sm text-neutral-700"
-          >
-            Lentes <span className="text-red-600">*</span>
-          </label>
-          <input
-            onChange={(e) => {
-              const value = e.target.value;
-              const regex = /^[A-Za-z0-9\s]+$/;
-              if (value === "" || regex.test(value)) {
-                setVendaLentes(value);
-                setIsInvalidoVendaLentes(false);
-              } else {
-                setIsInvalidoVendaLentes(true);
-              }
-            }}
-            value={vendaLentes || ""}
-            type="text"
-            name="vendaLentes"
-            maxLength={100}
-            required
-            className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${isInvalidoVendaLentes
-              ? "outline-red-500 focus:outline-red-500"
-              : ""
-              }`}
-          />
+        {/* Seção de lentes e armação */}
+        <div
+          className="w-full flex mt-5 mb-7 border-t pt-6 cursor-pointer"
+          onClick={() => setShowLentesArmacao(!showLentesArmacao)}
+        >
+          <span className="text-neutral-800 text-xl font-medium">Lentes e Armação</span>
+          {showLentesArmacao ? (
+            <KeyboardArrowUpIcon className="text-neutral-600" />
+          ) : (
+            <KeyboardArrowDownIcon className="text-neutral-600" />
+          )}
         </div>
+        {showLentesArmacao && (
+          <>
+            {/* lentes */}
+            <div className="w-full mt-3 mb-4 px-3">
+              <label
+                htmlFor="vendaLentes"
+                className="block font-medium text-sm text-neutral-700"
+              >
+                Lentes <span className="text-red-600">*</span>
+              </label>
+              <input
+                onChange={(e) => {
+                  const value = e.target.value;
+                  const regex = /^[A-Za-z0-9\s]+$/;
+                  if (value === "" || regex.test(value)) {
+                    setVendaLentes(value);
+                    setIsInvalidoVendaLentes(false);
+                  } else {
+                    setIsInvalidoVendaLentes(true);
+                  }
+                }}
+                value={vendaLentes || ""}
+                type="text"
+                name="vendaLentes"
+                maxLength={100}
+                required
+                className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${isInvalidoVendaLentes ? "outline-red-500 focus:outline-red-500" : ""
+                  }`}
+              />
+            </div>
 
-        {/* armação */}
-        <div className="w-full mt-3 mb-4 px-3">
-          <label
-            htmlFor="vendaArmacao"
-            className="block font-medium text-sm text-neutral-700"
-          >
-            Armação: <span className="text-red-600">*</span>
-          </label>
-          <input
-            onChange={(e) => {
-              const value = e.target.value;
-              const regex = /^[A-Za-z0-9\s]+$/;
-              if (value === "" || regex.test(value)) {
-                setVendaArmacao(value);
-                setIsInvalidoVendaArmacao(false);
-              } else {
-                setIsInvalidoVendaArmacao(true);
-              }
-            }}
-            value={vendaArmacao || ""}
-            type="text"
-            name="vendaArmacao"
-            maxLength={100}
-            required
-            className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${isInvalidoVendaArmacao
-              ? "outline-red-500 focus:outline-red-500"
-              : ""
-              }`}
-          />
-        </div>
+            {/* armação */}
+            <div className="w-full mt-3 mb-4 px-3">
+              <label
+                htmlFor="vendaArmacao"
+                className="block font-medium text-sm text-neutral-700"
+              >
+                Armação: <span className="text-red-600">*</span>
+              </label>
+              <input
+                onChange={(e) => {
+                  const value = e.target.value;
+                  const regex = /^[A-Za-z0-9\s]+$/;
+                  if (value === "" || regex.test(value)) {
+                    setVendaArmacao(value);
+                    setIsInvalidoVendaArmacao(false);
+                  } else {
+                    setIsInvalidoVendaArmacao(true);
+                  }
+                }}
+                value={vendaArmacao || ""}
+                type="text"
+                name="vendaArmacao"
+                maxLength={100}
+                required
+                className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${isInvalidoVendaArmacao ? "outline-red-500 focus:outline-red-500" : ""
+                  }`}
+              />
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="min-w-full border text-sm text-left text-neutral-800">
+                <thead className="bg-neutral-200">
+                  <tr>
+                    <th className="px-4 py-2 border">Lentes</th>
+                    <th className="px-4 py-2 border">Olho</th>
+                    <th className="px-4 py-2 border">Esférico</th>
+                    <th className="px-4 py-2 border">Cilíndrico</th>
+                    <th className="px-4 py-2 border">Eixo</th>
+                    <th className="px-4 py-2 border">ADD</th>
+                    <th className="px-4 py-2 border">DP / DNP</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    { lente: 'Longe', olho: 'OD' },
+                    { lente: 'Longe', olho: 'OE' },
+                    { lente: 'Perto', olho: 'OD' },
+                    { lente: 'Perto', olho: 'OE' },
+                  ].map((item, index) => (
+                    <tr key={index} className="bg-white">
+                      <td className="px-4 py-2 border">{item.lente}</td>
+                      <td className="px-4 py-2 border">{item.olho}</td>
+                      <td className="px-2 py-1 border">
+                        <input type="text" name={`esferico_${item.lente}_${item.olho}`} className="w-full px-2 py-1 border rounded" />
+                      </td>
+                      <td className="px-2 py-1 border">
+                        <input type="text" name={`cilindrico_${item.lente}_${item.olho}`} className="w-full px-2 py-1 border rounded" />
+                      </td>
+                      <td className="px-2 py-1 border">
+                        <input type="text" name={`eixo_${item.lente}_${item.olho}`} className="w-full px-2 py-1 border rounded" />
+                      </td>
+                      <td className="px-2 py-1 border">
+                        <input type="text" name={`add_${item.lente}_${item.olho}`} className="w-full px-2 py-1 border rounded" />
+                      </td>
+                      <td className="px-2 py-1 border">
+                        <input type="text" name={`dp_${item.lente}_${item.olho}`} className="w-full px-2 py-1 border rounded" />
+                      </td>
+                    </tr>
+                  ))}
+
+                  {/* Altura Pupilar */}
+                  <tr className="bg-white">
+                    <td className="px-4 py-2 border bg-neutral-100" colSpan={6}>Altura Pupilar</td>
+                    <td className="px-2 py-1 border">
+                      <input
+                        type="text"
+                        name="altura_pupilar"
+                        value={alturaPupilar}
+                        onChange={(e) => setAlturaPupilar(e.target.value)}
+                        className="w-full px-2 py-1 border rounded bg-neutral-100"
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </>
+        )}
       </div>
 
       <hr className="w-full my-6 border-t border-neutral-200" />
+      <span className="text-neutral-800 text-xl font-medium">Detalhes de venda</span>
+
       <div className='flex flex-wrap my-4 transition-transform duration-500 ease-in'>
+        
         {/* preço */}
         <div className="w-full md:w-1/5 mt-3 mb-4 px-3">
           <label

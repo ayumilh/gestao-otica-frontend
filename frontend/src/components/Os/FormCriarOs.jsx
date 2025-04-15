@@ -12,8 +12,10 @@ import { useUserToken } from "@/utils/useUserToken";
 
 const FormCriarOs = () => {
     const { token } = useUserToken();
+    const router = useRouter();
 
     // variáveis para os dados do cliente
+    const [clienteId, setClienteId] = useState(null);
     const [cli_nome, setCli_nome] = useState("");
     const [cli_cpf, setCli_cpf] = useState(null);
     const [cli_endereco, setCli_endereco] = useState("");
@@ -60,7 +62,7 @@ const FormCriarOs = () => {
     const [isInvalidoVendaArmacao, setIsInvalidoVendaArmacao] = useState(false);
 
     const [statusRequest, setStatusRequest] = useState("");
-    const router = useRouter();
+
 
     // Função para sanitizar os inputs
     const sanitizeInput = (value, regex, shouldTrim = true) => {
@@ -203,7 +205,7 @@ const FormCriarOs = () => {
     const handleSalvarCliente = async () => {
         console.log("Salvando cliente:", cliente);
         try {
-            await axios.post(
+            const response = await axios.post(
                 `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/clientes/cadastrar`,
                 cliente,
                 {
@@ -212,7 +214,14 @@ const FormCriarOs = () => {
                     }
                 }
             );
-            setStatusRequest(true);
+            const createdId = response.data?.id;
+            if (createdId) {
+              setClienteId(createdId); 
+              setStatusRequest(true);
+            } else {
+              throw new Error("ID não retornado");
+              setStatusRequest(false);
+            }
         } catch (error) {
             setStatusRequest(false);
         }
@@ -245,7 +254,7 @@ const FormCriarOs = () => {
         });
 
         const payload = {
-            cpf: cli_cpf, // já preenchido no estado do cliente
+            clienteId,
             data: new Date().toISOString().split('T')[0], // data atual no formato YYYY-MM-DD
             lentes: vendaLentes,
             armacao: vendaArmacao,
@@ -275,8 +284,6 @@ const FormCriarOs = () => {
             alert("Erro interno ao salvar grau.");
         }
     };
-
-
 
     const handleSalvarVenda = async () => {
         try {
@@ -312,7 +319,6 @@ const FormCriarOs = () => {
 
     return (<>
         <div className="w-full xl:max-w-screen-lg flex flex-col">
-            {/* <BtnBackPage title="Voltar" /> */}
             <h3 className="text-neutral-800 text-xl font-medium ">
                 {cli_nome || "Novo Cliente"}
             </h3>

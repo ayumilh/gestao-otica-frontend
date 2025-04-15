@@ -10,9 +10,9 @@ import NavbarContent from "@/components/Navbar/NavbarContent";
 export default async function Editar({ searchParams }) {
   const session = await checkSession();
 
-  const cliCpf = searchParams?.cpf;
+  const cliId = searchParams?.id;
 
-  if (!cliCpf) {
+  if (!cliId) {
     redirect('/clientes');
   }
 
@@ -27,7 +27,7 @@ export default async function Editar({ searchParams }) {
         <BtnBackPage title="Editar Clientes" />
         <div className="w-full flex flex-col items-center mt-6 md:mt-10">
 
-          <FormEditarClientes cliCpf={cliCpf} />
+          <FormEditarClientes cliId={cliId} />
         </div>
       </div>
     </div>

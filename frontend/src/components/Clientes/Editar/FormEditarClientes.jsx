@@ -7,7 +7,7 @@ import SuccessNotification from "@/components/Geral/Notification/SuccessNotifica
 import ErrorNotification from "@/components/Geral/Notification/ErrorNotification";
 import { useUserToken } from "@/utils/useUserToken";
 
-const FormEditarClientes = ({ cliCpf }) => {
+const FormEditarClientes = ({ cliId }) => {
   const { token } = useUserToken();
   const router = useRouter();
 
@@ -26,7 +26,7 @@ const FormEditarClientes = ({ cliCpf }) => {
     const fetchCliente = async () => {
       try {
         const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/clientes/listar?cpf=${cliCpf}`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/clientes/listar?id=${cliId}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -46,31 +46,31 @@ const FormEditarClientes = ({ cliCpf }) => {
 
 
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/graus/listar?cpf=${cliCpf}`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/graus/listar?id=${cliId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`
             }
           }
         );
+
         const grausData = response.data;
 
-        if (grausData) {
-          setGrauData(grausData);
-          setSelectedCPF(cliCpf);
+        if (grausData?.graus && grausData.graus.length > 0) {
+          setGrauData(grausData.graus);
           setIsOpenModalGrau(true);
         } else {
-          alert("Não foi possível buscar os dados do grau.");
+          setGrauData([]);
         }
       } catch (error) {
         console.error("Erro ao carregar cliente:", error);
       }
     };
 
-    if (cliCpf) {
+    if (cliId) {
       fetchCliente();
     }
-  }, [cliCpf, token]);
+  }, [cliId, token]);
 
   const handleSalvarEdicao = async () => {
     const cliente = {
@@ -83,7 +83,7 @@ const FormEditarClientes = ({ cliCpf }) => {
 
     try {
       await axios.put(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/clientes/editar?cpf=${cli_cpf}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/clientes/editar?id=${cliId}`,
         cliente,
         {
           headers: {
@@ -114,7 +114,7 @@ const FormEditarClientes = ({ cliCpf }) => {
           </label>
           <input
             onChange={(e) => setCli_nome(e.target.value)}
-            value={cli_nome}
+            value={cli_nome || ""}
             type="text"
             className="w-full border rounded px-3 py-2"
           />
@@ -127,7 +127,7 @@ const FormEditarClientes = ({ cliCpf }) => {
           </label>
           <input
             onChange={(e) => setCli_cpf(e.target.value)}
-            value={cli_cpf}
+            value={cli_cpf || ""}
             type="text"
             maxLength={11}
             className="w-full border rounded px-3 py-2"
@@ -187,7 +187,7 @@ const FormEditarClientes = ({ cliCpf }) => {
           />
         </div>
 
-        <div className="w-full flex flex-wrap mt-5 mb-7">
+        {/* <div className="w-full flex flex-wrap mt-5 mb-7">
           <div className="w-full rounded-lg shadow-lg p-6 relative overflow-auto">
 
             <h2 className="text-xl font-semibold mb-4 text-neutral-800">Informações Oftalmológicas</h2>
@@ -227,7 +227,7 @@ const FormEditarClientes = ({ cliCpf }) => {
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
 
         <div className="w-full px-3 my-4">
           <BtnActions title="Salvar alterações" onClick={handleSalvarEdicao} color="ativado" />

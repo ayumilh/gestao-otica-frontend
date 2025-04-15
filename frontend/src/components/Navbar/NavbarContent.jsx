@@ -1,10 +1,12 @@
 'use client'
+import { useState } from 'react';
 import Drawer from '@mui/material/Drawer';
 import NavbarList from './NavbarList';
 import { useTheme, styled } from '@mui/material/styles';
 
 export default function NavbarContent() {
   const theme = useTheme();
+  const [open, setOpen] = useState(false);
   
   const StyledDrawer = styled(Drawer)(({ theme }) => ({
     width: '190px',
@@ -31,6 +33,11 @@ export default function NavbarContent() {
       <StyledDrawer
         variant="permanent"
         anchor="left"
+        open={open}
+        onClose={() => setOpen(false)}
+        ModalProps={{
+          keepMounted: true,
+        }}
       >
         <NavbarList />
       </StyledDrawer>

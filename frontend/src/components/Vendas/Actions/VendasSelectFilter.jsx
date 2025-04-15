@@ -5,7 +5,7 @@ import ErrorEmpty from '@/components/Geral/Notification/ErrorEmpty';
 import { useUserToken } from '@/utils/useUserToken';
 
 const VendasSelectFilter = ({ onVendas }) => {
-    const {token} = useUserToken();
+    const { token } = useUserToken();
     const [filtros, setFiltros] = useState({
         campo: 'nome',
         valor: '',
@@ -15,19 +15,21 @@ const VendasSelectFilter = ({ onVendas }) => {
     const filterData = useCallback(async () => {
         try {
             const response = await axios.get(
-                `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/vendas/filter`, 
+                `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/vendas/filter`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`
-                    }
+                    },
+                    params: filtros
                 },
-                { params: filtros }
             );
-            if (response.data && Array.isArray(response.data)) {
-                onVendas(response.data);
+            console.log("Response:", response.data.vendas);
+            if (response.data && Array.isArray(response.data.vendas)) {
+                onVendas(response.data.vendas);
             } else {
                 onVendas([]);
             }
+
         } catch (error) {
             setStatusRequest(false);
             onVendas([]);
@@ -66,13 +68,13 @@ const VendasSelectFilter = ({ onVendas }) => {
 
             <div className="flex items-center w-full max-w-60 rounded-full py-2 relative">
                 <div className="relative w-full">
-                    <input 
-                        type="text" 
-                        onChange={handleInputChange} 
-                        value={filtros.valor} 
-                        placeholder="O que procura?" 
+                    <input
+                        type="text"
+                        onChange={handleInputChange}
+                        value={filtros.valor}
+                        placeholder="O que procura?"
                         name="valor"
-                        className="w-full focus:outline-none focus:ring focus:border-gray-700 bg-white dark:bg-primaria-800 rounded-lg text-txt-primaria outline-none pr-10 pl-3 py-2 text-xs" 
+                        className="w-full focus:outline-none focus:ring focus:border-gray-700 bg-white dark:bg-primaria-800 rounded-lg text-txt-primaria outline-none pr-10 pl-3 py-2 text-xs"
                     />
                     <button
                         type="button"
