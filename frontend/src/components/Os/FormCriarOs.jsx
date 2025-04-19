@@ -1,9 +1,10 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import axios from "axios";
-import SearchIcon from '@mui/icons-material/Search';
 import BtnActions from "@/components/Geral/Button/BtnActions";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import PersonIcon from '@mui/icons-material/Person';
+import CircularProgress from '@mui/material/CircularProgress';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import SuccessNotification from "@/components/Geral/Notification/SuccessNotification";
 import ErrorNotification from "@/components/Geral/Notification/ErrorNotification";
@@ -15,7 +16,7 @@ const FormCriarOs = () => {
     const router = useRouter();
 
     // variáveis para os dados do cliente
-    const [clienteId, setClienteId] = useState(null);
+    const [clientesEncontrados, setClientesEncontrados] = useState([]);
     const [cli_nome, setCli_nome] = useState("");
     const [cli_cpf, setCli_cpf] = useState(null);
     const [cli_endereco, setCli_endereco] = useState("");
@@ -33,23 +34,17 @@ const FormCriarOs = () => {
     const [vendaLentes, setVendaLentes] = useState('');
     const [vendaArmacao, setVendaArmacao] = useState('');
 
+    const [filtros, setFiltros] = useState({ campo: 'cpf', valor: '' });
     const [alturaPupilar, setAlturaPupilar] = useState("");
 
     // variáveis para controlar a exibição das seções
     const [showLentesArmacao, setShowLentesArmacao] = useState(false);
     const [showVendaDetails, setShowVendaDetails] = useState(false);
     const [showGrauSection, setShowGrauSection] = useState(false);
-
+    const [openFilterCpf, setOpenFilterCpf] = useState(false);
     const [errorsInput, setErrorsInput] = useState({});
-
-    const cliente = {
-        nome: cli_nome,
-        cpf: cli_cpf,
-        endereco: cli_endereco,
-        numero: cli_numero,
-        complemento: cli_complemento,
-        telefone: cli_telefone,
-    };
+    const [isLoading, setIsLoading] = useState(false);
+    const [clienteData, setClienteData] = useState({});
 
     const [isInvalidoClienteNome, setIsInvalidoClienteNome] = useState(false);
     const [isInvalidoClienteCpf, setIsInvalidoClienteCpf] = useState(false);
@@ -57,6 +52,12 @@ const FormCriarOs = () => {
     const [isInvalidoClienteNumero, setIsInvalidoClienteNumero] = useState(false);
     const [isInvalidoClienteComplemento, setIsInvalidoClienteComplemento] = useState(false);
     const [isInvalidoClienteTelefone, setIsInvalidoClienteTelefone] = useState(false);
+
+    const [openFilterName, setOpenFilterName] = useState(false);
+    const [grauSalvo, setGrauSalvo] = useState(false);
+
+
+    const [clienteSelecionado, setClienteSelecionado] = useState(false);
 
     const [isInvalidoVendaLentes, setIsInvalidoVendaLentes] = useState(false);
     const [isInvalidoVendaArmacao, setIsInvalidoVendaArmacao] = useState(false);
@@ -77,6 +78,8 @@ const FormCriarOs = () => {
 
         if (value === sanitizedValue) {
             setCli_nome(sanitizedValue);
+            setOpenFilterName(true);
+            setFiltros({ campo: 'nome', valor: sanitizedValue });
             setErrorsInput((prevErrors) => {
                 const { cli_nome, ...rest } = prevErrors;
                 return rest;
@@ -202,34 +205,8 @@ const FormCriarOs = () => {
         }
     };
 
-    const handleSalvarCliente = async () => {
-        console.log("Salvando cliente:", cliente);
-        try {
-            const response = await axios.post(
-                `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/clientes/cadastrar`,
-                cliente,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
-            const createdId = response.data?.id;
-            if (createdId) {
-              setClienteId(createdId); 
-              setStatusRequest(true);
-            } else {
-              throw new Error("ID não retornado");
-              setStatusRequest(false);
-            }
-        } catch (error) {
-            setStatusRequest(false);
-        }
-    };
-
-    const handleSalvarGrau = async () => {
+    const handleUnificado = async () => {
         const grauData = [];
-
         const lentesTipos = ['Longe', 'Perto'];
         const olhos = ['OD', 'OE'];
 
@@ -241,80 +218,100 @@ const FormCriarOs = () => {
                 const add = document.querySelector(`[name=add_${lente}_${olho}]`)?.value || "";
                 const dp = document.querySelector(`[name=dp_${lente}_${olho}]`)?.value || "";
 
-                grauData.push({
-                    lente,
-                    olho,
-                    esferico,
-                    cilindrico,
-                    eixo,
-                    add,
-                    dp
-                });
+                grauData.push({ lente, olho, esferico, cilindrico, eixo, add, dp });
             });
         });
 
         const payload = {
-            clienteId,
-            data: new Date().toISOString().split('T')[0], // data atual no formato YYYY-MM-DD
+            nome: cli_nome,
+            cpf: cli_cpf,
+            endereco: cli_endereco,
+            numero: cli_numero,
+            complemento: cli_complemento,
+            telefone: cli_telefone,
+            data: dataVenda,
+            entrega: dataEntrega,
             lentes: vendaLentes,
             armacao: vendaArmacao,
-            alturaPupilar: alturaPupilar,
+            preco: parseFloat(preco),
+            sinal: parseFloat(sinal || 0),
+            a_pagar: parseFloat(aPagar || 0),
+            obs,
+            alturaPupilar,
             graus: grauData
         };
 
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/graus/cadastrar`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`
-                },
-                body: JSON.stringify(payload)
-            });
-
-            const resJson = await response.json();
-
-            if (response.ok) {
-                alert('Grau salvo com sucesso!');
-            } else {
-                alert(`Erro ao salvar grau: ${resJson.message}`);
-            }
-        } catch (error) {
-            console.error("Erro ao chamar API de grau:", error);
-            alert("Erro interno ao salvar grau.");
-        }
-    };
-
-    const handleSalvarVenda = async () => {
-        try {
-            const payload = {
-                data: dataVenda,
-                entrega: dataEntrega,
-                cpf: cli_cpf,
-                lentes: vendaLentes,
-                armacao: vendaArmacao,
-                preco: parseFloat(preco),
-                sinal: parseFloat(sinal || 0),
-                a_pagar: parseFloat(aPagar || 0),
-                obs,
-            };
-
-            await axios.post(
-                `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/vendas/criar`,
+            const response = await axios.post(
+                `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/vendas/criar-os`,
                 payload,
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`
+                    }
                 }
             );
 
-            setStatusRequest(true);
+            if (response.status === 201) {
+                setStatusRequest(true);
+                setGrauSalvo(true);
+                router.push("/vendas");
+            } else {
+                setStatusRequest(false);
+            }
         } catch (error) {
-            console.error("Erro ao salvar venda:", error);
+            console.error("Erro ao salvar tudo:", error);
             setStatusRequest(false);
         }
     };
+
+    const dropdownRef = useRef(null);
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setOpenFilterCpf(false);
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        }
+    }, [dropdownRef]);
+
+
+    const filterName = useCallback(async () => {
+        if (!filtros.valor || filtros.valor.length < 2 || filtros.campo !== "nome") return;
+
+        setIsLoading(true);
+        try {
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/clientes/filter`, {
+                params: filtros,
+            });
+
+            const encontrados = response.data.clientes || [];
+
+            setClientesEncontrados(encontrados); // <-- ESSENCIAL para dropdown funcionar
+
+            if (encontrados.length === 0) {
+                setClienteData({});
+            }
+        } catch (error) {
+            console.error("Erro ao buscar cliente por nome", error);
+            setClientesEncontrados([]);
+            setClienteData({});
+        } finally {
+            setIsLoading(false);
+        }
+    }, [filtros]);
+
+
+    useEffect(() => {
+        if (filtros.campo === "nome" && filtros.valor.length >= 3) {
+            filterName();
+        }
+    }, [filterName, filtros]);
 
 
     return (<>
@@ -324,13 +321,11 @@ const FormCriarOs = () => {
             </h3>
 
             <div className="flex flex-wrap transition-transform duration-500 ease-in">
+
                 <div className="w-full flex flex-wrap mt-5 mb-7">
                     {/* nome */}
-                    <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
-                        <label
-                            htmlFor="cli_nome"
-                            className="block font-medium text-sm text-neutral-700"
-                        >
+                    <div className="w-full md:w-1/2 mt-3 mb-4 px-3 relative z-10">
+                        <label htmlFor="cli_nome" className="block font-medium text-sm text-neutral-700">
                             Nome do cliente <span className="text-red-600">*</span>
                         </label>
                         <input
@@ -340,12 +335,58 @@ const FormCriarOs = () => {
                             type="text"
                             required
                             maxLength={200}
-                            minLength={1}
-                            className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${isInvalidoClienteNome
-                                ? "outline-red-500 focus:outline-red-500"
-                                : ""
-                                }`}
+                            placeholder="Digite o nome do cliente"
+                            className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 transition-all duration-500 ease-out ${isInvalidoClienteNome ? "outline-red-500 focus:outline-red-500" : ""}`}
                         />
+
+                        {/* Dropdown com resultado */}
+                        {openFilterName && clientesEncontrados.length > 0 && (
+                            <div
+                                ref={dropdownRef}
+                                className="absolute mt-1 max-w-lg w-full z-50 bg-white border border-gray-200 rounded-md shadow-md"
+                            >
+                                {isLoading ? (
+                                    <div className="p-4 text-center">
+                                        <CircularProgress size={24} />
+                                    </div>
+                                ) : (
+                                    clientesEncontrados.map((res, index) => {
+                                        const c = res.cliente || res;
+                                        return (
+                                            <div
+                                                key={index}
+                                                onClick={() => {
+                                                    setShowLentesArmacao(true);
+                                                    setClienteSelecionado(true);
+
+                                                    setCli_nome(c.nome || "");
+                                                    setCli_cpf(c.cpf || "");
+                                                    setCli_endereco(c.endereco || "");
+                                                    setCli_numero(c.numero || "");
+                                                    setCli_complemento(c.complemento || "");
+                                                    setCli_telefone(c.telefone || "");
+
+                                                    setOpenFilterName(false);
+
+
+                                                }}
+                                                className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex gap-2 items-center"
+                                            >
+                                                <div className="bg-orange-400 text-white p-2 rounded-full">
+                                                    <PersonIcon fontSize="small" />
+                                                </div>
+                                                <div>
+                                                    <div className="font-medium">{c.nome}</div>
+                                                    <div className="text-sm text-gray-600">CPF: {c.cpf}</div>
+                                                    <div className="text-sm text-gray-600">Tel: {c.telefone}</div>
+                                                </div>
+                                            </div>
+                                        );
+                                    })
+                                )}
+                            </div>
+                        )}
+
                         {errorsInput.cli_nome && (
                             <p className="text-red-500 relative text-sm mt-1">{errorsInput.cli_nome}</p>
                         )}
@@ -478,9 +519,6 @@ const FormCriarOs = () => {
                         )}
                     </div>
 
-                    <div className="w-60 flex justify-start gap-3 my-9 px-4">
-                        <BtnActions title="Salvar cliente" onClick={handleSalvarCliente} color="ativado" padding="md" />
-                    </div>
                 </div>
 
                 {/* Seção de lentes e armação */}
@@ -612,12 +650,6 @@ const FormCriarOs = () => {
                                 </tbody>
                             </table>
                         </div>
-
-
-                        {/* Botão de salvar */}
-                        <div className="w-60 flex justify-start gap-3 my-9 px-4">
-                            <BtnActions title="Salvar Grau" onClick={handleSalvarGrau} color="ativado" padding="md" />
-                        </div>
                     </>
                 )}
 
@@ -711,14 +743,14 @@ const FormCriarOs = () => {
                                 className="peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-blue-400 transition-all"
                             ></textarea>
                         </div>
-
-                        {/* Botão de salvar */}
-                        <div className="w-60 flex justify-start gap-3 my-9 px-4">
-                            <BtnActions title="Salvar venda" onClick={handleSalvarVenda} color="ativado" padding="md" />
-                        </div>
                     </>
                 )}
             </div>
+
+            <div className="w-60 flex justify-start gap-3 my-9 px-4">
+                <BtnActions title="Salvar tudo" onClick={handleUnificado} color="ativado" padding="md" />
+            </div>
+
         </div>
 
         {statusRequest === true && (

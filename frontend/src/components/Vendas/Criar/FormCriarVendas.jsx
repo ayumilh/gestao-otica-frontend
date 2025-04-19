@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 const FormCriarVendas = () => {
   const { token } = useUserToken();
   const router = useRouter();
+  
   const [vendaData, setVendaData] = useState(null);
   const [vendaEntrega, setVendaEntrega] = useState(null);
   const [vendaNome, setVendaNome] = useState('');

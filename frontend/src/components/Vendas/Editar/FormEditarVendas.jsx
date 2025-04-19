@@ -70,7 +70,7 @@ const FormEditarVendas = ({ cliId }) => {
             alturaPupilar: venda.alturaPupilar,
           }));
         }
-    
+
 
         // GRAU
         const resGrau = await axios.get(
@@ -141,66 +141,6 @@ const FormEditarVendas = ({ cliId }) => {
       </h3>
 
       <div className="flex flex-wrap mt-5 mb-7">
-        {/* Lentes */}
-        <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
-          <label className="block font-medium text-sm text-neutral-700">Lentes</label>
-          <input
-            onChange={inputChange}
-            value={input.lentes || ""}
-            name="lentes"
-            type="text"
-            className="w-full border rounded px-3 py-2"
-          />
-        </div>
-
-        {/* Armação */}
-        <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
-          <label className="block font-medium text-sm text-neutral-700">Armação</label>
-          <input
-            onChange={inputChange}
-            value={input.armacao || ""}
-            name="armacao"
-            type="text"
-            className="w-full border rounded px-3 py-2"
-          />
-        </div>
-
-        {/* Preço */}
-        <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
-          <label className="block font-medium text-sm text-neutral-700">Preço</label>
-          <input
-            onChange={inputChange}
-            value={input.preco || ""}
-            name="preco"
-            type="number"
-            className="w-full border rounded px-3 py-2"
-          />
-        </div>
-
-        {/* Sinal */}
-        <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
-          <label className="block font-medium text-sm text-neutral-700">Sinal</label>
-          <input
-            onChange={inputChange}
-            value={input.sinal || ""}
-            name="sinal"
-            type="number"
-            className="w-full border rounded px-3 py-2"
-          />
-        </div>
-
-        {/* A pagar */}
-        <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
-          <label className="block font-medium text-sm text-neutral-700">A Pagar</label>
-          <input
-            onChange={inputChange}
-            value={input.a_pagar || ""}
-            name="a_pagar"
-            type="number"
-            className="w-full border rounded px-3 py-2"
-          />
-        </div>
-
         {/* Data da Venda */}
         <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
           <label className="block font-medium text-sm text-neutral-700">Data da Venda</label>
@@ -225,13 +165,25 @@ const FormEditarVendas = ({ cliId }) => {
           />
         </div>
 
-        {/* Altura Pupilar */}
+        {/* Lentes */}
         <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
-          <label className="block font-medium text-sm text-neutral-700">Altura Pupilar</label>
+          <label className="block font-medium text-sm text-neutral-700">Lentes</label>
           <input
             onChange={inputChange}
-            value={input.alturaPupilar || ""}
-            name="alturaPupilar"
+            value={input.lentes || ""}
+            name="lentes"
+            type="text"
+            className="w-full border rounded px-3 py-2"
+          />
+        </div>
+
+        {/* Armação */}
+        <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
+          <label className="block font-medium text-sm text-neutral-700">Armação</label>
+          <input
+            onChange={inputChange}
+            value={input.armacao || ""}
+            name="armacao"
             type="text"
             className="w-full border rounded px-3 py-2"
           />
@@ -249,15 +201,49 @@ const FormEditarVendas = ({ cliId }) => {
           />
         </div>
 
+        <div className="flex w-full">
+          {/* Preço */}
+          <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
+            <label className="block font-medium text-sm text-neutral-700">Preço</label>
+            <input
+              onChange={inputChange}
+              value={input.preco || ""}
+              name="preco"
+              type="number"
+              className="w-full border rounded px-3 py-2"
+            />
+          </div>
+
+          {/* Sinal */}
+          <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
+            <label className="block font-medium text-sm text-neutral-700">Sinal</label>
+            <input
+              onChange={inputChange}
+              value={input.sinal || ""}
+              name="sinal"
+              type="number"
+              className="w-full border rounded px-3 py-2"
+            />
+          </div>
+
+          {/* A pagar */}
+          <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
+            <label className="block font-medium text-sm text-neutral-700">A Pagar</label>
+            <input
+              onChange={inputChange}
+              value={input.a_pagar || ""}
+              name="a_pagar"
+              type="number"
+              className="w-full border rounded px-3 py-2"
+            />
+          </div>
+        </div>
+
         <div className="w-full flex flex-wrap mt-5 mb-7">
           <div className="w-full rounded-lg shadow-lg p-6 relative overflow-auto">
 
             <h2 className="text-xl font-semibold mb-4 text-neutral-800">Informações Oftalmológicas</h2>
             <div className="mb-6">
-              <p className="text-sm text-neutral-700"><strong>Lentes:</strong> {input.lentes || '-'}</p>
-              <p className="text-sm text-neutral-700"><strong>Armação:</strong> {input.armacao || '-'}</p>
-              <p className="text-sm text-neutral-700 mb-2"><strong>Altura Pupilar:</strong> {input.alturaPupilar || 'N/A'}</p>
-
               <table className="min-w-full border text-sm text-left text-neutral-800 mt-2">
                 <thead className="bg-gray-200">
                   <tr>
@@ -299,10 +285,26 @@ const FormEditarVendas = ({ cliId }) => {
                       ))}
                     </tr>
                   ))}
+
+                  {/* Linha de Altura Pupilar */}
+                  <tr className="bg-white">
+                    <td className="px-2 py-1 border whitespace-nowrap" colSpan={1}>
+                      Alt Pupilar:
+                    </td>
+                    <td className="px-2 py-1 border">
+                      <input
+                        type="text"
+                        name="alturaPupilar"
+                        value={input.alturaPupilar || ""}
+                        onChange={inputChange}
+                        className="w-full border px-1 py-0.5"
+                      />
+                    </td>
+                  </tr>
+
                 </tbody>
               </table>
             </div>
-
           </div>
         </div>
 

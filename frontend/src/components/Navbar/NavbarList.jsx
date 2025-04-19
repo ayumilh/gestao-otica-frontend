@@ -1,20 +1,21 @@
 'use client'
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import SpeedOutlinedIcon from '@mui/icons-material/SpeedOutlined';
+import { usePathname, useRouter } from "next/navigation";
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
-import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import Groups2OutlinedIcon from '@mui/icons-material/Groups2Outlined';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
+import AddTaskIcon from '@mui/icons-material/AddTask';
 import SearchIcon from '@mui/icons-material/Search';
-import { FaBox } from "react-icons/fa";
 import { FaTags } from 'react-icons/fa';
+import SpeedOutlinedIcon from '@mui/icons-material/SpeedOutlined';
+import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
+import { FaBox } from "react-icons/fa";
 import BtnAtivado from "../Geral/Button/BtnAtivado";
 import BtnSignOut from "./BtnSignOut";
 import DarkModeToggle from "../Geral/Button/DarkModeToggle";
 import ActionsHeader from "../Geral/ActionsHeader";
 import SavingsOutlinedIcon from '@mui/icons-material/SavingsOutlined';
+import NoteAddIcon from '@mui/icons-material/NoteAdd';
+
 
 
 const iconsNav = [
@@ -29,15 +30,20 @@ const iconsNav = [
 
 const NavbarList = () => {
     const pathname = usePathname();
+    const router = useRouter();
+
+    const handleClick = () => {
+        router.push("/os");
+    };
 
     return (
-        <div className="w-44 ml-3 lg:ml-0 flex flex-col justify-center items-center">
+        <div className="w-44 lg:ml-0 flex flex-col justify-center items-center">
             <ul className="w-40 mt-2 lg:mt-6 mb-4">
                 <li className="w-40 mb-10 flex items-center mt-1 justify-between">
                     <BtnAtivado title="Home" onClick="/inicio" page="/inicio" size="sm" rounded="xl" padding="xl" />
-                    <span>
-                        <NotificationsIcon className='text-segundaria-800 w-6 h-6' />
-                    </span>
+                    <button onClick={handleClick} className="ml-2 flex justify-center items-center ">
+                        <NoteAddIcon fontSize="large" className="text-orange-400 hover:text-orange-500 dark:text-orange-300 transition ease-in-out duration-700" /> 
+                    </button>
                 </li>
 
                 <li className="w-40 mb-10">
