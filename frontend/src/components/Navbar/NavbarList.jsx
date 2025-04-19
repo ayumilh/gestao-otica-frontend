@@ -42,14 +42,14 @@ const NavbarList = () => {
                     </button>
                 </li>
 
-                <li className="w-40 mb-10">
+                {/* <li className="w-40 mb-10">
                     <div className="w-40 flex items-center rounded-full py-2 relative">
                         <div className="relative w-full">
                             <SearchIcon fontSize="small" className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                             <input type="text" className="w-40 focus:outline-none focus:ring focus:border-gray-700 border border-gray-100 bg-white dark:bg-primaria-800 rounded-lg text-txt-primaria outline-none pl-10 pr-2 py-2 text-xs" placeholder="O que procura?" />
                         </div>
                     </div>
-                </li>
+                </li> */}
                 {/* <li className="w-40 mb-10">
                     <div className="w-40 flex items-center rounded-full py-2 relative">
                         <BtnAtivado title='Criar O.S' onClick="/clientes" page="/os" size="sm" rounded="lg" />
@@ -88,9 +88,9 @@ const NavbarList = () => {
             </ul>
             <hr className="w-full" />
             <ul className="w-full mt-4 lg:mt-6 mb-5">
-                <li className="flex flex-col justify-center mb-1">
+                {/* <li className="flex flex-col justify-center mb-1">
                     <ActionsHeader />
-                </li>
+                </li> */}
                 <li className="flex flex-col justify-center mb-1">
                     <DarkModeToggle />
                 </li>

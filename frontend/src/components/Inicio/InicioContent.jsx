@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import axios from 'axios'
 import NavbarMobile from '../Navbar/Mobile/NavbarMobile'
 import LaunchIcon from '@mui/icons-material/Launch';
@@ -9,8 +9,19 @@ import BtnAtivado from '../Geral/Button/BtnAtivado';
 import TitlePage from '../Geral/TitlePage';
 import DropdownFilterWeek from '../Geral/Dropdown/DropdownFilterWeek';
 import DropdownMore from '../Geral/Dropdown/DropdownMore';
+import { useRouter } from 'next/navigation';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
+import PaymentsIcon from '@mui/icons-material/Payments';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
+import CancelIcon from '@mui/icons-material/Cancel';
+import { AuthContext } from '@/contexts/AuthContext';
 
 const InicioContent = () => {
+    const { currentUser } = useContext(AuthContext);
+
+    console.log(currentUser);
     const getSaudacao = () => {
         const hora = new Date().getHours();
         if (hora < 12) {
@@ -22,7 +33,7 @@ const InicioContent = () => {
         }
     };
     const saudacao = getSaudacao();
-
+    const router = useRouter();
     const [clientes, setClientes] = useState([]);
 
     useEffect(() => {
@@ -36,6 +47,30 @@ const InicioContent = () => {
         };
 
         fetchClientes();
+    }, []);
+
+    const [lucros, setLucros] = useState([]);
+    const [resumo, setResumo] = useState({
+        totalVendas: 0,
+        totalRecebido: 0,
+        totalAPagar: 0,
+        aguardandoEntrega: 0,
+        pagasTotais: 0,
+        canceladas: 0
+    });
+
+    useEffect(() => {
+        const fetchLucros = async () => {
+            try {
+                const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/vendas/listar`);
+                setLucros(response.data.vendas || []);
+                setResumo(response.data.resumo || {});
+            } catch (error) {
+                console.error("Erro ao buscar lucros:", error);
+            }
+        };
+
+        fetchLucros();
     }, []);
 
 
@@ -67,8 +102,64 @@ const InicioContent = () => {
                 <div className='w-full flex flex-col justify-between gap-10'>
                     <div className='w-full flex flex-col xl:flex-col gap-5'>
                         <div className='w-full flex'>
-                            <p className='text-neutral-700 font-semibold text-start'>{saudacao}, User</p>
+                            <p className='text-neutral-700 font-semibold text-start'>{saudacao}, {currentUser?.nome}</p>
                         </div>
+
+                        <div className="w-full max-w-[1270px] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mt-6">
+                            {[
+                                {
+                                    label: 'Valor Recebido',
+                                    icon: <AttachMoneyIcon className="text-green-500" fontSize="small" />,
+                                    value: resumo.totalRecebido,
+                                    color: 'text-green-600',
+                                },
+                                {
+                                    label: 'A Receber',
+                                    icon: <MonetizationOnIcon className="text-yellow-500" fontSize="small" />,
+                                    value: resumo.totalAPagar,
+                                    color: 'text-yellow-600',
+                                },
+                                {
+                                    label: 'Total de Vendas',
+                                    icon: <PaymentsIcon className="text-blue-500" fontSize="small" />,
+                                    value: resumo.totalVendas,
+                                    color: 'text-blue-600',
+                                },
+                                {
+                                    label: 'Pagas Completas',
+                                    icon: <CheckCircleIcon className="text-emerald-500" fontSize="small" />,
+                                    value: resumo.pagasTotais,
+                                    color: 'text-emerald-600',
+                                },
+                                {
+                                    label: 'Aguardando Entrega',
+                                    icon: <LocalShippingIcon className="text-orange-500" fontSize="small" />,
+                                    value: resumo.aguardandoEntrega,
+                                    color: 'text-orange-600',
+                                },
+                                {
+                                    label: 'Canceladas',
+                                    icon: <CancelIcon className="text-red-500" fontSize="small" />,
+                                    value: resumo.canceladas,
+                                    color: 'text-red-600',
+                                },
+                            ].map((item, index) => (
+                                <div
+                                    key={index}
+                                    className="bg-segundaria-700 dark:bg-zinc-900 border border-gray-100 dark:border-zinc-700 rounded-xl p-4 flex flex-col justify-between"
+                                >
+                                    <div className="flex items-center gap-2 text-sm text-neutral-500 dark:text-neutral-400 mb-1">
+                                        {item.icon}
+                                        <span className="font-medium">{item.label}</span>
+                                    </div>
+                                    <div className={`text-xl font-bold ${item.color} dark:${item.color}`}>
+                                        R$ {parseFloat(item.value).toFixed(2)}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+
                         <div className='flex flex-col xl:flex-row gap-5'>
                             {/* clientes */}
                             <div className='bg-bg dark:bg-dark-primaria-800 w-full xl:w-1/2 flex flex-col h-full rounded-xl px-5 py-7 ring-1 ring-gray-100 dark:ring-1 dark:ring-black ring-opacity-5 shadow-md'>
@@ -80,7 +171,7 @@ const InicioContent = () => {
                                         <span className='font-bold text-lg text-amber-400'>Clientes</span>
                                     </div>
                                     <div className='flex gap-2'>
-                                        <p className='flex items-center justify-center gap-1 cursor-pointer'>
+                                        <p onClick={() => router.push('/clientes')} className='flex items-center justify-center gap-1 cursor-pointer'>
                                             <span><a className='font-light text-sm text-blue-500 hover:underline' href="/clientes">Ver mais</a></span>
                                             <LaunchIcon className='text-blue-500 w-4 h-4' />
                                         </p>
@@ -92,8 +183,8 @@ const InicioContent = () => {
                                 <div className='flex justify-between mb-5'>
                                     <div className='flex'>
                                         {/* <button className='text-neutral-700 font-medium text-sm'>Filtrar por:</button> */}
-                                        <button className='border border-orange-500 bg-orange-200 bg-opacity-30 rounded-l-full text-orange-500 font-medium text-sm px-3 py-1'>Grafico</button>
-                                        <button className='border border-gray-300 rounded-r-full text-neutral-500 font-medium text-sm px-3 py-1'>Lista</button>
+                                        {/* <button className='border border-orange-500 bg-orange-200 bg-opacity-30 rounded-l-full text-orange-500 font-medium text-sm px-3 py-1'>Grafico</button> */}
+                                        {/* <button className='border border-gray-300 rounded-r-full text-neutral-500 font-medium text-sm px-3 py-1'>Lista</button> */}
                                     </div>
                                     <DropdownFilterWeek />
                                 </div>
@@ -105,7 +196,7 @@ const InicioContent = () => {
                                         <BtnAtivado title='Novo cliente' onClick="/clientes" page="/clientes/criar" size="sm" rounded="md" />
                                     </div>
                                 ) : (
-                                    <div className='w-full flex flex-col gap-3'>
+                                    <div className='w-full flex flex-col gap-3 h-[300px] overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-300 dark:scrollbar-thumb-zinc-700 pr-2'>
                                         {clientes.slice(0, 5).map((cliente) => (
                                             <div
                                                 key={cliente.id}
@@ -138,7 +229,7 @@ const InicioContent = () => {
                                         <span className='font-bold text-lg text-blue-500'>Vendas</span>
                                     </div>
                                     <div className='flex gap-2'>
-                                        <p className='flex items-center justify-center gap-1 cursor-pointer'>
+                                        <p onClick={() => router.push('/vendas')} className='flex items-center justify-center gap-1 cursor-pointer'>
                                             <span><a className='font-light text-sm text-blue-500 hover:underline' href="/vendas">Ver mais</a></span>
                                             <LaunchIcon className='text-blue-500 w-4 h-4' />
                                         </p>
@@ -150,8 +241,8 @@ const InicioContent = () => {
                                 <div className='flex justify-between mb-5'>
                                     <div className='flex'>
                                         {/* <button className='text-neutral-700 font-medium text-sm'>Filtrar por:</button> */}
-                                        <button className='border border-orange-500 bg-orange-200 bg-opacity-30 rounded-l-full text-orange-500 font-medium text-sm px-3 py-1'>Grafico</button>
-                                        <button className='border border-gray-300 rounded-r-full text-neutral-500 font-medium text-sm px-3 py-1'>Lista</button>
+                                        {/* <button className='border border-orange-500 bg-orange-200 bg-opacity-30 rounded-l-full text-orange-500 font-medium text-sm px-3 py-1'>Grafico</button> */}
+                                        {/* <button className='border border-gray-300 rounded-r-full text-neutral-500 font-medium text-sm px-3 py-1'>Lista</button> */}
                                     </div>
                                     <DropdownFilterWeek />
                                 </div>
@@ -163,7 +254,7 @@ const InicioContent = () => {
                                         <BtnAtivado title='Criar venda' onClick="/vendas/criar" page="/vendas/criar" size="sm" rounded="md" />
                                     </div>
                                 ) : (
-                                    <div className='w-full flex flex-col gap-3'>
+                                    <div className='w-full flex flex-col gap-3 h-[300px] overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-300 dark:scrollbar-thumb-zinc-700 pr-2'>
                                         {vendas.slice(0, 5).map((venda) => (
                                             <div
                                                 key={venda.id}
@@ -184,75 +275,6 @@ const InicioContent = () => {
                                 )}
                             </div>
                         </div>
-
-                        {/* <div className='flex flex-col xl:flex-row gap-5'>
-                            <div className='bg-bg dark:bg-dark-primaria-800 w-full xl:w-1/2 flex flex-col h-full rounded-xl px-5 py-7 ring-1 ring-gray-100 dark:ring-1 dark:ring-black ring-opacity-5 shadow-md'>
-                                <div className='flex justify-between items-center'>
-                                    <div className="flex gap-3">
-                                        <div className="flex justify-center items-center bg-blue-400 text-white rounded-full p-2">
-                                            <FaBox className="text-white h-3 w-3" />
-                                        </div>
-                                        <span className='font-bold text-lg text-blue-500'>Produtos</span>
-                                    </div>
-                                    <div className='flex gap-2'>
-                                        <p className='flex items-center justify-center gap-1 cursor-pointer'>
-                                            <span><a className='font-light text-sm text-blue-500 hover:underline' href="/clientes">Ver mais</a></span>
-                                            <LaunchIcon className='text-blue-500 w-4 h-4' />
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <hr className='mb-5 mt-3' />
-
-                                <div className='flex justify-between mb-5'>
-                                    <div className='flex'>
-                                        <button className='border border-orange-500 bg-orange-200 bg-opacity-30 rounded-l-full text-orange-500 font-medium text-sm px-3 py-1'>Grafico</button>
-                                        <button className='border border-gray-300 rounded-r-full text-neutral-500 font-medium text-sm px-3 py-1'>Lista</button>
-                                    </div>
-                                    <DropdownFilterWeek />
-                                </div>
-                                <div className='w-full flex flex-col items-center justify-center gap-5'>
-                                    <span className='text-center text-sm font-medium '>
-                                        Você não possui produtos cadastrados.
-                                    </span>
-                                    <BtnAtivado title='Novo produto' onClick="/produtos" page="/produtos/criar" size="sm" rounded="md" />
-                                </div>
-                            </div>
-                            
-                            <div className='bg-bg dark:bg-dark-primaria-800 w-full xl:w-1/2 flex flex-col h-full rounded-xl px-5 py-7 ring-1 ring-gray-100 dark:ring-1 dark:ring-black ring-opacity-5 shadow-md'>
-                                <div className='flex justify-between items-center'>
-                                    <div className="flex gap-3 items-start">
-                                        <div className="flex justify-center items-center bg-red-400 text-white rounded-full p-2">
-                                            <FaFileInvoice className="text-white h-3 w-3" />
-                                        </div>
-                                        <span className='w-32 font-bold text-lg text-red-400'>Notas fiscais</span>
-                                    </div>
-                                    <div className='flex gap-2'>
-                                        <p className='flex items-center justify-center gap-1 cursor-pointer'>
-                                            <span><a className='font-light text-sm text-blue-500 hover:underline' href="/clientes">Ver mais</a></span>
-                                            <LaunchIcon className='text-blue-500 w-4 h-4' />
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <hr className='mb-5 mt-3' />
-
-                                <div className='flex justify-between mb-5'>
-                                    <div className='flex'>
-                                        <button className='text-neutral-700 font-medium text-sm'>Filtrar por:</button>
-                                        <button className='border border-orange-500 bg-orange-200 bg-opacity-30 rounded-l-full text-orange-500 font-medium text-sm px-3 py-1'>Grafico</button>
-                                        <button className='border border-gray-300 rounded-r-full text-neutral-500 font-medium text-sm px-3 py-1'>Lista</button>
-                                    </div>
-                                    <DropdownFilterWeek />
-                                </div>
-                                <div className='w-full flex flex-col items-center justify-center gap-5'>
-                                    <span className='text-center text-sm font-medium '>
-                                        Você não possui emissões de nota fiscais.
-                                    </span>
-                                    <BtnAtivado title='Criar NF' onClick="/nf" page="/nf/criar" size="sm" rounded="md" />
-                                </div>
-                            </div>
-                        </div> */}
                     </div>
 
                     <hr className='w-full' />
@@ -261,13 +283,13 @@ const InicioContent = () => {
                     {/* CONTA */}
 
                     <div className='w-full flex flex-col xl:flex-row gap-7'>
-                                                {/* contas a receber */}
-                                                <div className='bg-bg dark:bg-dark-primaria-800 w-full xl:w-1/2 flex flex-col h-full rounded-xl px-5 py-7 ring-1 ring-gray-100 dark:ring-1 dark:ring-black ring-opacity-5 shadow-md'>
+                        {/* contas a receber */}
+                        <div className='bg-bg dark:bg-dark-primaria-800 w-full xl:w-1/2 flex flex-col h-full rounded-xl px-5 py-7 ring-1 ring-gray-100 dark:ring-1 dark:ring-black ring-opacity-5 shadow-md'>
                             <div className='flex justify-between items-center'>
                                 <p className='text-neutral-700 font-semibold pt-2 text-start'>Valor recebido</p>
                                 <div className='flex gap-2'>
-                                    <HelpOutlineIcon className='text-neutral-700 dark:text-gray-200 w-6 h-6' />
-                                    <DropdownMore />
+                                    {/* <HelpOutlineIcon className='text-neutral-700 dark:text-gray-200 w-6 h-6' /> */}
+                                    {/* <DropdownMore /> */}
                                 </div>
                             </div>
 
@@ -281,8 +303,8 @@ const InicioContent = () => {
                             <div className='flex justify-between mb-5'>
                                 <div className='flex'>
                                     {/* <button className='text-neutral-700 font-medium text-sm'>Filtrar por:</button> */}
-                                    <button className='border border-orange-500 bg-orange-200 bg-opacity-30 rounded-l-full text-orange-500 font-medium text-sm px-3 py-1'>Abertas</button>
-                                    <button className='border border-gray-300 rounded-r-full text-neutral-500 font-medium text-sm px-3 py-1'>Atrasadas</button>
+                                    {/* <button className='border border-orange-500 bg-orange-200 bg-opacity-30 rounded-l-full text-orange-500 font-medium text-sm px-3 py-1'>Abertas</button> */}
+                                    {/* <button className='border border-gray-300 rounded-r-full text-neutral-500 font-medium text-sm px-3 py-1'>Atrasadas</button> */}
                                 </div>
                                 <DropdownFilterWeek />
                             </div>
@@ -293,14 +315,14 @@ const InicioContent = () => {
                                 <BtnAtivado title='Criar Recebimento' onClick="/clientes" page="/clientes/criar" size="sm" rounded="md" />
                             </div>
                         </div>
-                        
+
                         {/* contas a pagar */}
                         <div className='bg-bg dark:bg-dark-primaria-800 w-full xl:w-1/2 flex flex-col h-full rounded-xl px-5 py-7 ring-1 ring-gray-100 dark:ring-1 dark:ring-black ring-opacity-5 shadow-md'>
                             <div className='flex justify-between items-center'>
                                 <p className='text-neutral-700 font-semibold pt-2 text-start'>A receber</p>
                                 <div className='flex gap-2'>
-                                    <HelpOutlineIcon className='text-neutral-700 dark:text-gray-200 w-6 h-6' />
-                                    <DropdownMore />
+                                    {/* <HelpOutlineIcon className='text-neutral-700 dark:text-gray-200 w-6 h-6' /> */}
+                                    {/* <DropdownMore /> */}
                                 </div>
                             </div>
 
@@ -314,8 +336,8 @@ const InicioContent = () => {
                             <div className='flex justify-between mb-5'>
                                 <div className='flex'>
                                     {/* <button className='text-neutral-700 font-medium text-sm'>Filtrar por:</button> */}
-                                    <button className='border border-orange-500 bg-orange-200 bg-opacity-30 rounded-l-full text-orange-500 font-medium text-sm px-3 py-1'>Abertas</button>
-                                    <button className='border border-gray-300 rounded-r-full text-neutral-500 font-medium text-sm px-3 py-1'>Atrasadas</button>
+                                    {/* <button className='border border-orange-500 bg-orange-200 bg-opacity-30 rounded-l-full text-orange-500 font-medium text-sm px-3 py-1'>Abertas</button> */}
+                                    {/* <button className='border border-gray-300 rounded-r-full text-neutral-500 font-medium text-sm px-3 py-1'>Atrasadas</button> */}
                                 </div>
                                 <DropdownFilterWeek />
                             </div>
@@ -326,9 +348,6 @@ const InicioContent = () => {
                                 <BtnAtivado title='Criar Pagamento' onClick="/clientes" page="/clientes/criar" size="sm" rounded="md" />
                             </div>
                         </div>
-
-
-
                     </div>
                 </div>
             </div>

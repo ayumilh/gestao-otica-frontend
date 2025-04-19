@@ -19,7 +19,6 @@ export const AuthContextProvider = ({ children }) => {
   };
 
   const login = async (inputs) => {
-    console.log(inputs);
     try {
       const res = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/userauth/login`,
         inputs,
