@@ -132,10 +132,10 @@ const InicioContent = () => {
                             <div className='bg-bg dark:bg-dark-primaria-800 w-full xl:w-1/2 flex flex-col h-full rounded-xl px-5 py-7 ring-1 ring-gray-100 dark:ring-1 dark:ring-black ring-opacity-5 shadow-md'>
                                 <div className='flex justify-between items-center'>
                                     <div className="flex gap-3">
-                                        <div className="flex justify-center items-center bg-green-500 text-white rounded-full p-2">
+                                        <div className="flex justify-center items-center bg-blue-500 text-white rounded-full p-2">
                                             <FaList className="text-white h-3 w-3" />
                                         </div>
-                                        <span className='font-bold text-lg text-green-500'>Vendas</span>
+                                        <span className='font-bold text-lg text-blue-500'>Vendas</span>
                                     </div>
                                     <div className='flex gap-2'>
                                         <p className='flex items-center justify-center gap-1 cursor-pointer'>
@@ -261,44 +261,10 @@ const InicioContent = () => {
                     {/* CONTA */}
 
                     <div className='w-full flex flex-col xl:flex-row gap-7'>
-                        {/* contas a pagar */}
-                        <div className='bg-bg dark:bg-dark-primaria-800 w-full xl:w-1/2 flex flex-col h-full rounded-xl px-5 py-7 ring-1 ring-gray-100 dark:ring-1 dark:ring-black ring-opacity-5 shadow-md'>
+                                                {/* contas a receber */}
+                                                <div className='bg-bg dark:bg-dark-primaria-800 w-full xl:w-1/2 flex flex-col h-full rounded-xl px-5 py-7 ring-1 ring-gray-100 dark:ring-1 dark:ring-black ring-opacity-5 shadow-md'>
                             <div className='flex justify-between items-center'>
-                                <p className='text-neutral-700 font-semibold pt-2 text-start'>Contas a pagar</p>
-                                <div className='flex gap-2'>
-                                    <HelpOutlineIcon className='text-neutral-700 dark:text-gray-200 w-6 h-6' />
-                                    <DropdownMore />
-                                </div>
-                            </div>
-
-                            <div className='w-36 bg-red-100 px-4 py-3 rounded-lg mt-2'>
-                                <span className='block font-medium text-red-600 dark:text-red-600'>R$ 0,00</span>
-                                <span className='text-xs font-medium text dark:text-neutral-800'>Vencendo hoje</span>
-                            </div>
-
-                            <hr className='my-5' />
-
-                            <div className='flex justify-between mb-5'>
-                                <div className='flex'>
-                                    {/* <button className='text-neutral-700 font-medium text-sm'>Filtrar por:</button> */}
-                                    <button className='border border-orange-500 bg-orange-200 bg-opacity-30 rounded-l-full text-orange-500 font-medium text-sm px-3 py-1'>Abertas</button>
-                                    <button className='border border-gray-300 rounded-r-full text-neutral-500 font-medium text-sm px-3 py-1'>Atrasadas</button>
-                                </div>
-                                <DropdownFilterWeek />
-                            </div>
-                            <div className='w-full flex flex-col items-center justify-center gap-5'>
-                                <span className='text-center text-sm font-medium '>
-                                    Você não possui pagamentos em aberto <br /> no próximos 30 dias.
-                                </span>
-                                <BtnAtivado title='Criar Pagamento' onClick="/clientes" page="/clientes/criar" size="sm" rounded="md" />
-                            </div>
-                        </div>
-
-
-                        {/* contas a receber */}
-                        <div className='bg-bg dark:bg-dark-primaria-800 w-full xl:w-1/2 flex flex-col h-full rounded-xl px-5 py-7 ring-1 ring-gray-100 dark:ring-1 dark:ring-black ring-opacity-5 shadow-md'>
-                            <div className='flex justify-between items-center'>
-                                <p className='text-neutral-700 font-semibold pt-2 text-start'>Contas a receber</p>
+                                <p className='text-neutral-700 font-semibold pt-2 text-start'>Valor recebido</p>
                                 <div className='flex gap-2'>
                                     <HelpOutlineIcon className='text-neutral-700 dark:text-gray-200 w-6 h-6' />
                                     <DropdownMore />
@@ -327,6 +293,42 @@ const InicioContent = () => {
                                 <BtnAtivado title='Criar Recebimento' onClick="/clientes" page="/clientes/criar" size="sm" rounded="md" />
                             </div>
                         </div>
+                        
+                        {/* contas a pagar */}
+                        <div className='bg-bg dark:bg-dark-primaria-800 w-full xl:w-1/2 flex flex-col h-full rounded-xl px-5 py-7 ring-1 ring-gray-100 dark:ring-1 dark:ring-black ring-opacity-5 shadow-md'>
+                            <div className='flex justify-between items-center'>
+                                <p className='text-neutral-700 font-semibold pt-2 text-start'>A receber</p>
+                                <div className='flex gap-2'>
+                                    <HelpOutlineIcon className='text-neutral-700 dark:text-gray-200 w-6 h-6' />
+                                    <DropdownMore />
+                                </div>
+                            </div>
+
+                            <div className='w-36 bg-yellow-100 px-4 py-3 rounded-lg mt-2'>
+                                <span className='block font-medium text-yellow-600 dark:text-yellow-600'>R$ 0,00</span>
+                                <span className='text-xs font-medium text dark:text-neutral-800'>Vencendo hoje</span>
+                            </div>
+
+                            <hr className='my-5' />
+
+                            <div className='flex justify-between mb-5'>
+                                <div className='flex'>
+                                    {/* <button className='text-neutral-700 font-medium text-sm'>Filtrar por:</button> */}
+                                    <button className='border border-orange-500 bg-orange-200 bg-opacity-30 rounded-l-full text-orange-500 font-medium text-sm px-3 py-1'>Abertas</button>
+                                    <button className='border border-gray-300 rounded-r-full text-neutral-500 font-medium text-sm px-3 py-1'>Atrasadas</button>
+                                </div>
+                                <DropdownFilterWeek />
+                            </div>
+                            <div className='w-full flex flex-col items-center justify-center gap-5'>
+                                <span className='text-center text-sm font-medium '>
+                                    Você não possui pagamentos em aberto <br /> no próximos 30 dias.
+                                </span>
+                                <BtnAtivado title='Criar Pagamento' onClick="/clientes" page="/clientes/criar" size="sm" rounded="md" />
+                            </div>
+                        </div>
+
+
+
                     </div>
                 </div>
             </div>

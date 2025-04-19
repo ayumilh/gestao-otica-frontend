@@ -21,7 +21,8 @@ const FormEditarVendas = ({ cliId }) => {
     obs: "",
     alturaPupilar: "",
     clienteCpf: "",
-    usuarioId: ""
+    usuarioId: "",
+    statusPagamento: "",
   });
 
   const [vendaData, setVendaData] = useState(null);
@@ -68,6 +69,7 @@ const FormEditarVendas = ({ cliId }) => {
             a_pagar: venda.a_pagar,
             obs: venda.obs,
             alturaPupilar: venda.alturaPupilar,
+            statusPagamento: venda.statusPagamento
           }));
         }
 
@@ -139,6 +141,21 @@ const FormEditarVendas = ({ cliId }) => {
       <h3 className="text-neutral-800 text-xl font-medium">
         {input.clienteNome || ""}
       </h3>
+
+      <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
+          <label className="block font-medium text-sm text-neutral-700">Status do Pagamento</label>
+          <select
+            name="statusPagamento"
+            value={input.statusPagamento}
+            onChange={inputChange}
+            className="w-full border rounded px-3 py-2 bg-white"
+          >
+            <option value="PENDENTE">Pendente</option>
+            <option value="PAGO_TOTAL">Pago Total</option>
+            <option value="AGUARDANDO_ENTREGA">Aguardando Entrega</option>
+            <option value="CANCELADO">Cancelado</option>
+          </select>
+        </div>
 
       <div className="flex flex-wrap mt-5 mb-7">
         {/* Data da Venda */}
