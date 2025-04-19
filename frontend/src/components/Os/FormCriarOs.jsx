@@ -8,6 +8,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import SuccessNotification from "@/components/Geral/Notification/SuccessNotification";
 import ErrorNotification from "@/components/Geral/Notification/ErrorNotification";
+import InputField from "@/components/Geral/Input/InputField";
 import { useRouter } from "next/navigation";
 import { useUserToken } from "@/utils/useUserToken";
 
@@ -205,6 +206,32 @@ const FormCriarOs = () => {
         }
     };
 
+    const handleLentesChange = (e) => {
+        const value = e.target.value;
+        const regex = /^[A-Za-z0-9\s]+$/;
+
+        if (value === "" || regex.test(value)) {
+            setVendaLentes(value);
+            setIsInvalidoVendaLentes(false);
+        } else {
+            setIsInvalidoVendaLentes(true);
+        }
+    };
+
+
+    const handleArmacaoChange = (e) => {
+        const value = e.target.value;
+        const regex = /^[A-Za-z0-9\s]+$/;
+
+        if (value === "" || regex.test(value)) {
+            setVendaArmacao(value);
+            setIsInvalidoVendaArmacao(false);
+        } else {
+            setIsInvalidoVendaArmacao(true);
+        }
+    };
+
+
     const handleUnificado = async () => {
         const grauData = [];
         const lentesTipos = ['Longe', 'Perto'];
@@ -321,279 +348,105 @@ const FormCriarOs = () => {
             </h3>
 
             <div className="flex flex-wrap transition-transform duration-500 ease-in">
+                {/* Nome com Dropdown */}
+                <div className="w-full md:w-1/2 px-3 mb-4 relative z-20">
+                    <InputField
+                        label="Nome do cliente"
+                        name="cli_nome"
+                        value={cli_nome}
+                        onChange={handleNomeChange}
+                        placeholder="Digite o nome do cliente"
+                        required
+                        maxLength={200}
+                        error={errorsInput.cli_nome}
+                    />
 
-                <div className="w-full flex flex-wrap mt-5 mb-7">
-                    {/* nome */}
-                    <div className="w-full md:w-1/2 mt-3 mb-4 px-3 relative z-10">
-                        <label htmlFor="cli_nome" className="block font-medium text-sm text-neutral-700">
-                            Nome do cliente <span className="text-red-600">*</span>
-                        </label>
-                        <input
-                            onChange={handleNomeChange}
-                            value={cli_nome}
-                            name="cli_nome"
-                            type="text"
-                            required
-                            maxLength={200}
-                            placeholder="Digite o nome do cliente"
-                            className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 transition-all duration-500 ease-out ${isInvalidoClienteNome ? "outline-red-500 focus:outline-red-500" : ""}`}
-                        />
+                    {/* Dropdown com resultado */}
+                    {openFilterName && clientesEncontrados.length > 0 && (
+                        <div
+                            ref={dropdownRef}
+                            className="absolute top-full left-0 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-md max-h-60 overflow-y-auto z-50"
+                        >
+                            {isLoading ? (
+                                <div className="p-4 text-center">
+                                    <CircularProgress size={24} />
+                                </div>
+                            ) : (
+                                clientesEncontrados.map((res, index) => {
+                                    const c = res.cliente || res;
+                                    return (
+                                        <div
+                                            key={index}
+                                            onClick={() => {
+                                                setShowLentesArmacao(true);
+                                                setClienteSelecionado(true);
 
-                        {/* Dropdown com resultado */}
-                        {openFilterName && clientesEncontrados.length > 0 && (
-                            <div
-                                ref={dropdownRef}
-                                className="absolute mt-1 max-w-lg w-full z-50 bg-white border border-gray-200 rounded-md shadow-md"
-                            >
-                                {isLoading ? (
-                                    <div className="p-4 text-center">
-                                        <CircularProgress size={24} />
-                                    </div>
-                                ) : (
-                                    clientesEncontrados.map((res, index) => {
-                                        const c = res.cliente || res;
-                                        return (
-                                            <div
-                                                key={index}
-                                                onClick={() => {
-                                                    setShowLentesArmacao(true);
-                                                    setClienteSelecionado(true);
+                                                setCli_nome(c.nome || "");
+                                                setCli_cpf(c.cpf || "");
+                                                setCli_endereco(c.endereco || "");
+                                                setCli_numero(c.numero || "");
+                                                setCli_complemento(c.complemento || "");
+                                                setCli_telefone(c.telefone || "");
 
-                                                    setCli_nome(c.nome || "");
-                                                    setCli_cpf(c.cpf || "");
-                                                    setCli_endereco(c.endereco || "");
-                                                    setCli_numero(c.numero || "");
-                                                    setCli_complemento(c.complemento || "");
-                                                    setCli_telefone(c.telefone || "");
-
-                                                    setOpenFilterName(false);
-
-
-                                                }}
-                                                className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex gap-2 items-center"
-                                            >
-                                                <div className="bg-orange-400 text-white p-2 rounded-full">
-                                                    <PersonIcon fontSize="small" />
-                                                </div>
-                                                <div>
-                                                    <div className="font-medium">{c.nome}</div>
-                                                    <div className="text-sm text-gray-600">CPF: {c.cpf}</div>
-                                                    <div className="text-sm text-gray-600">Tel: {c.telefone}</div>
-                                                </div>
+                                                setOpenFilterName(false);
+                                            }}
+                                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex gap-2 items-center transition"
+                                        >
+                                            <div className="bg-orange-400 text-white p-2 rounded-full">
+                                                <PersonIcon fontSize="small" />
                                             </div>
-                                        );
-                                    })
-                                )}
-                            </div>
-                        )}
+                                            <div>
+                                                <div className="font-medium">{c.nome}</div>
+                                                <div className="text-sm text-gray-600">CPF: {c.cpf}</div>
+                                                <div className="text-sm text-gray-600">Tel: {c.telefone}</div>
+                                            </div>
+                                        </div>
+                                    );
+                                })
+                            )}
+                        </div>
+                    )}
+                </div>
 
-                        {errorsInput.cli_nome && (
-                            <p className="text-red-500 relative text-sm mt-1">{errorsInput.cli_nome}</p>
-                        )}
-                    </div>
 
-                    {/* cpf */}
-                    <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
-                        <label
-                            htmlFor="cli_cpf"
-                            className="block font-medium text-sm text-neutral-700"
-                        >
-                            CPF
-                        </label>
-                        <input
-                            onChange={handleCpfChange}
-                            value={cli_cpf || ""}
-                            name="cli_cpf"
-                            type="text"
-                            maxLength={11}
-                            className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${isInvalidoClienteCpf
-                                ? "outline-red-500 focus:outline-red-500"
-                                : ""
-                                }`}
-                        />
-                        {errorsInput.cli_cpf && (
-                            <p className="text-red-500 relative text-sm mt-1">{errorsInput.cli_cpf}</p>
-                        )}
-                    </div>
+                {/* CPF e Telefone */}
+                <div className="w-full md:w-1/4 px-3 mb-4">
+                    <InputField label="CPF" name="cli_cpf" value={cli_cpf || ""} onChange={handleCpfChange} maxLength={15} error={errorsInput.cli_cpf} />
+                </div>
+                <div className="w-full md:w-1/4 px-3 mb-4">
+                    <InputField label="Telefone" name="cli_telefone" value={cli_telefone || ""} onChange={handleTelefoneChange} required maxLength={15} error={errorsInput.cli_telefone} />
+                </div>
 
-                    {/* endereço */}
-                    <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
-                        <label
-                            htmlFor="cli_endereco"
-                            className="block font-medium text-sm text-neutral-700"
-                        >
-                            Endereço <span className="text-red-600">*</span>
-                        </label>
-                        <input
-                            onChange={handleEnderecoChange}
-                            value={cli_endereco || ""}
-                            type="text"
-                            name="cli_endereco"
-                            maxLength={200}
-                            minLength={1}
-                            required
-                            className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${isInvalidoClienteEndereco
-                                ? "outline-red-500 focus:outline-red-500"
-                                : ""
-                                }`}
-                        />
-                        {errorsInput.cli_endereco && (
-                            <p className="text-red-500 relative text-sm mt-1">{errorsInput.cli_endereco}</p>
-                        )}
-                    </div>
+                {/* Endereço e Número */}
+                <div className="w-full md:w-3/4 px-3 mb-4">
+                    <InputField label="Endereço" name="cli_endereco" value={cli_endereco || ""} onChange={handleEnderecoChange} required maxLength={200} error={errorsInput.cli_endereco} />
+                </div>
+                <div className="w-full md:w-1/4 px-3 mb-4">
+                    <InputField label="Número" name="cli_numero" value={cli_numero || ""} onChange={handleNumeroChange} required maxLength={10} error={errorsInput.cli_numero} />
+                </div>
 
-                    {/* numero */}
-                    <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
-                        <label
-                            htmlFor="cli_numero"
-                            className="block font-medium text-sm text-neutral-700"
-                        >
-                            Número <span className="text-red-600">*</span>
-                        </label>
-                        <input
-                            onChange={handleNumeroChange}
-                            value={cli_numero || ""}
-                            type="text"
-                            name="cli_numero"
-                            required
-                            maxLength={10}
-                            minLength={1}
-                            className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${isInvalidoClienteNumero
-                                ? "outline-red-500 focus:outline-red-500"
-                                : ""
-                                }`}
-                        />
-                        {errorsInput.cli_numero && (
-                            <p className="text-red-500 relative text-sm mt-1">{errorsInput.cli_numero}</p>
-                        )}
-                    </div>
-
-                    {/* complemento */}
-                    <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
-                        <label
-                            htmlFor="cli_complemento"
-                            className="block font-medium text-sm text-neutral-700"
-                        >
-                            Complemento
-                        </label>
-                        <input
-                            onChange={handleComplementoChange}
-                            value={cli_complemento || ""}
-                            type="text"
-                            name="cli_complemento"
-                            maxLength={50}
-                            minLength={1}
-                            className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${isInvalidoClienteComplemento
-                                ? "outline-red-500 focus:outline-red-500"
-                                : ""
-                                }`}
-                        />
-                        {errorsInput.cli_complemento && (
-                            <p className="text-red-500 relative text-sm mt-1">{errorsInput.cli_complemento}</p>
-                        )}
-                    </div>
-
-                    {/* telefone */}
-                    <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
-                        <label
-                            htmlFor="cli_telefone"
-                            className="block font-medium text-sm text-neutral-700"
-                        >
-                            Telefone <span className="text-red-600">*</span>
-                        </label>
-                        <input
-                            onChange={handleTelefoneChange}
-                            value={cli_telefone || ""}
-                            type="text"
-                            name="cli_telefone"
-                            required
-                            maxLength={11}
-                            minLength={1}
-                            className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${isInvalidoClienteTelefone
-                                ? "outline-red-500 focus:outline-red-500"
-                                : ""
-                                }`}
-                        />
-                        {errorsInput.cli_telefone && (
-                            <p className="text-red-500 relative text-sm mt-1">{errorsInput.cli_telefone}</p>
-                        )}
-                    </div>
-
+                {/* Complemento */}
+                <div className="w-full md:w-1/2 px-3 mb-4">
+                    <InputField label="Complemento" name="cli_complemento" value={cli_complemento || ""} onChange={handleComplementoChange} maxLength={50} error={errorsInput.cli_complemento} />
                 </div>
 
                 {/* Seção de lentes e armação */}
-                <div
-                    className="w-full flex mt-5 mb-7 border-t pt-6 cursor-pointer"
-                    onClick={() => setShowLentesArmacao(!showLentesArmacao)}
-                >
+                <div className="w-full flex mt-5 mb-3 border-t pt-6 cursor-pointer px-3" onClick={() => setShowLentesArmacao(!showLentesArmacao)}>
                     <span className="text-neutral-800 text-xl font-medium">Lentes e Armação</span>
-                    {showLentesArmacao ? (
-                        <KeyboardArrowUpIcon className="text-neutral-600" />
-                    ) : (
-                        <KeyboardArrowDownIcon className="text-neutral-600" />
-                    )}
+                    {showLentesArmacao ? <KeyboardArrowUpIcon className="text-neutral-600 ml-2" /> : <KeyboardArrowDownIcon className="text-neutral-600 ml-2" />}
                 </div>
+
                 {showLentesArmacao && (
                     <>
-                        {/* lentes */}
-                        <div className="w-full mt-3 mb-4 px-3">
-                            <label
-                                htmlFor="vendaLentes"
-                                className="block font-medium text-sm text-neutral-700"
-                            >
-                                Lentes <span className="text-red-600">*</span>
-                            </label>
-                            <input
-                                onChange={(e) => {
-                                    const value = e.target.value;
-                                    const regex = /^[A-Za-z0-9\s]+$/;
-                                    if (value === "" || regex.test(value)) {
-                                        setVendaLentes(value);
-                                        setIsInvalidoVendaLentes(false);
-                                    } else {
-                                        setIsInvalidoVendaLentes(true);
-                                    }
-                                }}
-                                value={vendaLentes || ""}
-                                type="text"
-                                name="vendaLentes"
-                                maxLength={100}
-                                required
-                                className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${isInvalidoVendaLentes ? "outline-red-500 focus:outline-red-500" : ""
-                                    }`}
-                            />
+                        <div className="w-full md:w-1/2 px-3 mb-4">
+                            <InputField label="Lentes" name="vendaLentes" value={vendaLentes} required maxLength={100} onChange={handleLentesChange} error={isInvalidoVendaLentes && "Campo inválido. Use apenas letras e números."} />
+                        </div>
+                        <div className="w-full md:w-1/2 px-3 mb-4">
+                            <InputField label="Armação" name="vendaArmacao" value={vendaArmacao || ""} type="text" maxLength={100} required onChange={handleArmacaoChange} error={isInvalidoVendaArmacao && "Campo inválido. Use apenas letras e números."} />
                         </div>
 
-                        {/* armação */}
-                        <div className="w-full mt-3 mb-4 px-3">
-                            <label
-                                htmlFor="vendaArmacao"
-                                className="block font-medium text-sm text-neutral-700"
-                            >
-                                Armação: <span className="text-red-600">*</span>
-                            </label>
-                            <input
-                                onChange={(e) => {
-                                    const value = e.target.value;
-                                    const regex = /^[A-Za-z0-9\s]+$/;
-                                    if (value === "" || regex.test(value)) {
-                                        setVendaArmacao(value);
-                                        setIsInvalidoVendaArmacao(false);
-                                    } else {
-                                        setIsInvalidoVendaArmacao(true);
-                                    }
-                                }}
-                                value={vendaArmacao || ""}
-                                type="text"
-                                name="vendaArmacao"
-                                maxLength={100}
-                                required
-                                className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${isInvalidoVendaArmacao ? "outline-red-500 focus:outline-red-500" : ""
-                                    }`}
-                            />
-                        </div>
-
-                        <div className="overflow-x-auto">
+                        {/* Tabela de medidas */}
+                        <div className="w-full px-3 mb-4 overflow-x-auto">
                             <table className="min-w-full border text-sm text-left text-neutral-800">
                                 <thead className="bg-neutral-200">
                                     <tr>
@@ -616,35 +469,17 @@ const FormCriarOs = () => {
                                         <tr key={index} className="bg-white">
                                             <td className="px-4 py-2 border">{item.lente}</td>
                                             <td className="px-4 py-2 border">{item.olho}</td>
-                                            <td className="px-2 py-1 border">
-                                                <input type="text" name={`esferico_${item.lente}_${item.olho}`} className="w-full px-2 py-1 border rounded" />
-                                            </td>
-                                            <td className="px-2 py-1 border">
-                                                <input type="text" name={`cilindrico_${item.lente}_${item.olho}`} className="w-full px-2 py-1 border rounded" />
-                                            </td>
-                                            <td className="px-2 py-1 border">
-                                                <input type="text" name={`eixo_${item.lente}_${item.olho}`} className="w-full px-2 py-1 border rounded" />
-                                            </td>
-                                            <td className="px-2 py-1 border">
-                                                <input type="text" name={`add_${item.lente}_${item.olho}`} className="w-full px-2 py-1 border rounded" />
-                                            </td>
-                                            <td className="px-2 py-1 border">
-                                                <input type="text" name={`dp_${item.lente}_${item.olho}`} className="w-full px-2 py-1 border rounded" />
-                                            </td>
+                                            <td className="px-2 py-1 border"><input type="text" name={`esferico_${item.lente}_${item.olho}`} className="w-full px-2 py-1 border rounded" /></td>
+                                            <td className="px-2 py-1 border"><input type="text" name={`cilindrico_${item.lente}_${item.olho}`} className="w-full px-2 py-1 border rounded" /></td>
+                                            <td className="px-2 py-1 border"><input type="text" name={`eixo_${item.lente}_${item.olho}`} className="w-full px-2 py-1 border rounded" /></td>
+                                            <td className="px-2 py-1 border"><input type="text" name={`add_${item.lente}_${item.olho}`} className="w-full px-2 py-1 border rounded" /></td>
+                                            <td className="px-2 py-1 border"><input type="text" name={`dp_${item.lente}_${item.olho}`} className="w-full px-2 py-1 border rounded" /></td>
                                         </tr>
                                     ))}
-
-                                    {/* Altura Pupilar */}
                                     <tr className="bg-white">
                                         <td className="px-4 py-2 border bg-neutral-100" colSpan={6}>Altura Pupilar</td>
                                         <td className="px-2 py-1 border">
-                                            <input
-                                                type="text"
-                                                name="altura_pupilar"
-                                                value={alturaPupilar}
-                                                onChange={(e) => setAlturaPupilar(e.target.value)}
-                                                className="w-full px-2 py-1 border rounded bg-neutral-100"
-                                            />
+                                            <input type="text" name="altura_pupilar" value={alturaPupilar} onChange={(e) => setAlturaPupilar(e.target.value)} className="w-full px-2 py-1 border rounded bg-neutral-100" />
                                         </td>
                                     </tr>
                                 </tbody>
@@ -654,98 +489,38 @@ const FormCriarOs = () => {
                 )}
 
                 {/* Seção de detalhes da venda */}
-                <div className="w-full flex mt-5 mb-7 border-t pt-6 cursor-pointer" onClick={() => setShowVendaDetails(!showVendaDetails)}>
+                <div className="w-full flex mt-5 mb-3 border-t pt-6 cursor-pointer px-3" onClick={() => setShowVendaDetails(!showVendaDetails)}>
                     <span className="text-neutral-800 text-xl font-medium">Detalhes de venda</span>
-                    {showVendaDetails ? (
-                        <KeyboardArrowUpIcon className="text-neutral-600" />
-                    ) : (
-                        <KeyboardArrowDownIcon className="text-neutral-600" />
-                    )}
+                    {showVendaDetails ? <KeyboardArrowUpIcon className="text-neutral-600 ml-2" /> : <KeyboardArrowDownIcon className="text-neutral-600 ml-2" />}
                 </div>
+
                 {showVendaDetails && (
                     <>
-                        {/* Data da Venda */}
-                        <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
-                            <label className="block font-medium text-sm text-neutral-700">
-                                Data da Venda <span className="text-red-600">*</span>
-                            </label>
-                            <input
-                                type="date"
-                                value={dataVenda}
-                                onChange={(e) => setDataVenda(e.target.value)}
-                                className="peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-blue-400 transition-all"
-                                required
-                            />
+                        <div className="w-full md:w-1/2 px-3 mb-4">
+                            <label className="block font-medium text-sm text-neutral-700">Data da Venda <span className="text-red-600">*</span></label>
+                            <input type="date" value={dataVenda} onChange={(e) => setDataVenda(e.target.value)} className="peer rounded-lg w-full border px-3 py-2 font-medium text-neutral-600 focus:outline-none focus:ring-2 focus:ring-blue-400" required />
                         </div>
-
-                        {/* Data de Entrega */}
-                        <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
-                            <label className="block font-medium text-sm text-neutral-700">
-                                Previsão de Entrega <span className="text-red-600">*</span>
-                            </label>
-                            <input
-                                type="date"
-                                value={dataEntrega}
-                                onChange={(e) => setDataEntrega(e.target.value)}
-                                className="peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-blue-400 transition-all"
-                                required
-                            />
+                        <div className="w-full md:w-1/2 px-3 mb-4">
+                            <label className="block font-medium text-sm text-neutral-700">Previsão de Entrega <span className="text-red-600">*</span></label>
+                            <input type="date" value={dataEntrega} onChange={(e) => setDataEntrega(e.target.value)} className="peer rounded-lg w-full border px-3 py-2 font-medium text-neutral-600 focus:outline-none focus:ring-2 focus:ring-blue-400" required />
                         </div>
-
-                        {/* Preço */}
-                        <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
-                            <label className="block font-medium text-sm text-neutral-700">
-                                Preço Total <span className="text-red-600">*</span>
-                            </label>
-                            <input
-                                type="number"
-                                value={preco}
-                                onChange={(e) => setPreco(e.target.value)}
-                                className="peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-blue-400 transition-all"
-                                required
-                            />
+                        <div className="w-full md:w-1/2 px-3 mb-4">
+                            <InputField label="Preço Total" name="preco" value={preco} onChange={(e) => setPreco(e.target.value)} error={errorsInput?.preco} required />
                         </div>
-
-                        {/* Sinal */}
-                        <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
-                            <label className="block font-medium text-sm text-neutral-700">
-                                Sinal (opcional)
-                            </label>
-                            <input
-                                type="number"
-                                value={sinal}
-                                onChange={(e) => setSinal(e.target.value)}
-                                className="peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-blue-400 transition-all"
-                            />
+                        <div className="w-full md:w-1/2 px-3 mb-4">
+                            <InputField label="Sinal (opcional)" name="sinal" value={sinal} onChange={(e) => setSinal(e.target.value)} error={errorsInput?.sinal} />
                         </div>
-
-                        {/* A pagar */}
-                        <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
-                            <label className="block font-medium text-sm text-neutral-700">
-                                Valor a Pagar (opcional)
-                            </label>
-                            <input
-                                type="number"
-                                value={aPagar}
-                                onChange={(e) => setAPagar(e.target.value)}
-                                className="peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-blue-400 transition-all"
-                            />
+                        <div className="w-full md:w-1/2 px-3 mb-4">
+                            <InputField label="Valor a Pagar (opcional)" name="a_pagar" value={aPagar} onChange={(e) => setAPagar(e.target.value)} error={errorsInput?.a_pagar} />
                         </div>
-
-                        {/* Observação */}
-                        <div className="w-full mt-3 mb-4 px-3">
-                            <label className="block font-medium text-sm text-neutral-700">
-                                Observações
-                            </label>
-                            <textarea
-                                value={obs}
-                                onChange={(e) => setObs(e.target.value)}
-                                className="peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-blue-400 transition-all"
-                            ></textarea>
+                        <div className="w-full px-3 mb-4">
+                            <label className="block font-medium text-sm text-neutral-700">Observações</label>
+                            <textarea value={obs} onChange={(e) => setObs(e.target.value)} className="peer rounded-lg w-full border px-3 py-2 font-medium text-neutral-600 dark:text-white dark:bg-neutral-800 dark:border-neutral-600 focus:outline-none focus:ring-2 focus:ring-blue-400" rows={4} />
                         </div>
                     </>
                 )}
             </div>
+
 
             <div className="w-60 flex justify-start gap-3 my-9 px-4">
                 <BtnActions title="Salvar tudo" onClick={handleUnificado} color="ativado" padding="md" />

@@ -20,9 +20,10 @@ export default function NavbarMobile() {
   const StyledDrawer = styled(Drawer)(({ theme }) => ({
     '& .MuiDrawer-paper': {
       width: '190px',
-      backgroundColor: darkMode ? '#23262F' : '#F6F6FB',
+      backgroundColor: theme.palette.mode === 'dark' ? '#23262F' : '#ffffff',
       boxSizing: "border-box",
       border: 'none',
+      borderRight: theme.palette.mode === 'dark' ? '1px solid #393C45' : '1px solid #E5E7EB',
       borderTopRightRadius: '20px',
       borderBottomRightRadius: '20px',
     },
