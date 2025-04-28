@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { IoClose } from "react-icons/io5";
-import ErrorNotification from '../../../Geral/Notification/ErrorNotification';
+import ErrorNotification from '../../../Ui/Notification/ErrorNotification';
 import { IoAdd } from "react-icons/io5";
 import { PdvCloseCashForm } from './PdvCloseCashForm';
 

@@ -3,9 +3,9 @@ import { useState } from "react";
 import axios from "axios";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
-import BtnActions from "@/components/Geral/Button/BtnActions";
-import SuccessNotification from "@/components/Geral/Notification/SuccessNotification";
-import ErrorNotification from "@/components/Geral/Notification/ErrorNotification";
+import BtnActions from "@/components/Ui/Button/BtnActions";
+import SuccessNotification from "@/components/Ui/Notification/SuccessNotification";
+import ErrorNotification from "@/components/Ui/Notification/ErrorNotification";
 
 const steps = [
   { titulo: "Informações Basica", subtitulo: "Preencha as informações básicas do seu produto" },

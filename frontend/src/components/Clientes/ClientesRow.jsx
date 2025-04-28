@@ -1,16 +1,12 @@
 'use client'
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Cookies from 'js-cookie';
-import { useUserToken } from '@/utils/useUserToken';
-import ProductionQuantityLimitsIcon from '@mui/icons-material/ProductionQuantityLimits';
 import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
-import SkeletonLoader from "@/components/Geral/SkeletonTableRow"
-// import ModalEditarClientes from './Editar/ModalEditarClientes';
-import axios from 'axios';
+import ProductionQuantityLimitsIcon from '@mui/icons-material/ProductionQuantityLimits';
+import SkeletonLoader from "@/components/Ui/SkeletonTableRow"
 
-export default function ClientesRow({ clientes, setIsOpenModalGrau, setGrauData, setSelectedCPF }) {
-    const { token } = useUserToken();
+
+export default function ClientesRow({ clientes }) {
     const [isOpen, setIsOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const router = useRouter();
@@ -57,7 +53,7 @@ export default function ClientesRow({ clientes, setIsOpenModalGrau, setGrauData,
                     </td>
                     {/* <td className="px-4 py-4 md:py-5 text-center whitespace-nowrap">
                         <button
-                            onClick={() => handleButtonClick(cliente.cpf)}
+                            onClick={() => handleButtonClick(cliente.id)}
                             className="text-neutral-700 hover:text-neutral-900 dark:text-slate-200 dark:hover:text-slate-50 transition ease-in flex items-center justify-center"
                         >
                             <ModeEditOutlineIcon className="mr-1 h-4 md:h-5 w-4 md:w-5" />

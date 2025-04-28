@@ -7,6 +7,8 @@ import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import VendasSelectFilter from './VendasSelectFilter';
+import SearchIcon from '@mui/icons-material/Search';
+import CloseIcon from '@mui/icons-material/Close';
 
 
 export const VendasMenuMoreResponsive = ({ currentPage, totalPages, rowsPerPage, handlePageChange, handleRowsPerPageChange, onVendas }) => {
@@ -15,10 +17,9 @@ export const VendasMenuMoreResponsive = ({ currentPage, totalPages, rowsPerPage,
     const [isOpenMenu, setIsOpenMenu] = useState(false);
     const [vendas, setVendas] = useState([]);
 
-    const handleOpenMenu = () => {
-        setIsOpenMenu(!isOpenMenu);
-    }
-    
+    const [showMobileFilter, setShowMobileFilter] = useState(false);
+    const dropdownRef = useRef(null);
+
     useEffect(() => {
         onVendas(vendas);
     }, [onVendas, vendas]);
@@ -36,12 +37,45 @@ export const VendasMenuMoreResponsive = ({ currentPage, totalPages, rowsPerPage,
         }
     }, [menuMoreVertRef])
 
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setShowMobileFilter(false);
+            }
+        }
+
+        if (showMobileFilter) {
+            document.addEventListener("mousedown", handleClickOutside);
+        } else {
+            document.removeEventListener("mousedown", handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [showMobileFilter]);
+
 
     return (
         <div className="border-l-indigo-200 w-full flex justify-start pl-4 pt-5 pb-2 gap-3 sticky top-0 left-0 z-40" ref={menuMoreVertRef}>
             {isMobile ? (
-                <div >
-                    <FilterAltOutlinedIcon className="w-6 h-6 text-segundaria-800" />
+                <div className="relative" ref={dropdownRef}>
+                    <button
+                        onClick={() => setShowMobileFilter((prev) => !prev)}
+                        className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                    >
+                        {showMobileFilter ? (
+                            <CloseIcon className="w-5 h-5 text-gray-700 dark:text-white" />
+                        ) : (
+                            <SearchIcon className="w-5 h-5 text-gray-700 dark:text-white" />
+                        )}
+                    </button>
+
+                    {showMobileFilter && (
+                        <div className="absolute top-10 left-0 w-[90vw] dark:bg-primaria-800 p-3 z-50">
+                            <VendasSelectFilter onVendas={setVendas} />
+                        </div>
+                    )}
                 </div>
             ) : (<>
                 <div className="flex items-center justify-between gap-3">
@@ -49,7 +83,7 @@ export const VendasMenuMoreResponsive = ({ currentPage, totalPages, rowsPerPage,
                         <input type="checkbox" name="" id="" className="dark:color-primaria-800" />
                         <VendasSelectFilter onVendas={setVendas} />
                     </div>
-                    <FilterAltOutlinedIcon className="w-6 h-6 text-segundaria-800" />
+                    {/* <FilterAltOutlinedIcon className="w-6 h-6 text-segundaria-800" /> */}
                 </div>
             </>)}
 

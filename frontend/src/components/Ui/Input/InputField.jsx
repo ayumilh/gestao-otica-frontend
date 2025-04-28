@@ -3,7 +3,7 @@ import React from 'react';
 import { tv } from 'tailwind-variants';
 
 const inputStyles = tv({
-    base: `peer w-full px-3 py-2 border rounded-lg font-medium
+  base: `peer w-full px-3 py-2 border rounded-lg font-medium
            bg-white text-neutral-600 placeholder-gray-400 border-gray-300
            focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-1
            transition-all duration-300 ease-out
@@ -11,13 +11,13 @@ const inputStyles = tv({
            dark:bg-neutral-800 dark:text-neutral-200 dark:border-neutral-600 
            dark:placeholder-neutral-400 dark:focus:ring-blue-500 
            dark:focus:ring-offset-gray-900 dark:backdrop-blur-sm dark:shadow-md`,
-    variants: {
-      error: {
-        true: `outline-none ring-2 ring-red-500 focus:ring-red-500`,
-      },
+  variants: {
+    error: {
+      true: `outline-none ring-2 ring-red-500 focus:ring-red-500`,
     },
-  });
-  
+  },
+});
+
 
 export default function InputField({
   label,
@@ -56,13 +56,14 @@ export default function InputField({
 
   // 💰 Formata valor monetário para exibição
   const formatMoney = (val) => {
-    const raw = val.replace(/\D/g, '');
+    const raw = String(val || '').replace(/\D/g, '');
     const floatVal = (parseFloat(raw) / 100).toFixed(2);
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL',
     }).format(floatVal);
   };
+  
 
   // 🔁 Manipula mudança de campos mascarados
   const handleMaskedChange = (e) => {

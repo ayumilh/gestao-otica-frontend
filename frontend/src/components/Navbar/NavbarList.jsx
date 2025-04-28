@@ -5,10 +5,10 @@ import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
 import Groups2OutlinedIcon from '@mui/icons-material/Groups2Outlined';
 import SearchIcon from '@mui/icons-material/Search';
 import { FaTags } from 'react-icons/fa';
-import BtnAtivado from "../Geral/Button/BtnAtivado";
+import BtnAtivado from "../Ui/Button/BtnAtivado";
 import BtnSignOut from "./BtnSignOut";
-import DarkModeToggle from "../Geral/Button/DarkModeToggle";
-import ActionsHeader from "../Geral/ActionsHeader";
+import DarkModeToggle from "../Ui/Button/DarkModeToggle";
+import ActionsHeader from "../Ui/ActionsHeader";
 import SavingsOutlinedIcon from '@mui/icons-material/SavingsOutlined';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 

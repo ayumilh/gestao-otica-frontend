@@ -2,21 +2,32 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTheme } from '@mui/material';
 import { useMediaQuery } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
 
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
+import ClientesSelectFilter from './ClientesSelectFilter';
+import SearchIcon from '@mui/icons-material/Search';
+import CloseIcon from '@mui/icons-material/Close';
 
 
-export const ClientesMenuMoreResponsive = ({ currentPage, totalPages, rowsPerPage, handlePageChange, handleRowsPerPageChange }) => {
+
+export const ClientesMenuMoreResponsive = ({ currentPage, totalPages, rowsPerPage, handlePageChange, handleRowsPerPageChange, onClientes }) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const [isOpenMenu, setIsOpenMenu] = useState(false);
+    const [clientes, setClientes] = useState([]);
+    const [showMobileFilter, setShowMobileFilter] = useState(false);
+    const dropdownRef = useRef(null);
+
 
     const handleOpenMenu = () => {
         setIsOpenMenu(!isOpenMenu);
     }
+
+    useEffect(() => {
+        onClientes(clientes);
+    }, [onClientes, clientes]);
 
 
     const menuMoreVertRef = useRef(null);
@@ -32,25 +43,51 @@ export const ClientesMenuMoreResponsive = ({ currentPage, totalPages, rowsPerPag
         }
     }, [menuMoreVertRef])
 
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setShowMobileFilter(false);
+            }
+        }
+
+        if (showMobileFilter) {
+            document.addEventListener("mousedown", handleClickOutside);
+        } else {
+            document.removeEventListener("mousedown", handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [showMobileFilter]);
+
 
     return (
         <div className="border-l-indigo-200 w-full flex justify-start flex-row pl-4 pt-5 pb-2 gap-3 sticky top-0 left-0 z-40" ref={menuMoreVertRef}>
             {isMobile ? (
-                <div >
-                    <FilterAltOutlinedIcon className="w-6 h-6 text-segundaria-800" />
+                <div className="relative" ref={dropdownRef}>
+                    <button
+                        onClick={() => setShowMobileFilter((prev) => !prev)}
+                        className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                    >
+                        {showMobileFilter ? (
+                            <CloseIcon className="w-5 h-5 text-gray-700 dark:text-white" />
+                        ) : (
+                            <SearchIcon className="w-5 h-5 text-gray-700 dark:text-white" />
+                        )}
+                    </button>
+
+                    {showMobileFilter && (
+                        <div className="absolute top-10 left-0 w-[90vw] dark:bg-primaria-800 p-3 z-50">
+                            <ClientesSelectFilter onClientes={setClientes} />
+                        </div>
+                    )}
                 </div>
             ) : (<>
                 <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-4">
-                        <input type="checkbox" name="" id="" className="dark:color-primaria-800" />
-                        <div className="flex items-center w-full max-w-60 rounded-full py-2 relative">
-                            <div className="relative w-full">
-                                <SearchIcon className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                                <input type="text" className="w-full focus:outline-none focus:ring focus:border-gray-700 bg-white dark:bg-primaria-800 rounded-lg text-txt-primaria outline-none pl-10 pr-3 py-2 text-xs" placeholder="O que procura?" />
-                            </div>
-                        </div>
-                    </div>
-                    <FilterAltOutlinedIcon className="w-6 h-6 text-segundaria-800" />
+                    <input type="checkbox" name="" id="" className="dark:color-primaria-800" />
+                    <ClientesSelectFilter onClientes={setClientes} />
+                    {/* <FilterAltOutlinedIcon className="w-6 h-6 text-segundaria-800" /> */}
                 </div>
             </>)}
 

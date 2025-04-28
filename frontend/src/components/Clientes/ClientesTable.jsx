@@ -1,68 +1,27 @@
 'use client'
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useState, useEffect } from 'react';
 import ClientesRow from './ClientesRow';
-import { useUserToken } from '@/utils/useUserToken';
-import ModalGrauCliente from './Actions/ModalGrauCliente';
 import { ClientesMenuMoreResponsive } from './Actions/ClientesMenuMoreResponsive';
+import ExportarTabelaButton from '@/utils/ExportarTabelaButton';
 
 const ClientesTable = () => {
-    const { token } = useUserToken();
     const [currentPage, setCurrentPage] = useState(1);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [rowsPerPage, setRowsPerPage] = useState(20);
     const [totalPages, setTotalPages] = useState(1);
-
-    const [isOpenModalGrau, setIsOpenModalGrau] = useState(false);
-    const [grauData, setGrauData] = useState([]);
-    const [selectedCPF, setSelectedCPF] = useState("");
     const [clientes, setClientes] = useState([]);
 
-    useEffect(() => {
-        if (!token) return
-        const fetchClientes = async () => {
-            try {
-                const response = await axios.get(
-                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/clientes/listar`,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`
-                        }
-                    }
-                );
-                if (response.data && Array.isArray(response.data.clientes)) {
-                    const restructuredData = response.data.clientes.map((cliente) => {
-                        return {
-                            id: cliente.id,
-                            nome: cliente.nome,
-                            cpf: cliente.cpf,
-                            endereco: cliente.endereco,
-                            numero: cliente.numero,
-                            complemento: cliente.complemento,
-                            telefone: cliente.telefone,
-                        };
-                    });
-                    setClientes(restructuredData);
-                    setTotalPages(Math.ceil(restructuredData.length / rowsPerPage));
-                } else {
-                    setClientes([]);
-                    setTotalPages(1);
-                }
-            } catch (error) {
-                setClientes([]);
-                setTotalPages(1);
+    const handleClientesUpdate = (newClientes) => {
+        setClientes(newClientes);
+        setTotalPages(Math.ceil(newClientes.length / rowsPerPage));
+    };
+
+        useEffect(() => {
+            if (currentPage > totalPages && totalPages > 0) {
+                setCurrentPage(totalPages);
+            } else if (currentPage < 1) {
+                setCurrentPage(1);
             }
-        };
-
-        fetchClientes();
-    }, [rowsPerPage, currentPage, token]);
-
-    useEffect(() => {
-        if (currentPage > totalPages && totalPages > 0) {
-            setCurrentPage(totalPages);
-        } else if (currentPage < 1) {
-            setCurrentPage(1);
-        }
-    }, [totalPages, currentPage]);
+        }, [totalPages, currentPage]);
 
     const handlePageChange = (newPage) => {
         if (newPage > 0 && newPage <= totalPages) {
@@ -90,7 +49,11 @@ const ClientesTable = () => {
                 rowsPerPage={rowsPerPage}
                 handlePageChange={handlePageChange}
                 handleRowsPerPageChange={handleRowsPerPageChange}
+                onClientes={handleClientesUpdate}
             />
+            <div className="flex justify-between items-center px-6  md:px-10 py-2">
+                <ExportarTabelaButton dados={clientes} tipo="clientes" cor="orange" />
+            </div>
             <table className="table-auto min-w-full">
                 <thead>
                     <tr>
@@ -103,20 +66,10 @@ const ClientesTable = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    <ClientesRow
-                        clientes={paginatedClientes}
-                        setIsOpenModalGrau={setIsOpenModalGrau}
-                        setGrauData={setGrauData}
-                        setSelectedCPF={setSelectedCPF}
-                    />
+                    <ClientesRow clientes={paginatedClientes} />
                 </tbody>
             </table>
 
-            <ModalGrauCliente
-                isOpen={isOpenModalGrau}
-                onClose={() => setIsOpenModalGrau(false)}
-                data={grauData}
-            />
         </div>
     );
 };

@@ -2,12 +2,15 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import BtnActions from "@/components/Geral/Button/BtnActions";
-import SuccessNotification from "@/components/Geral/Notification/SuccessNotification";
-import ErrorNotification from "@/components/Geral/Notification/ErrorNotification";
+import BtnActions from "@/components/Ui/Button/BtnActions";
+import BtnAtivado from "@/components/Ui/Button/BtnAtivado";
+import SuccessNotification from "@/components/Ui/Notification/SuccessNotification";
+import ErrorNotification from "@/components/Ui/Notification/ErrorNotification";
 import { useUserToken } from "@/utils/useUserToken";
+import { FaTrash } from "react-icons/fa";
+import { MdPrint } from "react-icons/md";
 
-const FormEditarVendas = ({ cliId }) => {
+const FormEditarVendas = ({ clienteId, vendaId }) => {
   const router = useRouter();
   const { token } = useUserToken();
   const [input, setInputs] = useState({
@@ -25,7 +28,9 @@ const FormEditarVendas = ({ cliId }) => {
     statusPagamento: "",
   });
 
-  const [vendaData, setVendaData] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [comprovante, setComprovante] = useState(null);
+
   const [grauData, setGrauData] = useState({});
 
   const [statusRequest, setStatusRequest] = useState('');
@@ -35,7 +40,7 @@ const FormEditarVendas = ({ cliId }) => {
       try {
         // CLIENTE
         const resCliente = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/clientes/listar?id=${cliId}`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/clientes/listar?id=${clienteId}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
@@ -76,7 +81,7 @@ const FormEditarVendas = ({ cliId }) => {
 
         // GRAU
         const resGrau = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/graus/listar?id=${cliId}`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/graus/listar?id=${clienteId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -107,12 +112,28 @@ const FormEditarVendas = ({ cliId }) => {
       }
     };
 
-    if (cliId) fetchClienteEVenda();
-  }, [cliId, token]);
+    if (clienteId) fetchClienteEVenda();
+  }, [clienteId, token]);
 
   const inputChange = (e) => {
     setInputs({ ...input, [e.target.name]: e.target.value });
   };
+
+  const gerarComprovante = async () => {
+    try {
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/clientes/gerar-comprovante/${clienteId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+      setComprovante(res.data);
+    } catch (error) {
+      console.error("Erro ao gerar comprovante:", error);
+      setComprovante({ erro: true });
+    }
+  };
+
 
   const handleEditar = async () => {
 
@@ -135,27 +156,100 @@ const FormEditarVendas = ({ cliId }) => {
     }
   };
 
+  const handleDeleteVenda = async () => {
+    const confirmar = confirm("Tem certeza que deseja deletar esta venda?");
+    if (!confirmar) return;
+
+    try {
+      const response = await axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/vendas/deletar/${vendaId}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        }
+      });
+      const data = await response.json();
+
+      if (response.status === 200) {
+        setStatusRequest(true);
+        router.push("/vendas");
+      } else {
+        console.error("Erro:", data.message);
+        setStatusRequest(false);
+      }
+    } catch {
+      setStatusRequest(false);
+    }
+
+    setTimeout(() => setStatusRequest(null), 3000);
+  };
 
   return (
     <div className="w-full xl:max-w-screen-lg flex flex-col">
-      <h3 className="text-neutral-800 text-xl font-medium">
-        {input.clienteNome || ""}
-      </h3>
+      <div className="w-full flex justify-between items-center py-6">
+        <h3 className="text-neutral-800 text-xl font-medium">
+          {input.clienteNome || ""}
+        </h3>
+
+        <div className="flex gap-4">
+          <button
+            onClick={gerarComprovante}
+            className="text-orange-600 hover:text-orange-800 transition-colors"
+            title="Gerar Comprovante"
+          >
+            <MdPrint className="text-3xl" />
+          </button>
+
+          <button
+            onClick={handleDeleteVenda}
+            className="text-red-600 hover:text-red-800 transition-colors"
+            title="Deletar venda"
+          >
+            <FaTrash className="text-xl" />
+          </button>
+        </div>
+      </div>
+
+      {comprovante && !comprovante.erro && (
+        <div className="w-full px-3 mt-3 space-y-2">
+          <p className="text-green-700 font-medium">✅ {comprovante.mensagem}</p>
+          <a
+            href={comprovante.pdf}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+          >
+            📄 Ver PDF do Comprovante
+          </a>
+          <a
+            href={comprovante.whatsapp}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+          >
+            📲 Enviar via WhatsApp
+          </a>
+        </div>
+      )}
+
+      {comprovante?.erro && (
+        <p className="text-red-600 px-3">❌ Erro ao gerar o comprovante.</p>
+      )}
+
 
       <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
-          <label className="block font-medium text-sm text-neutral-700">Status do Pagamento</label>
-          <select
-            name="statusPagamento"
-            value={input.statusPagamento}
-            onChange={inputChange}
-            className="w-full border rounded px-3 py-2 bg-white"
-          >
-            <option value="PENDENTE">Pendente</option>
-            <option value="PAGO_TOTAL">Pago Total</option>
-            <option value="AGUARDANDO_ENTREGA">Aguardando Entrega</option>
-            <option value="CANCELADO">Cancelado</option>
-          </select>
-        </div>
+        <label className="block font-medium text-sm text-neutral-700">Status do Pagamento</label>
+        <select
+          name="statusPagamento"
+          value={input.statusPagamento}
+          onChange={inputChange}
+          className="w-full border rounded px-3 py-2 bg-white"
+        >
+          <option value="PENDENTE">Pendente</option>
+          <option value="PAGO_TOTAL">Pago Total</option>
+          <option value="AGUARDANDO_ENTREGA">Aguardando Entrega</option>
+          <option value="CANCELADO">Cancelado</option>
+        </select>
+      </div>
 
       <div className="flex flex-wrap mt-5 mb-7">
         {/* Data da Venda */}

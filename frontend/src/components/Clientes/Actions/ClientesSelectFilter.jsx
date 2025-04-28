@@ -4,7 +4,7 @@ import axios from 'axios';
 import ErrorEmpty from '@/components/Ui/Notification/ErrorEmpty';
 import { useUserToken } from '@/utils/useUserToken';
 
-const VendasSelectFilter = ({ onVendas }) => {
+const ClientesSelectFilter = ({ onClientes }) => {
     const { token } = useUserToken();
     const [filtros, setFiltros] = useState({
         campo: 'nome',
@@ -15,7 +15,7 @@ const VendasSelectFilter = ({ onVendas }) => {
     const filterData = useCallback(async () => {
         try {
             const response = await axios.get(
-                `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/vendas/filter`,
+                `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/clientes/filter`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`
@@ -23,17 +23,17 @@ const VendasSelectFilter = ({ onVendas }) => {
                     params: filtros
                 },
             );
-            if (response.data && Array.isArray(response.data.vendas)) {
-                onVendas(response.data.vendas);
+            if (response.data && Array.isArray(response.data.clientes)) {
+                onClientes(response.data.clientes);
             } else {
-                onVendas([]);
+                onClientes([]);
             }
 
         } catch (error) {
             setStatusRequest(false);
-            onVendas([]);
+            onClientes([]);
         }
-    }, [filtros, token, onVendas]);
+    }, [filtros, token, onClientes]);
 
     useEffect(() => {
         filterData();
@@ -91,4 +91,4 @@ const VendasSelectFilter = ({ onVendas }) => {
     )
 }
 
-export default VendasSelectFilter
+export default ClientesSelectFilter

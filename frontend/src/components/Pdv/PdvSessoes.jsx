@@ -10,7 +10,7 @@ import { FaMoneyBill } from "react-icons/fa6";
 import { FaMoneyCheck } from "react-icons/fa";
 import { FaPix } from "react-icons/fa6";
 import SearchAdvancedModal from "./Actions/SearchAdvancedModal/SearchAdvancedModal";
-import ErrorNotification from "../Geral/Notification/ErrorNotification";
+import ErrorNotification from "../Ui/Notification/ErrorNotification";
 
 
 export const PdvSessoes = ({ adicionarProduto }) => {

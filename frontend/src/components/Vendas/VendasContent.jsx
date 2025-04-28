@@ -1,7 +1,7 @@
 import NavbarMobile from "../Navbar/Mobile/NavbarMobile";
 import VendasTable from "./VendasTable";
-import TitlePage from '../Geral/TitlePage';
-import BtnAtivado from '@/components/Geral/Button/BtnAtivado'
+import TitlePage from '../Ui/TitlePage';
+import BtnAtivado from '@/components/Ui/Button/BtnAtivado'
 
 
 const VendasContent = () => {

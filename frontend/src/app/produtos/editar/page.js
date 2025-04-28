@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 import { nextAuthOptions } from '@/utils/nextAuthOptions';
 import { getServerSession } from 'next-auth';
 import { FormEditarProduto } from '@/components/Produtos/Editar/FormEditarProduto';
-import BtnBackPage from '@/components/Geral/Button/BtnBackPage';
+import BtnBackPage from '@/components/Ui/Button/BtnBackPage';
 
 export default async function Editar() {
   const session = await getServerSession(nextAuthOptions)

@@ -2,10 +2,11 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import BtnActions from "@/components/Geral/Button/BtnActions";
-import SuccessNotification from "@/components/Geral/Notification/SuccessNotification";
-import ErrorNotification from "@/components/Geral/Notification/ErrorNotification";
+import BtnActions from "@/components/Ui/Button/BtnActions";
+import SuccessNotification from "@/components/Ui/Notification/SuccessNotification";
+import ErrorNotification from "@/components/Ui/Notification/ErrorNotification";
 import { useUserToken } from "@/utils/useUserToken";
+import { FaTrash } from "react-icons/fa";
 
 const FormEditarClientes = ({ cliId }) => {
   const { token } = useUserToken();
@@ -100,11 +101,47 @@ const FormEditarClientes = ({ cliId }) => {
     }
   };
 
+  const handleDeleteCliente = async () => {
+    const confirmar = confirm("Tem certeza que deseja deletar esta cliente?");
+    if (!confirmar) return;
+
+    try {
+      const response = await axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/clientes/deletar/${cliId}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      if (response.status === 200) {
+        setStatusRequest(true);
+        router.push("/clientes");
+      } else {
+        setStatusRequest(false);
+      }
+    } catch {
+      setStatusRequest(false);
+    }
+
+    // Oculta a notificação após 3s (opcional)
+    setTimeout(() => setStatusRequest(null), 3000);
+  };
+
   return (
     <div className="w-full xl:max-w-screen-lg flex flex-col">
-      <h3 className="text-neutral-800 text-xl font-medium ">
-        {cli_nome || ""}
-      </h3>
+      <div className="w-full flex justify-between items-center py-6">
+        <h3 className="text-neutral-800 text-xl font-medium ">
+          {cli_nome || ""}
+        </h3>
+
+        <button
+          onClick={handleDeleteCliente}
+          className="text-red-600 hover:text-red-800 transition-colors"
+          title="Deletar venda"
+        >
+          <FaTrash className="text-xl" />
+        </button>
+      </div>
 
       <div className="flex flex-wrap mt-5 mb-7">
         {/* Nome */}
@@ -142,7 +179,7 @@ const FormEditarClientes = ({ cliId }) => {
           </label>
           <input
             onChange={(e) => setCli_endereco(e.target.value)}
-            value={cli_endereco}
+            value={cli_endereco || ""}
             type="text"
             className="w-full border rounded px-3 py-2"
           />
@@ -155,7 +192,7 @@ const FormEditarClientes = ({ cliId }) => {
           </label>
           <input
             onChange={(e) => setCli_numero(e.target.value)}
-            value={cli_numero}
+            value={cli_numero || ""}
             type="text"
             className="w-full border rounded px-3 py-2"
           />
@@ -181,7 +218,7 @@ const FormEditarClientes = ({ cliId }) => {
           </label>
           <input
             onChange={(e) => setCli_telefone(e.target.value)}
-            value={cli_telefone}
+            value={cli_telefone || ""}
             type="text"
             className="w-full border rounded px-3 py-2"
           />

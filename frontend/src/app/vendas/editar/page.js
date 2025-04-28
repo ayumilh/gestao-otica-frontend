@@ -3,7 +3,7 @@ import FormEditarClientes from '@/components/Clientes/Editar/FormEditarClientes'
 
 import { checkSession } from '@/utils/checkSession';
 
-import BtnBackPage from '@/components/Geral/Button/BtnBackPage';
+import BtnBackPage from '@/components/Ui/Button/BtnBackPage';
 import NavbarMobile from '@/components/Navbar/Mobile/NavbarMobile';
 import NavbarContent from "@/components/Navbar/NavbarContent";
 import FormEditarVendas from '@/components/Vendas/Editar/FormEditarVendas';
@@ -11,9 +11,10 @@ import FormEditarVendas from '@/components/Vendas/Editar/FormEditarVendas';
 export default async function Editar({ searchParams }) {
   const session = await checkSession();
 
-  const cliId = searchParams?.id;
+  const vendaId = searchParams?.vendaId;
+  const clienteId = searchParams?.clienteId;
 
-  if (!cliId) {
+  if (!clienteId || !vendaId) {
     redirect('/vendas');
   }
 
@@ -28,7 +29,7 @@ export default async function Editar({ searchParams }) {
         <BtnBackPage title="Editar Venda" />
         <div className="w-full flex flex-col items-center mt-6 md:mt-10">
 
-          <FormEditarVendas cliId={cliId} />
+          <FormEditarVendas clienteId={clienteId} vendaId={vendaId} />
         </div>
       </div>
     </div>

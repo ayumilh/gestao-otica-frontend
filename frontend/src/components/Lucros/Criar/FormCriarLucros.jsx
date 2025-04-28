@@ -1,10 +1,10 @@
 'use client'
 import { useState } from "react";
 import axios from "axios";
-import BtnActions from "@/components/Geral/Button/BtnActions";
+import BtnActions from "@/components/Ui/Button/BtnActions";
 import SearchIcon from '@mui/icons-material/Search';
-import SuccessNotification from "@/components/Geral/Notification/SuccessNotification";
-import ErrorNotification from "@/components/Geral/Notification/ErrorNotification";
+import SuccessNotification from "@/components/Ui/Notification/SuccessNotification";
+import ErrorNotification from "@/components/Ui/Notification/ErrorNotification";
 import { useRouter } from "next/navigation";
 
 

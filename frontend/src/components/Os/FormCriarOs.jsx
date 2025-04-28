@@ -1,14 +1,14 @@
 "use client";
 import { useState, useEffect, useCallback, useRef } from "react";
 import axios from "axios";
-import BtnActions from "@/components/Geral/Button/BtnActions";
+import BtnActions from "@/components/Ui/Button/BtnActions";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import PersonIcon from '@mui/icons-material/Person';
 import CircularProgress from '@mui/material/CircularProgress';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import SuccessNotification from "@/components/Geral/Notification/SuccessNotification";
-import ErrorNotification from "@/components/Geral/Notification/ErrorNotification";
-import InputField from "@/components/Geral/Input/InputField";
+import SuccessNotification from "@/components/Ui/Notification/SuccessNotification";
+import ErrorNotification from "@/components/Ui/Notification/ErrorNotification";
+import InputField from "@/components/Ui/Input/InputField";
 import { useRouter } from "next/navigation";
 import { useUserToken } from "@/utils/useUserToken";
 

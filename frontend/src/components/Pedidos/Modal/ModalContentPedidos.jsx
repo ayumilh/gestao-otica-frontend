@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { SwipeableDrawer } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
-import BtnAtivado from '@/components/Geral/Button/BtnAtivado'
+import BtnAtivado from '@/components/Ui/Button/BtnAtivado'
 import { FormAddPedidos } from "./FormAddPedidos";
 
 

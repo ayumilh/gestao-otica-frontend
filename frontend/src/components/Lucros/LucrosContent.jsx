@@ -2,8 +2,8 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import NavbarMobile from "../Navbar/Mobile/NavbarMobile";
-import BtnAtivado from '@/components/Geral/Button/BtnAtivado'
-import TitlePage from '../Geral/TitlePage';
+import BtnAtivado from '@/components/Ui/Button/BtnAtivado'
+import TitlePage from '../Ui/TitlePage';
 import LucrosTable from "./LucrosTable";
 
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';

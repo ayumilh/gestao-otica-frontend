@@ -2,8 +2,8 @@
 import { useState } from 'react'
 import NavbarMobile from "../Navbar/Mobile/NavbarMobile";
 import ModalContentPedidos from "./Modal/ModalContentPedidos";
-import TitlePage from '../Geral/TitlePage';
-import BtnAtivado from '../Geral/Button/BtnAtivado';
+import TitlePage from '../Ui/TitlePage';
+import BtnAtivado from '../Ui/Button/BtnAtivado';
 import PdvOpenCaixaModal from '../Pdv/Actions/OpenCashModal/PdvOpenCashModal';
 
 const PedidosContent = () => {

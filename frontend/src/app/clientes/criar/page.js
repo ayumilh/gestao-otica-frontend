@@ -1,6 +1,6 @@
 import { checkSession } from '@/utils/checkSession';
 
-import BtnBackPage from '@/components/Geral/Button/BtnBackPage';
+import BtnBackPage from '@/components/Ui/Button/BtnBackPage';
 import FormCriarClientes from '@/components/Clientes/Criar/FormCriarClientes';
 import NavbarMobile from '@/components/Navbar/Mobile/NavbarMobile';
 import NavbarContent from "@/components/Navbar/NavbarContent";

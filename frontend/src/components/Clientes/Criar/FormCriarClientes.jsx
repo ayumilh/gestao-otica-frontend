@@ -2,11 +2,11 @@
 import { useState } from "react";
 import axios from "axios";
 import SearchIcon from '@mui/icons-material/Search';
-import BtnActions from "@/components/Geral/Button/BtnActions";
+import BtnActions from "@/components/Ui/Button/BtnActions";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import SuccessNotification from "@/components/Geral/Notification/SuccessNotification";
-import ErrorNotification from "@/components/Geral/Notification/ErrorNotification";
+import SuccessNotification from "@/components/Ui/Notification/SuccessNotification";
+import ErrorNotification from "@/components/Ui/Notification/ErrorNotification";
 import { useRouter } from "next/navigation";
 import { useUserToken } from "@/utils/useUserToken";
 

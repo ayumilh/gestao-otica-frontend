@@ -3,7 +3,7 @@ import FormEditarClientes from '@/components/Clientes/Editar/FormEditarClientes'
 
 import { checkSession } from '@/utils/checkSession';
 
-import BtnBackPage from '@/components/Geral/Button/BtnBackPage';
+import BtnBackPage from '@/components/Ui/Button/BtnBackPage';
 import NavbarMobile from '@/components/Navbar/Mobile/NavbarMobile';
 import NavbarContent from "@/components/Navbar/NavbarContent";
 

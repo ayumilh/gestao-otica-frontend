@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
 import ModalEditarProduto from "@/components/Produtos/Editar/ModalEditarProduto"
 import ProductionQuantityLimitsIcon from '@mui/icons-material/ProductionQuantityLimits';
-import SkeletonLoader from "@/components/Geral/SkeletonTableRow"
+import SkeletonLoader from "@/components/Ui/SkeletonTableRow"
 
 export default function LucrosRow({ lucrosData }) {
     const [isOpen, setIsOpen] = useState(false);

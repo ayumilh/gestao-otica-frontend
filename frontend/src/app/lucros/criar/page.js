@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 import { nextAuthOptions } from '../../api/auth/[...nextauth]/route';
 import { getServerSession } from 'next-auth';
 
-import BtnBackPage from '@/components/Geral/Button/BtnBackPage';
+import BtnBackPage from '@/components/Ui/Button/BtnBackPage';
 import { FormCriarLucros } from '@/components/Lucros/Criar/FormCriarLucros';
 import NavbarMobile from '@/components/Navbar/Mobile/NavbarMobile';
 import NavbarContent from "@/components/Navbar/NavbarContent";

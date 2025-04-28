@@ -5,7 +5,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import ProductionQuantityLimitsIcon from '@mui/icons-material/ProductionQuantityLimits';
 import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
-import SkeletonLoader from "@/components/Geral/SkeletonTableRow"
+import SkeletonLoader from "@/components/Ui/SkeletonTableRow"
 import ModalEditarProduto from "@/components/Produtos/Editar/ModalEditarProduto"
 
 export default function ProdutosRow () {

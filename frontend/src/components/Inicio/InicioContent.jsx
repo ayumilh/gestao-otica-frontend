@@ -5,10 +5,10 @@ import NavbarMobile from '../Navbar/Mobile/NavbarMobile'
 import LaunchIcon from '@mui/icons-material/Launch';
 import { FaUser, FaList, FaBox, FaFileInvoice } from 'react-icons/fa'
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import BtnAtivado from '../Geral/Button/BtnAtivado';
-import TitlePage from '../Geral/TitlePage';
-import DropdownFilterWeek from '../Geral/Dropdown/DropdownFilterWeek';
-import DropdownMore from '../Geral/Dropdown/DropdownMore';
+import BtnAtivado from '../Ui/Button/BtnAtivado';
+import TitlePage from '../Ui/TitlePage';
+import DropdownFilterWeek from '../Ui/Dropdown/DropdownFilterWeek';
+import DropdownMore from '../Ui/Dropdown/DropdownMore';
 import { useRouter } from 'next/navigation';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
@@ -105,58 +105,59 @@ const InicioContent = () => {
                             <p className='text-neutral-700 font-semibold text-start'>{saudacao}, {currentUser?.nome}</p>
                         </div>
 
-                        <div className="w-full max-w-[1270px] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mt-6">
+                        <div className="w-full max-w-[1270px] grid grid-cols-3 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-6 gap-4 mt-6">
                             {[
                                 {
                                     label: 'Valor Recebido',
-                                    icon: <AttachMoneyIcon className="text-green-500" fontSize="small" />,
+                                    icon: <AttachMoneyIcon className="text-green-400" fontSize="small" />,
                                     value: resumo.totalRecebido,
-                                    color: 'text-green-600',
+                                    color: 'text-green-400',
                                 },
                                 {
                                     label: 'A Receber',
-                                    icon: <MonetizationOnIcon className="text-yellow-500" fontSize="small" />,
+                                    icon: <MonetizationOnIcon className="text-yellow-400" fontSize="small" />,
                                     value: resumo.totalAPagar,
-                                    color: 'text-yellow-600',
+                                    color: 'text-yellow-400',
                                 },
                                 {
                                     label: 'Total de Vendas',
-                                    icon: <PaymentsIcon className="text-blue-500" fontSize="small" />,
+                                    icon: <PaymentsIcon className="text-blue-400" fontSize="small" />,
                                     value: resumo.totalVendas,
-                                    color: 'text-blue-600',
+                                    color: 'text-blue-400',
                                 },
                                 {
                                     label: 'Pagas Completas',
-                                    icon: <CheckCircleIcon className="text-emerald-500" fontSize="small" />,
+                                    icon: <CheckCircleIcon className="text-emerald-400" fontSize="small" />,
                                     value: resumo.pagasTotais,
-                                    color: 'text-emerald-600',
+                                    color: 'text-emerald-400',
                                 },
                                 {
                                     label: 'Aguardando Entrega',
-                                    icon: <LocalShippingIcon className="text-orange-500" fontSize="small" />,
+                                    icon: <LocalShippingIcon className="text-orange-400" fontSize="small" />,
                                     value: resumo.aguardandoEntrega,
-                                    color: 'text-orange-600',
+                                    color: 'text-orange-400',
                                 },
                                 {
                                     label: 'Canceladas',
-                                    icon: <CancelIcon className="text-red-500" fontSize="small" />,
+                                    icon: <CancelIcon className="text-red-400" fontSize="small" />,
                                     value: resumo.canceladas,
-                                    color: 'text-red-600',
+                                    color: 'text-red-400',
                                 },
                             ].map((item, index) => (
                                 <div
                                     key={index}
-                                    className="bg-segundaria-700 dark:bg-zinc-900 border border-gray-100 dark:border-zinc-700 rounded-xl p-4 flex flex-col justify-between"
+                                    className="bg-segundaria-700 dark:bg-zinc-900 border border-gray-100 dark:border-zinc-700 rounded-xl p-4 flex flex-col justify-center items-center text-center h-full"
                                 >
-                                    <div className="flex items-center gap-2 text-sm text-neutral-500 dark:text-neutral-400 mb-1">
+                                    <div className="flex flex-col items-center gap-1 text-sm text-neutral-200 dark:text-neutral-300">
+                                        <span className="font-medium leading-tight">{item.label}</span>
+                                        <p className={`lg:text-xl text-sm font-bold ${item.color} dark:${item.color} mb-2`}>
+                                            R$ {parseFloat(item.value).toFixed(2)}
+                                        </p>
                                         {item.icon}
-                                        <span className="font-medium">{item.label}</span>
-                                    </div>
-                                    <div className={`text-xl font-bold ${item.color} dark:${item.color}`}>
-                                        R$ {parseFloat(item.value).toFixed(2)}
                                     </div>
                                 </div>
                             ))}
+
                         </div>
 
 
@@ -186,7 +187,7 @@ const InicioContent = () => {
                                         {/* <button className='border border-orange-500 bg-orange-200 bg-opacity-30 rounded-l-full text-orange-500 font-medium text-sm px-3 py-1'>Grafico</button> */}
                                         {/* <button className='border border-gray-300 rounded-r-full text-neutral-500 font-medium text-sm px-3 py-1'>Lista</button> */}
                                     </div>
-                                    <DropdownFilterWeek />
+                                    {/* <DropdownFilterWeek /> */}
                                 </div>
                                 {clientes.length === 0 ? (
                                     <div className='w-full flex flex-col items-center justify-center gap-5'>
@@ -196,7 +197,7 @@ const InicioContent = () => {
                                         <BtnAtivado title='Novo cliente' onClick="/clientes" page="/clientes/criar" size="sm" rounded="md" />
                                     </div>
                                 ) : (
-                                    <div className='w-full flex flex-col gap-3 h-[300px] overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-300 dark:scrollbar-thumb-zinc-700 pr-2'>
+                                    <div className='w-full flex flex-col gap-3 h-[300px] overflow-y-auto scrollbar-thin scrollbar-thumb-orange-400 dark:scrollbar-thumb-orange-400 pr-2'>
                                         {clientes.slice(0, 5).map((cliente) => (
                                             <div
                                                 key={cliente.id}
@@ -244,7 +245,7 @@ const InicioContent = () => {
                                         {/* <button className='border border-orange-500 bg-orange-200 bg-opacity-30 rounded-l-full text-orange-500 font-medium text-sm px-3 py-1'>Grafico</button> */}
                                         {/* <button className='border border-gray-300 rounded-r-full text-neutral-500 font-medium text-sm px-3 py-1'>Lista</button> */}
                                     </div>
-                                    <DropdownFilterWeek />
+                                    {/* <DropdownFilterWeek /> */}
                                 </div>
                                 {vendas.length === 0 ? (
                                     <div className='w-full flex flex-col items-center justify-center gap-5'>
@@ -254,7 +255,7 @@ const InicioContent = () => {
                                         <BtnAtivado title='Criar venda' onClick="/vendas/criar" page="/vendas/criar" size="sm" rounded="md" />
                                     </div>
                                 ) : (
-                                    <div className='w-full flex flex-col gap-3 h-[300px] overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-300 dark:scrollbar-thumb-zinc-700 pr-2'>
+                                    <div className='w-full flex flex-col gap-3 h-[300px] overflow-y-auto scrollbar-thin scrollbar-thumb-orange-400 dark:scrollbar-thumb-orange-400 pr-2'>
                                         {vendas.slice(0, 5).map((venda) => (
                                             <div
                                                 key={venda.id}

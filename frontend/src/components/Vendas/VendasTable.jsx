@@ -2,10 +2,11 @@
 import { useEffect, useState } from 'react';
 import VendasRow from './VendasRow';
 import { VendasMenuMoreResponsive } from './Actions/VendasMenuMoreResponsive';
+import ExportarTabelaButton from '@/utils/ExportarTabelaButton';
 
 const VendasTable = () => {
     const [currentPage, setCurrentPage] = useState(1);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [rowsPerPage, setRowsPerPage] = useState(20);
     const [totalPages, setTotalPages] = useState(1);
     const [vendas, setVendas] = useState([]);
 
@@ -51,6 +52,9 @@ const VendasTable = () => {
                 handleRowsPerPageChange={handleRowsPerPageChange}
                 onVendas={handleVendasUpdate}
             />
+            <div className="flex justify-between items-center px-6  md:px-10 py-2">
+                <ExportarTabelaButton dados={vendas} tipo="vendas" cor="orange" />
+            </div>
             <table className="table-auto min-w-full">
                 <thead>
                     <tr>

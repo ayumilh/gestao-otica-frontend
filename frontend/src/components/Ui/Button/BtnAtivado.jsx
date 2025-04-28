@@ -7,7 +7,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
 
 const button = tv({
-    base: 'flex items-center justify-center gap-1 bg-orange-400 h-10 hover:bg-segundaria-900 shadow-primaria rounded-3xl px-4 py-2 transition duration-200 ease-in-out',
+    base: 'flex items-center justify-center gap-1 bg-orange-400 h-10 hover:bg-segundaria-900 shadow-md rounded-3xl px-4 py-2 transition duration-200 ease-in-out',
     variants: {
         width: {
             full: 'w-full',
