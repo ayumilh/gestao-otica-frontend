@@ -17,11 +17,12 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { AuthContext } from '@/contexts/AuthContext';
+import { useUserToken } from '@/utils/useUserToken';
 
 const InicioContent = () => {
     const { currentUser } = useContext(AuthContext);
+    const { token } = useUserToken();
 
-    console.log(currentUser);
     const getSaudacao = () => {
         const hora = new Date().getHours();
         if (hora < 12) {
@@ -39,7 +40,12 @@ const InicioContent = () => {
     useEffect(() => {
         const fetchClientes = async () => {
             try {
-                const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/clientes/listar`);
+                const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/clientes/listar`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`, // Adicionando o token no header
+                    },
+                });
+
                 setClientes(res.data.clientes || []);
             } catch (err) {
                 console.error('Erro ao buscar clientes:', err);
@@ -62,7 +68,12 @@ const InicioContent = () => {
     useEffect(() => {
         const fetchLucros = async () => {
             try {
-                const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/vendas/listar`);
+                const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/vendas/listar`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`, // Adicionando o token no header
+                    },
+                });
+                
                 setLucros(response.data.vendas || []);
                 setResumo(response.data.resumo || {});
             } catch (error) {
