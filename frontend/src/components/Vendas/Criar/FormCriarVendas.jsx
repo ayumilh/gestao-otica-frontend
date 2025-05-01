@@ -3,19 +3,19 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import axios from "axios";
 import { useUserToken } from "@/utils/useUserToken";
 import BtnActions from "@/components/Ui/Button/BtnActions";
+import InputMoeda from "@/components/Ui/Input/InputMoeda";
 import SearchIcon from '@mui/icons-material/Search';
 import PersonIcon from '@mui/icons-material/Person';
 import CircularProgress from '@mui/material/CircularProgress';
-import SuccessNotification from "@/components/Ui/Notification/SuccessNotification";
-import ErrorNotification from "@/components/Ui/Notification/ErrorNotification";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { useRouter } from "next/navigation";
+import { toast } from 'react-toastify';
 
 const FormCriarVendas = () => {
   const { token } = useUserToken();
   const router = useRouter();
-  
+
   const [vendaData, setVendaData] = useState(null);
   const [vendaEntrega, setVendaEntrega] = useState(null);
   const [vendaNome, setVendaNome] = useState('');
@@ -29,7 +29,9 @@ const FormCriarVendas = () => {
   const [vendaSinal, setVendaSinal] = useState(0.00);
   const [vendaApagar, setVendaApagar] = useState(0.00);
   const [vendaObs, setVendaObs] = useState('');
-  const [vendaId, setVendaId] = useState(null);
+  const [valorRealPreco, setValorRealPreco] = useState(0.00);
+  const [valorRealSinal, setValorRealSinal] = useState(0.00);
+  const [valorRealApagar, setValorRealApagar] = useState(0.00);
 
   const [alturaPupilar, setAlturaPupilar] = useState("");
 
@@ -39,41 +41,21 @@ const FormCriarVendas = () => {
   const [cliente, setCliente] = useState({});
   const [clienteId, setClienteId] = useState(null);
 
-  const [campoBusca, setCampoBusca] = useState('cpf'); // ou 'nome'
+  const [campoBusca, setCampoBusca] = useState('cpf');
   const [filtros, setFiltros] = useState({ campo: 'cpf', valor: '' });
 
   const [showLentesArmacao, setShowLentesArmacao] = useState(false);
 
-
-  const venda = {
-    data: vendaData,
-    entrega: vendaEntrega,
-    clienteId: clienteId,
-    cpf: vendaCPF,
-    lentes: vendaLentes,
-    armacao: vendaArmacao,
-    preco: parseFloat(vendaPreco),
-    sinal: vendaSinal ? parseFloat(vendaSinal) : null,
-    a_pagar: parseFloat(vendaApagar),
-    obs: vendaObs,
-  };
-
   const [isInvalidoVendaData, setIsInvalidoVendaData] = useState(false);
   const [isInvalidoVendaEntrega, setIsInvalidoVendaEntrega] = useState(false);
-  const [isInvalidoVendaNome, setIsInvalidoVendaNome] = useState(false);
   const [isInvalidoVendaCPF, setIsInvalidoVendaCPF] = useState(false);
-  const [isInvalidoVendaTelefone, setIsInvalidoVendaTelefone] = useState(false);
   const [isInvalidoVendaEndereco, setIsInvalidoVendaEndereco] = useState(false);
-  const [isInvalidoVendaComplemento, setIsInvalidoVendaComplemento] = useState(false);
   const [isInvalidoVendaLentes, setIsInvalidoVendaLentes] = useState(false);
   const [isInvalidoVendaArmacao, setIsInvalidoVendaArmacao] = useState(false);
   const [isInvalidoVendaPreco, setIsInvalidoVendaPreco] = useState(false);
   const [isInvalidoVendaSinal, setIsInvalidoVendaSinal] = useState(false);
   const [isInvalidoVendaApagar, setIsInvalidoVendaApagar] = useState(false);
   const [isInvalidoVendaObs, setIsInvalidoVendaObs] = useState(false);
-
-  const [statusRequest, setStatusRequest] = useState('');
-
 
   useEffect(() => {
     const regex = /^[0-9]*$/;
@@ -92,7 +74,7 @@ const FormCriarVendas = () => {
   const handleChange = (e) => {
     const value = e.target.value;
     setOpenFilterCpf(true);
-  
+
     if (value === "") {
       setCliente(null);
       setClienteId(null); // limpa também o ID do cliente
@@ -101,7 +83,7 @@ const FormCriarVendas = () => {
       setIsLoading(false);
       return;
     }
-  
+
     if (campoBusca === 'cpf') {
       const somenteNumeros = value.replace(/\D/g, '');
       setVendaCPF(somenteNumeros);
@@ -110,10 +92,10 @@ const FormCriarVendas = () => {
       setVendaCPF(value); // <- reusando mesmo campo para busca por nome
       setFiltros({ campo: 'nome', valor: value });
     }
-  
+
     setIsLoading(true);
   };
-  
+
 
   const handleClick = async () => {
     setOpenFilterCpf(true);
@@ -128,7 +110,15 @@ const FormCriarVendas = () => {
 
     setIsLoading(true);
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/clientes/filter`, { params: filtros });
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/clientes/filter`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          params: filtros,
+        }
+      );
       if (response.data.clientes.length === 0) {
         setCliente({});
       } else {
@@ -146,15 +136,15 @@ const FormCriarVendas = () => {
 
   const handleCriar = async () => {
     if (!clienteId) {
-      alert("Selecione um cliente válido.");
+      toast.info("Selecione um cliente!");
       return;
     }
-  
+
     const grauData = [];
-  
+
     const lentesTipos = ['Longe', 'Perto'];
     const olhos = ['OD', 'OE'];
-  
+
     lentesTipos.forEach((lente) => {
       olhos.forEach((olho) => {
         const esferico = document.querySelector(`[name=esferico_${lente}_${olho}]`)?.value || "";
@@ -162,7 +152,7 @@ const FormCriarVendas = () => {
         const eixo = document.querySelector(`[name=eixo_${lente}_${olho}]`)?.value || "";
         const add = document.querySelector(`[name=add_${lente}_${olho}]`)?.value || "";
         const dp = document.querySelector(`[name=dp_${lente}_${olho}]`)?.value || "";
-  
+
         // Só adiciona se algum campo tiver valor
         if (esferico || cilindrico || eixo || add || dp) {
           grauData.push({
@@ -177,7 +167,7 @@ const FormCriarVendas = () => {
         }
       });
     });
-  
+
     const payload = {
       data: vendaData,
       entrega: vendaEntrega,
@@ -185,15 +175,14 @@ const FormCriarVendas = () => {
       clienteCpf: vendaCPF,
       lentes: vendaLentes,
       armacao: vendaArmacao,
-      preco: parseFloat(vendaPreco),
-      sinal: vendaSinal ? parseFloat(vendaSinal) : null,
-      a_pagar: parseFloat(vendaApagar),
+      preco: parseFloat(valorRealPreco),
+      sinal: valorRealSinal ? parseFloat(valorRealSinal) : null,
+      a_pagar: parseFloat(valorRealApagar),
       obs: vendaObs,
       alturaPupilar,
       graus: grauData
     };
-    console.log("Payload:", payload);
-  
+
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/vendas/criar-com-grau`, {
         method: 'POST',
@@ -203,19 +192,21 @@ const FormCriarVendas = () => {
         },
         body: JSON.stringify(payload)
       });
-  
+
       const result = await response.json();
-  
+
       if (!response.ok) throw new Error(result.message);
-  
-      alert(result.message);
-      router.push('/vendas');
+
+      toast.success("Venda cadastrada com sucesso!")
+      setTimeout(() => {
+        router.push('/vendas');
+      }, 2000);
     } catch (error) {
       console.error(error);
-      alert("Erro ao cadastrar a venda.");
+      toast.error("Não foi possível cadastrar a venda!");
     }
   };
-  
+
 
   const cadastrarCliente = async () => {
     router.push('/clientes/cadastrar')
@@ -295,23 +286,23 @@ const FormCriarVendas = () => {
                 </div>
               ) : cliente && cliente.nome ? (
                 <div
-                onClick={() => {
-                  const c = cliente;
-                  if (!c?.id) {
-                    alert("Cliente inválido");
-                    return;
-                  }
-                
-                  setVendaNome(c.nome);
-                  setVendaCPF(c.cpf);
-                  setVendaTelefone(c.telefone);
-                  setVendaEndereco(c.endereco);
-                  setVendaComplemento(c.complemento);
-                  setClienteId(c.id); // ESSENCIAL
-                  setOpenFilterCpf(false);
-                
-                  console.log("Cliente ID selecionado:", c.id);
-                }}
+                  onClick={() => {
+                    const c = cliente;
+                    if (!c?.id) {
+                      toast.info("Selecione um cliente válido!");
+                      return;
+                    }
+
+                    setVendaNome(c.nome);
+                    setVendaCPF(c.cpf);
+                    setVendaTelefone(c.telefone);
+                    setVendaEndereco(c.endereco);
+                    setVendaComplemento(c.complemento);
+                    setClienteId(c.id); // ESSENCIAL
+                    setOpenFilterCpf(false);
+
+                    console.log("Cliente ID selecionado:", c.id);
+                  }}
                   className="cursor-pointer flex gap-3 items-center hover:bg-gray-200 transition rounded p-2"
                 >
                   <div className="bg-orange-400 text-white rounded-full p-2">
@@ -523,103 +514,40 @@ const FormCriarVendas = () => {
       <span className="text-neutral-800 text-xl font-medium">Detalhes de venda</span>
 
       <div className='flex flex-wrap my-4 transition-transform duration-500 ease-in'>
-        
-        {/* preço */}
-        <div className="w-full md:w-1/5 mt-3 mb-4 px-3">
-          <label
-            htmlFor="vendaPreco"
-            className="block font-medium text-sm text-neutral-700"
-          >
-            Preço: <span className="text-red-600">*</span>
-          </label>
-          <div className="relative">
-            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-500 font-medium">R$</span>
-            <input
-              onChange={(e) => {
-                const value = e.target.value;
-                const regex = /^[0-9]*$/;
-                if (value === "" || regex.test(value)) {
-                  setVendaPreco(value);
-                  setIsInvalidoVendaEndereco(false);
-                } else {
-                  setIsInvalidoVendaEndereco(true);
-                }
-              }}
-              value={vendaPreco || ""}
-              type="text"
-              name="vendaPreco"
-              required
-              className={`peer rounded-sm w-full border pl-10 pr-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${isInvalidoVendaPreco
-                ? "outline-red-500 focus:outline-red-500"
-                : ""
-                }`}
-            />
-          </div>
-        </div>
+        <InputMoeda
+          label="Preço"
+          name="vendaPreco"
+          value={vendaPreco}
+          onChange={(formatted, raw) => {
+            setVendaPreco(formatted);
+            setValorRealPreco(raw);
+            setIsInvalidoVendaPreco(false);
+          }}
+          isInvalid={isInvalidoVendaPreco}
+          required
+        />
 
-        {/* Sinal */}
-        <div className="w-full md:w-1/5 mt-3 mb-4 px-3">
-          <label
-            htmlFor="vendaSinal"
-            className="block font-medium text-sm text-neutral-700"
-          >
-            Sinal
-          </label>
-          <div className="relative">
-            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-500 font-medium">R$</span>
-            <input
-              onChange={(e) => {
-                const value = e.target.value;
-                const regex = /^[0-9]*$/;
-                if (value === "" || regex.test(value)) {
-                  setVendaSinal(value);
-                  setIsInvalidoVendaSinal(false);
-                } else {
-                  setIsInvalidoVendaSinal(true);
-                }
-              }}
-              value={vendaSinal || ""}
-              type="text"
-              name="vendaSinal"
-              className={`peer rounded-sm w-full border pl-10 pr-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${isInvalidoVendaSinal
-                ? "outline-red-500 focus:outline-red-500"
-                : ""
-                }`}
-            />
-          </div>
-        </div>
+        <InputMoeda
+          label="Sinal"
+          name="vendaSinal"
+          value={vendaSinal}
+          onChange={(formatted, raw) => {
+            setVendaSinal(formatted);
+            setValorRealSinal(raw);
+            setIsInvalidoVendaSinal(false);
+          }}
+        />
 
-        {/* Apagar */}
-        <div className="w-full md:w-1/5 mt-3 mb-4 px-3">
-          <label
-            htmlFor="vendaApagar"
-            className="block font-medium text-sm text-neutral-700"
-          >
-            Apagar
-          </label>
-          <div className="relative">
-            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-500 font-medium">R$</span>
-            <input
-              onChange={(e) => {
-                const value = e.target.value;
-                const regex = /^[0-9]*$/;
-                if (value === "" || regex.test(value)) {
-                  setVendaApagar(value);
-                  setIsInvalidoVendaApagar(false);
-                } else {
-                  setIsInvalidoVendaApagar(true);
-                }
-              }}
-              value={vendaApagar || ""}
-              type="text"
-              name="vendaApagar"
-              className={`peer rounded-sm w-full border pl-10 pr-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${isInvalidoVendaApagar
-                ? "outline-red-500 focus:outline-red-500"
-                : ""
-                }`}
-            />
-          </div>
-        </div>
+        <InputMoeda
+          label="Apagar"
+          name="vendaApagar"
+          value={vendaApagar}
+          onChange={(formatted, raw) => {
+            setVendaApagar(formatted);
+            setValorRealApagar(raw);
+            setIsInvalidoVendaApagar(false);
+          }}
+        />
 
         {/* obs */}
         <div className="w-full mt-3 mb-4 px-3">
@@ -656,13 +584,6 @@ const FormCriarVendas = () => {
     <div className="w-60 flex justify-start gap-3 my-9 px-4">
       <BtnActions title="Criar" onClick={handleCriar} color="ativado" />
     </div>
-
-    {statusRequest === true && (
-      <SuccessNotification message="Venda cadastrada com sucesso!" />
-    )}
-    {statusRequest === false && (
-      <ErrorNotification message="Não foi possível cadastrar a venda!" />
-    )}
   </>);
 }
 export default FormCriarVendas;

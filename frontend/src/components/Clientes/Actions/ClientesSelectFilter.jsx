@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import axios from 'axios';
-import ErrorEmpty from '@/components/Ui/Notification/ErrorEmpty';
 import { useUserToken } from '@/utils/useUserToken';
+import { toast } from 'react-toastify';
 
 const ClientesSelectFilter = ({ onClientes }) => {
     const { token } = useUserToken();
@@ -10,12 +10,10 @@ const ClientesSelectFilter = ({ onClientes }) => {
         campo: 'nome',
         valor: '',
     });
-    const [statusRequest, setStatusRequest] = useState(null);
 
     const filterData = useCallback(async () => {
         try {
-            // Se não houver filtro de valor, apenas retorne todos os clientes
-            const params = filtros.valor ? filtros : {}; // Se não houver 'valor', passamos um objeto vazio para buscar todos os clientes.
+            const params = filtros.valor ? filtros : {};
 
             const response = await axios.get(
                 `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/clientes/filter`,
@@ -23,7 +21,7 @@ const ClientesSelectFilter = ({ onClientes }) => {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
-                    params: params, // Aqui passamos os filtros se houver
+                    params: params,
                 }
             );
 
@@ -33,8 +31,8 @@ const ClientesSelectFilter = ({ onClientes }) => {
                 onClientes([]);
             }
         } catch (error) {
-            setStatusRequest(false); // Indica que houve erro na requisição
-            onClientes([]); // Retorna uma lista vazia em caso de erro
+            toast.error('Erro ao filtrar clientes. Tente novamente mais tarde.');
+            onClientes([]);
         }
     }, [filtros, token, onClientes]);
 
@@ -88,9 +86,7 @@ const ClientesSelectFilter = ({ onClientes }) => {
                     </button>
                 </div>
             </div>
-            {statusRequest === true && (
-                <ErrorEmpty title="filtro" onClose={() => setStatusRequest(false)} />
-            )}
+
         </>
     )
 }

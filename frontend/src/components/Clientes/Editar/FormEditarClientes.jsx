@@ -3,10 +3,9 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import BtnActions from "@/components/Ui/Button/BtnActions";
-import SuccessNotification from "@/components/Ui/Notification/SuccessNotification";
-import ErrorNotification from "@/components/Ui/Notification/ErrorNotification";
 import { useUserToken } from "@/utils/useUserToken";
 import { FaTrash } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 const FormEditarClientes = ({ cliId }) => {
   const { token } = useUserToken();
@@ -20,8 +19,6 @@ const FormEditarClientes = ({ cliId }) => {
   const [cli_telefone, setCli_telefone] = useState("");
 
   const [grauData, setGrauData] = useState([]);
-  const [statusRequest, setStatusRequest] = useState("");
-  const [errorsInput, setErrorsInput] = useState({});
 
   useEffect(() => {
     const fetchCliente = async () => {
@@ -43,8 +40,6 @@ const FormEditarClientes = ({ cliId }) => {
         setCli_numero(data.numero);
         setCli_complemento(data.complemento);
         setCli_telefone(data.telefone);
-
-
 
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/graus/listar?id=${cliId}`,
@@ -93,11 +88,13 @@ const FormEditarClientes = ({ cliId }) => {
         }
       );
 
-      setStatusRequest(true);
-      router.push("/clientes");
+      toast.success("Cliente editado com sucesso!");
+      setTimeout(() => {
+        router.push("/clientes");
+      }, 2000);
     } catch (error) {
       console.error("Erro ao editar cliente:", error);
-      setStatusRequest(false);
+      toast.error("Erro ao editar cliente.");
     }
   };
 
@@ -114,17 +111,16 @@ const FormEditarClientes = ({ cliId }) => {
       });
 
       if (response.status === 200) {
-        setStatusRequest(true);
-        router.push("/clientes");
+        toast.success("Cliente deletado com sucesso!");
+        setTimeout(() => {
+          router.push("/clientes");
+        }, 2000);
       } else {
-        setStatusRequest(false);
+        toast.error("Erro ao deletar cliente.");
       }
     } catch {
-      setStatusRequest(false);
+      toast.error("Erro ao deletar cliente.");
     }
-
-    // Oculta a notificação após 3s (opcional)
-    setTimeout(() => setStatusRequest(null), 3000);
   };
 
   return (
@@ -270,15 +266,6 @@ const FormEditarClientes = ({ cliId }) => {
           <BtnActions title="Salvar alterações" onClick={handleSalvarEdicao} color="ativado" />
         </div>
       </div>
-
-
-
-      {statusRequest === true && (
-        <SuccessNotification message="Cliente editado com sucesso!" />
-      )}
-      {statusRequest === false && (
-        <ErrorNotification message="Erro ao editar cliente." />
-      )}
     </div>
   );
 };

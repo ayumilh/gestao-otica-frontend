@@ -52,13 +52,13 @@ const VendasTable = () => {
                 handleRowsPerPageChange={handleRowsPerPageChange}
                 onVendas={handleVendasUpdate}
             />
-            <div className="flex justify-between items-center px-6  md:px-10 py-2">
+            <div className="flex justify-between items-center px-2 py-2">
                 <ExportarTabelaButton dados={vendas} tipo="vendas" cor="orange" />
             </div>
             <table className="table-auto min-w-full">
                 <thead>
                     <tr>
-                        <th className="px-4 py-3 md:py-4 text-sm font-semibold text-end text-neutral-800 dark:text-slate-50">Código</th>
+                        <th className="pr-4 pl-6 py-3 md:py-4 text-sm font-semibold text-end text-neutral-800 dark:text-slate-50">Código</th>
                         <th className="px-4 py-3 md:py-4 text-sm font-semibold text-start text-neutral-800 dark:text-slate-50">Cliente</th>
                         <th className="px-4 py-3 md:py-4 text-sm font-semibold text-start text-neutral-800 dark:text-slate-50">Lentes</th>
                         <th className="px-4 py-3 md:py-4 text-sm font-semibold text-start text-neutral-800 dark:text-slate-50">Armação</th>
@@ -67,8 +67,6 @@ const VendasTable = () => {
                         <th className="px-4 py-3 md:py-4 text-sm font-semibold text-start text-neutral-800 dark:text-slate-50">A_Pagar</th>
                         <th className="pr-4 pl-6 py-3 md:py-4 text-sm font-semibold text-end text-neutral-800 dark:text-slate-50">Data</th>
                         <th className="px-4 py-3 md:py-4 text-sm font-semibold text-start text-neutral-800 dark:text-slate-50">Entrega</th>
-                        {/* <th className="px-4 py-3 md:py-4 text-sm font-semibold text-start text-neutral-800 dark:text-slate-50">Obs</th> */}
-                        {/* <th className="pl-4 pr-6 py-3 md:py-4"></th> */}
                     </tr>
                 </thead>
                 <tbody>

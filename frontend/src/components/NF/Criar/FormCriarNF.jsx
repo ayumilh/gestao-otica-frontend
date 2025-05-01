@@ -7,6 +7,7 @@ import AddIcon from '@mui/icons-material/Add';
 import SuccessNotification from "@/components/Ui/Notification/SuccessNotification";
 import ErrorNotification from "@/components/Ui/Notification/ErrorNotification";
 import ModalAddProduto from "./ModalAddProduto";
+import { toast } from "react-toastify";
 
 export const FormCriarNF = () => {
     // dados NF
@@ -361,16 +362,14 @@ export const FormCriarNF = () => {
         ambiente
     };
 
-    const [secaoAtiva, setSecaoAtiva] = useState("dadosNF");
-    const [statusRequest, setStatusRequest] = useState(null);
-    
+    const [secaoAtiva, setSecaoAtiva] = useState("dadosNF");    
 
     const handleCriar = async () => {
         try{
             await new Promise(resolve => setTimeout(resolve, 1000));
-            setStatusRequest(true);
+            toast.success("Nota fiscal criada com sucesso!")
         } catch (error) {
-            setStatusRequest(false);
+            toast.error("Erro ao criar nota fiscal!");
         }
     }
 
@@ -3099,11 +3098,5 @@ export const FormCriarNF = () => {
         <div className="w-60 flex justify-start gap-3 my-9 px-4">
             <BtnActions title="Criar" onClick={handleCriar} color="ativado" />
         </div>
-        {statusRequest === true && (
-            <SuccessNotification message="Nota fiscal criada com sucesso!" />
-        )}
-        {statusRequest === false && (
-            <ErrorNotification message="Não foi possível criar a nota fiscal!" />
-        )}
     </>)
 }

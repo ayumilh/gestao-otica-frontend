@@ -11,6 +11,7 @@ import { FaMoneyCheck } from "react-icons/fa";
 import { FaPix } from "react-icons/fa6";
 import SearchAdvancedModal from "./Actions/SearchAdvancedModal/SearchAdvancedModal";
 import ErrorNotification from "../Ui/Notification/ErrorNotification";
+import { toast } from "react-toastify";
 
 
 export const PdvSessoes = ({ adicionarProduto }) => {
@@ -54,13 +55,10 @@ export const PdvSessoes = ({ adicionarProduto }) => {
 
   const [activeContent, setActiveContent] = useState('produto');
   const isActive = (contentName) => activeContent === contentName ? 'border-b-4 border-orange-400 text-orange-400' : 'text-neutral-400 hover:border-b-4 hover:border-segundaria-900';
-
-  const [showCommentInput, setShowCommentInput] = useState(false);
   const [showObservationInput, setShowObservationInput] = useState(false);
   const [showMoreclientInput, setShowMoreclientInput] = useState(false);
   
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [statusRequest, setStatusRequest] = useState(false);
 
   const [codigoEAN, setCodigoEAN] = useState('');
   const [quantidade, setQuantidadeLocal] = useState(1);
@@ -97,7 +95,7 @@ export const PdvSessoes = ({ adicionarProduto }) => {
     try{
       await Axios.post('https://pos-backend-six.vercel.app/api/pedido/criar', pedidoNovo)
     } catch (error) {
-      setStatusRequest(true);
+      toast.error('Erro ao criar pedido');
     }
   }
 
@@ -656,7 +654,6 @@ export const PdvSessoes = ({ adicionarProduto }) => {
         </button>
 
       </div>
-      {statusRequest && <ErrorNotification message="Erro ao finalizar venda!" />}
     </div>
   )
 }

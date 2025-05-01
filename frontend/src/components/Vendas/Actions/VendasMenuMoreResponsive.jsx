@@ -2,8 +2,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTheme } from '@mui/material';
 import { useMediaQuery } from '@mui/material';
-
-import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import VendasSelectFilter from './VendasSelectFilter';
@@ -80,7 +78,7 @@ export const VendasMenuMoreResponsive = ({ currentPage, totalPages, rowsPerPage,
             ) : (<>
                 <div className="flex items-center justify-between gap-3">
                     <div className="flex items-center gap-4">
-                        <input type="checkbox" name="" id="" className="dark:color-primaria-800" />
+                        {/* <input type="checkbox" name="" id="" className="dark:color-primaria-800" /> */}
                         <VendasSelectFilter onVendas={setVendas} />
                     </div>
                     {/* <FilterAltOutlinedIcon className="w-6 h-6 text-segundaria-800" /> */}

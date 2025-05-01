@@ -3,12 +3,10 @@ import React, { useContext, useEffect, useState } from 'react'
 import axios from 'axios'
 import NavbarMobile from '../Navbar/Mobile/NavbarMobile'
 import LaunchIcon from '@mui/icons-material/Launch';
-import { FaUser, FaList, FaBox, FaFileInvoice } from 'react-icons/fa'
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import { FaUser, FaList } from 'react-icons/fa'
 import BtnAtivado from '../Ui/Button/BtnAtivado';
 import TitlePage from '../Ui/TitlePage';
 import DropdownFilterWeek from '../Ui/Dropdown/DropdownFilterWeek';
-import DropdownMore from '../Ui/Dropdown/DropdownMore';
 import { useRouter } from 'next/navigation';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
@@ -42,7 +40,7 @@ const InicioContent = () => {
             try {
                 const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/clientes/listar`, {
                     headers: {
-                        Authorization: `Bearer ${token}`, // Adicionando o token no header
+                        Authorization: `Bearer ${token}`,
                     },
                 });
 
@@ -53,7 +51,7 @@ const InicioContent = () => {
         };
 
         fetchClientes();
-    }, []);
+    }, [token]);
 
     const [lucros, setLucros] = useState([]);
     const [resumo, setResumo] = useState({
@@ -70,7 +68,7 @@ const InicioContent = () => {
             try {
                 const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/vendas/listar`, {
                     headers: {
-                        Authorization: `Bearer ${token}`, // Adicionando o token no header
+                        Authorization: `Bearer ${token}`,
                     },
                 });
                 
@@ -90,7 +88,11 @@ const InicioContent = () => {
     useEffect(() => {
         const buscarVendas = async () => {
             try {
-                const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/vendas/listar`);
+                const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/vendas/listar`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
                 setVendas(res.data.vendas || []);
             } catch (err) {
                 console.error("Erro ao buscar vendas:", err);
@@ -120,37 +122,31 @@ const InicioContent = () => {
                             {[
                                 {
                                     label: 'Valor Recebido',
-                                    icon: <AttachMoneyIcon className="text-green-400" fontSize="small" />,
                                     value: resumo.totalRecebido,
                                     color: 'text-green-400',
                                 },
                                 {
                                     label: 'A Receber',
-                                    icon: <MonetizationOnIcon className="text-yellow-400" fontSize="small" />,
                                     value: resumo.totalAPagar,
                                     color: 'text-yellow-400',
                                 },
                                 {
                                     label: 'Total de Vendas',
-                                    icon: <PaymentsIcon className="text-blue-400" fontSize="small" />,
                                     value: resumo.totalVendas,
                                     color: 'text-blue-400',
                                 },
                                 {
                                     label: 'Pagas Completas',
-                                    icon: <CheckCircleIcon className="text-emerald-400" fontSize="small" />,
                                     value: resumo.pagasTotais,
                                     color: 'text-emerald-400',
                                 },
                                 {
                                     label: 'Aguardando Entrega',
-                                    icon: <LocalShippingIcon className="text-orange-400" fontSize="small" />,
                                     value: resumo.aguardandoEntrega,
                                     color: 'text-orange-400',
                                 },
                                 {
                                     label: 'Canceladas',
-                                    icon: <CancelIcon className="text-red-400" fontSize="small" />,
                                     value: resumo.canceladas,
                                     color: 'text-red-400',
                                 },
@@ -170,7 +166,6 @@ const InicioContent = () => {
                             ))}
 
                         </div>
-
 
                         <div className='flex flex-col xl:flex-row gap-5'>
                             {/* clientes */}
@@ -293,7 +288,6 @@ const InicioContent = () => {
 
 
                     {/* CONTA */}
-
                     <div className='w-full flex flex-col xl:flex-row gap-7'>
                         {/* contas a receber */}
                         <div className='bg-bg dark:bg-dark-primaria-800 w-full xl:w-1/2 flex flex-col h-full rounded-xl px-5 py-7 ring-1 ring-gray-100 dark:ring-1 dark:ring-black ring-opacity-5 shadow-md'>
@@ -318,7 +312,7 @@ const InicioContent = () => {
                                     {/* <button className='border border-orange-500 bg-orange-200 bg-opacity-30 rounded-l-full text-orange-500 font-medium text-sm px-3 py-1'>Abertas</button> */}
                                     {/* <button className='border border-gray-300 rounded-r-full text-neutral-500 font-medium text-sm px-3 py-1'>Atrasadas</button> */}
                                 </div>
-                                <DropdownFilterWeek />
+                                {/* <DropdownFilterWeek /> */}
                             </div>
                             <div className='w-full flex flex-col items-center justify-center gap-5'>
                                 <span className='text-center text-sm font-medium '>
@@ -351,7 +345,7 @@ const InicioContent = () => {
                                     {/* <button className='border border-orange-500 bg-orange-200 bg-opacity-30 rounded-l-full text-orange-500 font-medium text-sm px-3 py-1'>Abertas</button> */}
                                     {/* <button className='border border-gray-300 rounded-r-full text-neutral-500 font-medium text-sm px-3 py-1'>Atrasadas</button> */}
                                 </div>
-                                <DropdownFilterWeek />
+                                {/* <DropdownFilterWeek /> */}
                             </div>
                             <div className='w-full flex flex-col items-center justify-center gap-5'>
                                 <span className='text-center text-sm font-medium '>

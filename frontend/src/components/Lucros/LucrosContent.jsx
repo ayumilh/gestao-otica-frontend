@@ -2,10 +2,9 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import NavbarMobile from "../Navbar/Mobile/NavbarMobile";
-import BtnAtivado from '@/components/Ui/Button/BtnAtivado'
 import TitlePage from '../Ui/TitlePage';
 import LucrosTable from "./LucrosTable";
-
+import { useUserToken } from '@/utils/useUserToken';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import PaymentsIcon from '@mui/icons-material/Payments';
@@ -14,7 +13,9 @@ import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import CancelIcon from '@mui/icons-material/Cancel';
 
 const LucrosContent = () => {
+  const { token } = useUserToken();
   const [lucros, setLucros] = useState([]);
+
   const [resumo, setResumo] = useState({
     totalVendas: 0,
     totalRecebido: 0,
@@ -27,7 +28,12 @@ const LucrosContent = () => {
   useEffect(() => {
     const fetchLucros = async () => {
       try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/vendas/listar`);
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/vendas/listar`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
         setLucros(response.data.vendas || []);
         setResumo(response.data.resumo || {});
       } catch (error) {

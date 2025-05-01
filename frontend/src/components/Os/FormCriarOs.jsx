@@ -11,6 +11,7 @@ import ErrorNotification from "@/components/Ui/Notification/ErrorNotification";
 import InputField from "@/components/Ui/Input/InputField";
 import { useRouter } from "next/navigation";
 import { useUserToken } from "@/utils/useUserToken";
+import { toast } from "react-toastify";
 
 const FormCriarOs = () => {
     const { token } = useUserToken();
@@ -62,9 +63,6 @@ const FormCriarOs = () => {
 
     const [isInvalidoVendaLentes, setIsInvalidoVendaLentes] = useState(false);
     const [isInvalidoVendaArmacao, setIsInvalidoVendaArmacao] = useState(false);
-
-    const [statusRequest, setStatusRequest] = useState("");
-
 
     // Função para sanitizar os inputs
     const sanitizeInput = (value, regex, shouldTrim = true) => {
@@ -281,15 +279,17 @@ const FormCriarOs = () => {
             );
 
             if (response.status === 201) {
-                setStatusRequest(true);
+                toast.success("Venda criada com sucesso!");
                 setGrauSalvo(true);
-                router.push("/vendas");
+                setTimeout(() => {
+                    router.push("/vendas");
+                }, 2000);
             } else {
-                setStatusRequest(false);
+                toast.error("Erro ao criar venda.");
             }
         } catch (error) {
             console.error("Erro ao salvar tudo:", error);
-            setStatusRequest(false);
+            toast.error("Erro ao salvar tudo.");
         }
     };
 
@@ -525,15 +525,7 @@ const FormCriarOs = () => {
             <div className="w-60 flex justify-start gap-3 my-9 px-4">
                 <BtnActions title="Salvar tudo" onClick={handleUnificado} color="ativado" padding="md" />
             </div>
-
         </div>
-
-        {statusRequest === true && (
-            <SuccessNotification message="Cliente criado com sucesso!" />
-        )}
-        {statusRequest === false && (
-            <ErrorNotification message="Não foi possível criar o cliente!" />
-        )}
     </>);
 };
 

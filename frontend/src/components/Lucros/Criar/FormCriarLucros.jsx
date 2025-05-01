@@ -6,6 +6,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import SuccessNotification from "@/components/Ui/Notification/SuccessNotification";
 import ErrorNotification from "@/components/Ui/Notification/ErrorNotification";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 
 export const FormCriarLucros = () => {
@@ -73,7 +74,6 @@ export const FormCriarLucros = () => {
   const [isInvalidoLucrosObservacoes, setIsInvalidoLucrosObservacoes] = useState(null);
 
   const [secaoAtiva, setSecaoAtiva] = useState("dadosBasicos");
-  const [statusRequest, setStatusRequest] = useState('');
 
   const router = useRouter();
 
@@ -112,11 +112,13 @@ export const FormCriarLucros = () => {
   const handleCriar = async () => {
     try{
       await axios.post('https://pos-backend-six.vercel.app/api/Lucroses/cadastrar', Lucros)
-      setStatusRequest(true);
-      router.push('/Lucros');
+      toast.success("Lucros cadastrado com sucesso!");
+      setTimeout(() => {
+        router.push('/Lucros');
+      }, 2000);
     } catch (error) {
       console.log(error);
-      setStatusRequest(false);
+      toast.error("Erro ao cadastrar Lucros.");
     }
   }
 
@@ -761,12 +763,5 @@ export const FormCriarLucros = () => {
     <div className="w-60 flex justify-start gap-3 my-9 px-4">
       <BtnActions title="Criar" onClick={handleCriar} color="ativado" />
     </div>
-
-    {statusRequest === true && (
-      <SuccessNotification message="Lucros criado com sucesso!" />
-    )}
-    {statusRequest === false && (
-      <ErrorNotification message="Não foi possível criar o Lucros!" />
-    )}
   </>);
 }

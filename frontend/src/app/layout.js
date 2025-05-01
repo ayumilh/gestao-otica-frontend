@@ -6,6 +6,8 @@ import NextAuthSessionProvider from "../providers/sessionProvider";
 import ModalVerificationLogout from "@/components/Config/ModalVerificationLogout";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { ThemeProvider as ThemeMuiProvider } from "@/contexts/ThemeMuiContext";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const poppins = Poppins({
   weight: ['400', '500', '600', '700'],
@@ -31,6 +33,10 @@ export default function RootLayout({ children }) {
             <ThemeProvider>
               <ThemeMuiProvider>
                 {children}
+                <ToastContainer 
+                    position="top-center"
+                    reverseOrder={false}
+                />
                 <ModalVerificationLogout />
               </ThemeMuiProvider>
             </ThemeProvider>

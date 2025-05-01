@@ -3,6 +3,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import axios from 'axios';
 import ErrorEmpty from '@/components/Ui/Notification/ErrorEmpty';
 import { useUserToken } from '@/utils/useUserToken';
+import { toast } from 'react-toastify';
 
 const VendasSelectFilter = ({ onVendas }) => {
     const { token } = useUserToken();
@@ -10,7 +11,15 @@ const VendasSelectFilter = ({ onVendas }) => {
         campo: 'nome',
         valor: '',
     });
-    const [statusRequest, setStatusRequest] = useState(null);
+
+    const formatarMoeda = (valor) => {
+        if (valor === null || valor === undefined) return '';
+        return Number(valor).toLocaleString('pt-BR', {
+            style: 'currency',
+            currency: 'BRL',
+            minimumFractionDigits: 2
+        }).replace('R$', '').trim();
+    };
 
     const filterData = useCallback(async () => {
         try {
@@ -24,13 +33,20 @@ const VendasSelectFilter = ({ onVendas }) => {
                 },
             );
             if (response.data && Array.isArray(response.data.vendas)) {
-                onVendas(response.data.vendas);
+                const vendasFormatadas = response.data.vendas.map((venda) => ({
+                    ...venda,
+                    preco: formatarMoeda(venda.preco),
+                    sinal: formatarMoeda(venda.sinal),
+                    a_pagar: formatarMoeda(venda.a_pagar)
+                }));
+
+                onVendas(vendasFormatadas);
             } else {
                 onVendas([]);
             }
 
         } catch (error) {
-            setStatusRequest(false);
+            toast.error('Erro ao filtrar vendas')
             onVendas([]);
         }
     }, [filtros, token, onVendas]);
@@ -84,9 +100,7 @@ const VendasSelectFilter = ({ onVendas }) => {
                     </button>
                 </div>
             </div>
-            {statusRequest === true && (
-                <ErrorEmpty title="filtro" onClose={() => setStatusRequest(false)} />
-            )}
+
         </>
     )
 }

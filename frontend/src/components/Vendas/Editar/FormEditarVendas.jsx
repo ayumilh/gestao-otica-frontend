@@ -1,14 +1,13 @@
 'use client'
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import BtnActions from "@/components/Ui/Button/BtnActions";
-import BtnAtivado from "@/components/Ui/Button/BtnAtivado";
-import SuccessNotification from "@/components/Ui/Notification/SuccessNotification";
-import ErrorNotification from "@/components/Ui/Notification/ErrorNotification";
+import InputMoeda from "@/components/Ui/Input/InputMoeda";
 import { useUserToken } from "@/utils/useUserToken";
 import { FaTrash } from "react-icons/fa";
 import { MdPrint } from "react-icons/md";
+import { toast } from "react-toastify";
 
 const FormEditarVendas = ({ clienteId, vendaId }) => {
   const router = useRouter();
@@ -28,12 +27,33 @@ const FormEditarVendas = ({ clienteId, vendaId }) => {
     statusPagamento: "",
   });
 
-  const [isEditing, setIsEditing] = useState(false);
-  const [comprovante, setComprovante] = useState(null);
+  const dropdownRef = useRef(null);
+  const [isOpen, setIsOpen] = useState(false);
 
   const [grauData, setGrauData] = useState({});
 
-  const [statusRequest, setStatusRequest] = useState('');
+  const formatarMoeda = (valor) => {
+    if (valor === null || valor === undefined) return '';
+    return Number(valor).toLocaleString('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+      minimumFractionDigits: 2
+    }).replace('R$', '').trim();
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
 
   useEffect(() => {
     const fetchClienteEVenda = async () => {
@@ -69,12 +89,12 @@ const FormEditarVendas = ({ clienteId, vendaId }) => {
             entrega: venda.entrega,
             lentes: venda.lentes,
             armacao: venda.armacao,
-            preco: venda.preco,
-            sinal: venda.sinal,
-            a_pagar: venda.a_pagar,
+            preco: formatarMoeda(venda.preco),
+            sinal: formatarMoeda(venda.sinal),
+            a_pagar: formatarMoeda(venda.a_pagar),
             obs: venda.obs,
             alturaPupilar: venda.alturaPupilar,
-            statusPagamento: venda.statusPagamento
+            statusPagamento: venda.StatusPagamento
           }));
         }
 
@@ -119,24 +139,11 @@ const FormEditarVendas = ({ clienteId, vendaId }) => {
     setInputs({ ...input, [e.target.name]: e.target.value });
   };
 
-  const gerarComprovante = async () => {
-    try {
-      const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/clientes/gerar-comprovante/${clienteId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` }
-        }
-      );
-      setComprovante(res.data);
-    } catch (error) {
-      console.error("Erro ao gerar comprovante:", error);
-      setComprovante({ erro: true });
-    }
-  };
-
-
   const handleEditar = async () => {
-
+    if (!input.clienteId) {
+      toast.info("Selecione um cliente.");
+      return;
+    }
     try {
       await axios.put(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/vendas/editar-ultima?clienteId=${input.clienteId}`,
@@ -148,11 +155,13 @@ const FormEditarVendas = ({ clienteId, vendaId }) => {
         }
       );
 
-      setStatusRequest(true);
-      router.push("/vendas");
+      toast.success("Venda editada com sucesso!");
+      setTimeout(() => {
+        router.push("/vendas");
+      }, 2000);
     } catch (error) {
       console.error("Erro ao editar venda:", error);
-      setStatusRequest(false);
+      toast.error("Erro ao editar venda.");
     }
   };
 
@@ -167,21 +176,52 @@ const FormEditarVendas = ({ clienteId, vendaId }) => {
           Authorization: `Bearer ${token}`
         }
       });
-      const data = await response.json();
 
       if (response.status === 200) {
-        setStatusRequest(true);
-        router.push("/vendas");
+        toast.success("Venda deletada com sucesso!");
+        setTimeout(() => {
+          router.push("/vendas");
+        }, 2000);;
       } else {
-        console.error("Erro:", data.message);
-        setStatusRequest(false);
+        toast.error("Erro ao deletar venda.");
       }
     } catch {
-      setStatusRequest(false);
+      toast.error("Erro ao deletar venda.");
     }
-
-    setTimeout(() => setStatusRequest(null), 3000);
   };
+
+  const toggleDropdown = () => {
+    setIsOpen((prev) => !prev);
+  };
+
+
+  const gerarComprovante = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/clientes/gerar-comprovante/${clienteId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          responseType: 'blob'
+        }
+      );
+
+      const blob = response.data;
+      const nomeSanitizado = input.clienteNome.replace(/\s+/g, '_').normalize("NFD").replace(/[\u0300-\u036f]/g, '');
+      const nomeFinal = `comprovante-${nomeSanitizado}-venda-${clienteId}.pdf`;
+
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = nomeFinal;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+    } catch (error) {
+      console.error('Erro ao gerar e baixar o comprovante:', error);
+    }
+  };
+
 
   return (
     <div className="w-full xl:max-w-screen-lg flex flex-col">
@@ -191,14 +231,46 @@ const FormEditarVendas = ({ clienteId, vendaId }) => {
         </h3>
 
         <div className="flex gap-4">
-          <button
-            onClick={gerarComprovante}
-            className="text-orange-600 hover:text-orange-800 transition-colors"
-            title="Gerar Comprovante"
-          >
-            <MdPrint className="text-3xl" />
-          </button>
+          <div className="relative inline-block text-left" ref={dropdownRef}>
+            <button
+              onClick={toggleDropdown}
+              className="flex items-center justify-center hover:bg-segundaria-700 text-neutral-700 hover:text-neutral-800 transition duration-200"
+              title="Gerar Comprovante"
+              aria-label="Gerar Comprovante"
+            >
+              <MdPrint className="text-[28px]" />
+            </button>
 
+            {isOpen && (
+              <div className="absolute right-0 mt-2 w-60 rounded-md border border-gray-200 bg-white shadow-md z-50">
+                <ul className="py-1 text-sm text-primaria-900">
+                  <li>
+                    <button
+                      onClick={async () => {
+                        await gerarComprovante();
+                        setIsOpen(false);
+                      }}
+                      className="block w-full text-left px-4 py-2 hover:bg-segundaria-700 hover:text-primaria-900 transition-colors rounded-md"
+                    >
+                      Emitir Comprovante
+                    </button>
+                  </li>
+                  {/* <li>
+                    <a
+                      href={comprovante.whatsapp}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block px-4 py-2 hover:bg-segundaria-700 hover:text-primaria-900 transition-colors rounded-md"
+                    >
+                      Enviar via WhatsApp
+                    </a>
+                  </li> */}
+                </ul>
+              </div>
+            )}
+          </div>
+
+          {/* deletar venda */}
           <button
             onClick={handleDeleteVenda}
             className="text-red-600 hover:text-red-800 transition-colors"
@@ -209,38 +281,12 @@ const FormEditarVendas = ({ clienteId, vendaId }) => {
         </div>
       </div>
 
-      {comprovante && !comprovante.erro && (
-        <div className="w-full px-3 mt-3 space-y-2">
-          <p className="text-green-700 font-medium">✅ {comprovante.mensagem}</p>
-          <a
-            href={comprovante.pdf}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-          >
-            📄 Ver PDF do Comprovante
-          </a>
-          <a
-            href={comprovante.whatsapp}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
-          >
-            📲 Enviar via WhatsApp
-          </a>
-        </div>
-      )}
-
-      {comprovante?.erro && (
-        <p className="text-red-600 px-3">❌ Erro ao gerar o comprovante.</p>
-      )}
-
 
       <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
         <label className="block font-medium text-sm text-neutral-700">Status do Pagamento</label>
         <select
           name="statusPagamento"
-          value={input.statusPagamento}
+          value={input.statusPagamento || ""}
           onChange={inputChange}
           className="w-full border rounded px-3 py-2 bg-white"
         >
@@ -314,41 +360,38 @@ const FormEditarVendas = ({ clienteId, vendaId }) => {
 
         <div className="flex w-full">
           {/* Preço */}
-          <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
-            <label className="block font-medium text-sm text-neutral-700">Preço</label>
-            <input
-              onChange={inputChange}
-              value={input.preco || ""}
-              name="preco"
-              type="number"
-              className="w-full border rounded px-3 py-2"
-            />
-          </div>
+          <InputMoeda
+            label="Preço"
+            name="vendaPreco"
+            value={input.preco}
+            onChange={(formatted, raw) => {
+              setInputs((prev) => ({ ...prev, preco: formatted }));
+            }}
+            required
+          />
 
           {/* Sinal */}
-          <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
-            <label className="block font-medium text-sm text-neutral-700">Sinal</label>
-            <input
-              onChange={inputChange}
-              value={input.sinal || ""}
-              name="sinal"
-              type="number"
-              className="w-full border rounded px-3 py-2"
-            />
-          </div>
+          <InputMoeda
+            label="Sinal"
+            name="vendaSinal"
+            value={input.sinal}
+            onChange={(formatted, raw) => {
+              setInputs((prev) => ({ ...prev, sinal: formatted }));
+            }}
+          />
 
           {/* A pagar */}
-          <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
-            <label className="block font-medium text-sm text-neutral-700">A Pagar</label>
-            <input
-              onChange={inputChange}
-              value={input.a_pagar || ""}
-              name="a_pagar"
-              type="number"
-              className="w-full border rounded px-3 py-2"
-            />
-          </div>
+          <InputMoeda
+            label="Apagar"
+            name="vendaApagar"
+            value={input.a_pagar}
+            onChange={(formatted, raw) => {
+              setInputs((prev) => ({ ...prev, a_pagar: formatted }));
+            }}
+
+          />
         </div>
+
 
         <div className="w-full flex flex-wrap mt-5 mb-7">
           <div className="w-full rounded-lg shadow-lg p-6 relative overflow-auto">
@@ -423,13 +466,6 @@ const FormEditarVendas = ({ clienteId, vendaId }) => {
           <BtnActions title="Salvar Alterações" onClick={handleEditar} color="ativado" />
         </div>
       </div>
-
-      {statusRequest === true && (
-        <SuccessNotification message="Venda editada com sucesso!" />
-      )}
-      {statusRequest === false && (
-        <ErrorNotification message="Erro ao editar a venda!" />
-      )}
     </div>
   );
 };

@@ -15,13 +15,13 @@ const ClientesTable = () => {
         setTotalPages(Math.ceil(newClientes.length / rowsPerPage));
     };
 
-        useEffect(() => {
-            if (currentPage > totalPages && totalPages > 0) {
-                setCurrentPage(totalPages);
-            } else if (currentPage < 1) {
-                setCurrentPage(1);
-            }
-        }, [totalPages, currentPage]);
+    useEffect(() => {
+        if (currentPage > totalPages && totalPages > 0) {
+            setCurrentPage(totalPages);
+        } else if (currentPage < 1) {
+            setCurrentPage(1);
+        }
+    }, [totalPages, currentPage]);
 
     const handlePageChange = (newPage) => {
         if (newPage > 0 && newPage <= totalPages) {
@@ -51,9 +51,11 @@ const ClientesTable = () => {
                 handleRowsPerPageChange={handleRowsPerPageChange}
                 onClientes={handleClientesUpdate}
             />
-            <div className="flex justify-between items-center px-6  md:px-10 py-2">
+
+            <div className="flex justify-between items-center px-2 py-2">
                 <ExportarTabelaButton dados={clientes} tipo="clientes" cor="orange" />
             </div>
+            
             <table className="table-auto min-w-full">
                 <thead>
                     <tr>
@@ -62,7 +64,6 @@ const ClientesTable = () => {
                         <th className="px-4 py-3 md:py-4 text-sm font-semibold text-start text-neutral-800 dark:text-slate-50">CPF</th>
                         <th className="px-4 py-3 md:py-4 text-sm font-semibold text-start text-neutral-800 dark:text-slate-50">Telefone</th>
                         <th className="px-4 py-3 md:py-4 text-sm font-semibold text-start text-neutral-800 dark:text-slate-50">Endereço</th>
-                        {/* <th className="pl-4 pr-6 py-3 md:py-4"></th> */}
                     </tr>
                 </thead>
                 <tbody>

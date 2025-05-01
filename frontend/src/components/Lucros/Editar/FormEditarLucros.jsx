@@ -7,6 +7,7 @@ import BtnActions from "@/components/Ui/Button/BtnActions";
 import SuccessNotification from "@/components/Ui/Notification/SuccessNotification";
 import ErrorNotification from "@/components/Ui/Notification/ErrorNotification";
 import Cookies from "js-cookie";
+import { toast } from "react-toastify";
 
 const steps = [
   { titulo: "Informações Básicas", subtitulo: "Preencha as informações básicas do fornecedor" },
@@ -38,7 +39,6 @@ export const FormEditarLucros = () => {
     for_ativo: true,
   });
 
-  const [statusRequest, setStatusRequest] = useState('');
   const [activeStep, setActiveStep] = useState(0);
 
   const for_codigo = Cookies.get('selectedFornecedor');
@@ -73,10 +73,10 @@ export const FormEditarLucros = () => {
         for_codigo
       });
       if (res.status === 200) {
-        setStatusRequest(true);
+        toast.success('Fornecedor editado com sucesso!')
       }
     } catch (error) {
-      setStatusRequest(false);
+      toast.error('Erro ao editar fornecedor!')
     }
   }
 
@@ -454,12 +454,6 @@ export const FormEditarLucros = () => {
               <BtnActions title="Editar" onClick={handleEditar} color="ativado" />
             )}
           </div>
-          {statusRequest === true && (
-            <SuccessNotification message="Produto editado com sucesso!" />
-          )}
-          {statusRequest === false && (
-            <ErrorNotification message="Não foi possível editar o produto!" />
-          )}
         </div>
       </form>
     </div>

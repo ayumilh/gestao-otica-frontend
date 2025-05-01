@@ -42,7 +42,7 @@ export const LucrosMenuMoreResponsive = ({ currentPage, totalPages, rowsPerPage,
             ) : (<>
                 <div className="flex items-center justify-between gap-3">
                     <div className="flex items-center gap-4">
-                        <input type="checkbox" name="" id="" className="dark:color-primaria-800" />
+                        {/* <input type="checkbox" name="" id="" className="dark:color-primaria-800" /> */}
                         {/* <div className="flex items-center w-full max-w-60 rounded-full py-2 relative">
                             <div className="relative w-full">
                                 <SearchIcon className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />

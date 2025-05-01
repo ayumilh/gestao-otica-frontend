@@ -9,6 +9,7 @@ import SuccessNotification from "@/components/Ui/Notification/SuccessNotificatio
 import ErrorNotification from "@/components/Ui/Notification/ErrorNotification";
 import { useRouter } from "next/navigation";
 import { useUserToken } from "@/utils/useUserToken";
+import { toast } from "react-toastify";
 
 const FormCriarClientes = () => {
     const { token } = useUserToken();
@@ -51,7 +52,6 @@ const FormCriarClientes = () => {
     const [isInvalidoClienteComplemento, setIsInvalidoClienteComplemento] = useState(false);
     const [isInvalidoClienteTelefone, setIsInvalidoClienteTelefone] = useState(false);
 
-    const [statusRequest, setStatusRequest] = useState("");
     const router = useRouter();
 
     // Função para sanitizar os inputs
@@ -203,13 +203,13 @@ const FormCriarClientes = () => {
                     }
                 }
             );
-            setStatusRequest(true);
+            toast.success("Cliente criado com sucesso!");
             setTimeout(() => {
-                setStatusRequest("");
                 router.push("/clientes");
             }, 2000);
         } catch (error) {
-            setStatusRequest(false);
+            toast.error("Erro ao criar cliente");
+            console.error("Erro ao criar cliente:", error);
         }
     };
 
@@ -261,16 +261,15 @@ const FormCriarClientes = () => {
             const resJson = await response.json();
 
             if (response.ok) {
-                alert('Grau salvo com sucesso!');
+                toast.success("Grau salvo com sucesso!");
             } else {
-                alert(`Erro ao salvar grau: ${resJson.message}`);
+                toast.error("Erro ao salvar grau");
             }
         } catch (error) {
             console.error("Erro ao chamar API de grau:", error);
-            alert("Erro interno ao salvar grau.");
+            toast.error("Erro ao salvar grau");
         }
     };
-
 
 
     const handleSalvarVenda = async () => {
@@ -297,10 +296,14 @@ const FormCriarClientes = () => {
                 }
             );
 
-            setStatusRequest(true);
+            toast.success("Venda criada com sucesso!");
+
+            setTimeout(() => {
+                router.push("/vendas");
+            }, 2000);
         } catch (error) {
             console.error("Erro ao salvar venda:", error);
-            setStatusRequest(false);
+            toast.error("Erro ao criar venda");
         }
     };
 
@@ -473,13 +476,6 @@ const FormCriarClientes = () => {
                 </div>
             </div>
         </div>
-
-        {statusRequest === true && (
-            <SuccessNotification message="Cliente criado com sucesso!" />
-        )}
-        {statusRequest === false && (
-            <ErrorNotification message="Não foi possível criar o cliente!" />
-        )}
     </>);
 };
 
