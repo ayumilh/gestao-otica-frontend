@@ -11,6 +11,24 @@ const ClientesSelectFilter = ({ onClientes }) => {
         valor: '',
     });
 
+    const formatarTelefone = (valor) => {
+        const numeros = valor.replace(/\D/g, '');
+        if (numeros.length <= 10) {
+          return numeros.replace(/(\d{0,2})(\d{0,4})(\d{0,4})/, (match, p1, p2, p3) => {
+            if (!p2) return p1;
+            if (!p3) return `(${p1}) ${p2}`;
+            return `(${p1}) ${p2}-${p3}`;
+          });
+        } else {
+          return numeros.replace(/(\d{0,2})(\d{0,5})(\d{0,4})/, (match, p1, p2, p3) => {
+            if (!p2) return p1;
+            if (!p3) return `(${p1}) ${p2}`;
+            return `(${p1}) ${p2}-${p3}`;
+          });
+        }
+      };
+      
+
     const filterData = useCallback(async () => {
         try {
             const params = filtros.valor ? filtros : {};
@@ -26,10 +44,15 @@ const ClientesSelectFilter = ({ onClientes }) => {
             );
 
             if (response.data && Array.isArray(response.data.clientes)) {
-                onClientes(response.data.clientes);
-            } else {
+                const clientesComTelefoneFormatado = response.data.clientes.map(cliente => ({
+                  ...cliente,
+                  telefone: formatarTelefone(cliente.telefone || cliente.telefone || '')
+                }));
+          
+                onClientes(clientesComTelefoneFormatado);
+              } else {
                 onClientes([]);
-            }
+              }
         } catch (error) {
             toast.error('Erro ao filtrar clientes. Tente novamente mais tarde.');
             onClientes([]);

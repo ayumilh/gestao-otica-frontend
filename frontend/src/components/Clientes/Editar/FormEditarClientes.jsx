@@ -4,7 +4,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import BtnActions from "@/components/Ui/Button/BtnActions";
 import { useUserToken } from "@/utils/useUserToken";
-import { FaTrash } from "react-icons/fa";
+import { FaTrash, FaPlus } from "react-icons/fa";
 import { toast } from "react-toastify";
 
 const FormEditarClientes = ({ cliId }) => {
@@ -18,7 +18,24 @@ const FormEditarClientes = ({ cliId }) => {
   const [cli_complemento, setCli_complemento] = useState("");
   const [cli_telefone, setCli_telefone] = useState("");
 
-  const [grauData, setGrauData] = useState([]);
+  const formatarTelefone = (valor) => {
+    const numeros = valor.replace(/\D/g, '');
+
+    if (numeros.length <= 10) {
+      return numeros.replace(/(\d{0,2})(\d{0,4})(\d{0,4})/, (match, p1, p2, p3) => {
+        if (!p2) return p1;
+        if (!p3) return `(${p1}) ${p2}`;
+        return `(${p1}) ${p2}-${p3}`;
+      });
+    } else {
+      return numeros.replace(/(\d{0,2})(\d{0,5})(\d{0,4})/, (match, p1, p2, p3) => {
+        if (!p2) return p1;
+        if (!p3) return `(${p1}) ${p2}`;
+        return `(${p1}) ${p2}-${p3}`;
+      });
+    }
+  };
+
 
   useEffect(() => {
     const fetchCliente = async () => {
@@ -39,25 +56,8 @@ const FormEditarClientes = ({ cliId }) => {
         setCli_endereco(data.endereco);
         setCli_numero(data.numero);
         setCli_complemento(data.complemento);
-        setCli_telefone(data.telefone);
+        setCli_telefone(formatarTelefone(data.telefone));
 
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/graus/listar?id=${cliId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          }
-        );
-
-        const grausData = response.data;
-
-        if (grausData?.graus && grausData.graus.length > 0) {
-          setGrauData(grausData.graus);
-          setIsOpenModalGrau(true);
-        } else {
-          setGrauData([]);
-        }
       } catch (error) {
         console.error("Erro ao carregar cliente:", error);
       }
@@ -74,7 +74,7 @@ const FormEditarClientes = ({ cliId }) => {
       endereco: cli_endereco,
       numero: cli_numero,
       complemento: cli_complemento,
-      telefone: cli_telefone,
+      telefone: cli_telefone.replace(/\D/g, '')
     };
 
     try {
@@ -130,32 +130,50 @@ const FormEditarClientes = ({ cliId }) => {
           {cli_nome || ""}
         </h3>
 
-        <button
-          onClick={handleDeleteCliente}
-          className="text-red-600 hover:text-red-800 transition-colors"
-          title="Deletar venda"
-        >
-          <FaTrash className="text-xl" />
-        </button>
+        <div className="flex gap-4">
+          {/* ações */}
+          <button
+            onClick={() => {
+              const query = new URLSearchParams({
+                campo: 'nome',
+                valor: cli_nome
+              }).toString();
+
+              router.push(`/vendas/criar?${query}`);
+            }}
+            className="flex items-center gap-2 text-orange-600 hover:text-orange-700 dark:text-orange-600 dark:hover:text-orange-700 transition-colors"
+            title="Criar venda"
+          >
+            <FaPlus className="text-2xl" />
+          </button>
+
+          <button
+            onClick={handleDeleteCliente}
+            className="text-red-600 hover:text-red-800 dark:text-red-600 dark:hover:text-red-800 transition-colors"
+            title="Deletar cliente"
+          >
+            <FaTrash className="text-xl" />
+          </button>
+        </div>
       </div>
 
       <div className="flex flex-wrap mt-5 mb-7">
         {/* Nome */}
         <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
-          <label className="block font-medium text-sm text-neutral-700">
+          <label className="block font-medium text-sm text-neutral-700 dark:text-gray-200">
             Nome
           </label>
           <input
             onChange={(e) => setCli_nome(e.target.value)}
             value={cli_nome || ""}
             type="text"
-            className="w-full border rounded px-3 py-2"
+            className="w-full border rounded px-3 py-2 dark:text-white dark:bg-zinc-800 dark:border-black/10"
           />
         </div>
 
         {/* CPF */}
         <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
-          <label className="block font-medium text-sm text-neutral-700">
+          <label className="block font-medium text-sm text-neutral-700 dark:text-gray-200">
             CPF
           </label>
           <input
@@ -163,104 +181,62 @@ const FormEditarClientes = ({ cliId }) => {
             value={cli_cpf || ""}
             type="text"
             maxLength={11}
-            className="w-full border rounded px-3 py-2"
+            className="w-full border rounded px-3 py-2 dark:text-white dark:bg-zinc-800 dark:border-black/10"
             disabled
           />
         </div>
 
         {/* Endereço */}
         <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
-          <label className="block font-medium text-sm text-neutral-700">
+          <label className="block font-medium text-sm text-neutral-700 dark:text-gray-200">
             Endereço
           </label>
           <input
             onChange={(e) => setCli_endereco(e.target.value)}
             value={cli_endereco || ""}
             type="text"
-            className="w-full border rounded px-3 py-2"
+            className="w-full border rounded px-3 py-2 dark:text-white dark:bg-zinc-800 dark:border-black/10"
           />
         </div>
 
         {/* Número */}
         <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
-          <label className="block font-medium text-sm text-neutral-700">
+          <label className="block font-medium text-sm text-neutral-700 dark:text-gray-200">
             Número
           </label>
           <input
             onChange={(e) => setCli_numero(e.target.value)}
             value={cli_numero || ""}
             type="text"
-            className="w-full border rounded px-3 py-2"
+            className="w-full border rounded px-3 py-2 dark:text-white dark:bg-zinc-800 dark:border-black/10"
           />
         </div>
 
         {/* Complemento */}
         <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
-          <label className="block font-medium text-sm text-neutral-700">
+          <label className="block font-medium text-sm text-neutral-700 dark:text-gray-200">
             Complemento
           </label>
           <input
             onChange={(e) => setCli_complemento(e.target.value)}
             value={cli_complemento || ''}
             type="text"
-            className="w-full border rounded px-3 py-2"
+            className="w-full border rounded px-3 py-2 dark:text-white dark:bg-zinc-800 dark:border-black/10"
           />
         </div>
 
         {/* Telefone */}
         <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
-          <label className="block font-medium text-sm text-neutral-700">
+          <label className="block font-medium text-sm text-neutral-700 dark:text-gray-200">
             Telefone
           </label>
           <input
             onChange={(e) => setCli_telefone(e.target.value)}
             value={cli_telefone || ""}
             type="text"
-            className="w-full border rounded px-3 py-2"
+            className="w-full border rounded px-3 py-2 dark:text-white dark:bg-zinc-800 dark:border-black/10"
           />
         </div>
-
-        {/* <div className="w-full flex flex-wrap mt-5 mb-7">
-          <div className="w-full rounded-lg shadow-lg p-6 relative overflow-auto">
-
-            <h2 className="text-xl font-semibold mb-4 text-neutral-800">Informações Oftalmológicas</h2>
-
-            {grauData.map((item, index) => (
-              <div key={index} className="mb-6">
-                <p className="text-sm text-neutral-700"><strong>Lentes:</strong> {item.lentes}</p>
-                <p className="text-sm text-neutral-700"><strong>Armação:</strong> {item.armacao}</p>
-                <p className="text-sm text-neutral-700 mb-2"><strong>Altura Pupilar:</strong> {item.alturaPupilar || 'N/A'}</p>
-
-                <table className="min-w-full border text-sm text-left text-neutral-800 mt-2">
-                  <thead className="bg-gray-200">
-                    <tr>
-                      <th className="px-2 py-1 border">Lente</th>
-                      <th className="px-2 py-1 border">Olho</th>
-                      <th className="px-2 py-1 border">Esférico</th>
-                      <th className="px-2 py-1 border">Cilíndrico</th>
-                      <th className="px-2 py-1 border">Eixo</th>
-                      <th className="px-2 py-1 border">ADD</th>
-                      <th className="px-2 py-1 border">DP / DNP</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {item.graus.map((g, i) => (
-                      <tr key={i} className="bg-white">
-                        <td className="px-2 py-1 border">{g.lente}</td>
-                        <td className="px-2 py-1 border">{g.olho}</td>
-                        <td className="px-2 py-1 border">{g.esferico || '-'}</td>
-                        <td className="px-2 py-1 border">{g.cilindrico || '-'}</td>
-                        <td className="px-2 py-1 border">{g.eixo || '-'}</td>
-                        <td className="px-2 py-1 border">{g.add || '-'}</td>
-                        <td className="px-2 py-1 border">{g.dp || '-'}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ))}
-          </div>
-        </div> */}
 
         <div className="w-full px-3 my-4">
           <BtnActions title="Salvar alterações" onClick={handleSalvarEdicao} color="ativado" />

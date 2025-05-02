@@ -1,14 +1,12 @@
 import { redirect } from 'next/navigation';
 import FormEditarClientes from '@/components/Clientes/Editar/FormEditarClientes';
-
 import { checkSession } from '@/utils/checkSession';
-
 import BtnBackPage from '@/components/Ui/Button/BtnBackPage';
 import NavbarMobile from '@/components/Navbar/Mobile/NavbarMobile';
 import NavbarContent from "@/components/Navbar/NavbarContent";
 
 export default async function Editar({ searchParams }) {
-  const session = await checkSession();
+  await checkSession();
 
   const cliId = searchParams?.id;
 

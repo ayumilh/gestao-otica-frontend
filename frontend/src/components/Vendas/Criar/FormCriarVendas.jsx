@@ -11,10 +11,13 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { useRouter } from "next/navigation";
 import { toast } from 'react-toastify';
+import { useSearchParams } from "next/navigation";
 
 const FormCriarVendas = () => {
   const { token } = useUserToken();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const [openFilterCpf, setOpenFilterCpf] = useState(false);
 
   const [vendaData, setVendaData] = useState(null);
   const [vendaEntrega, setVendaEntrega] = useState(null);
@@ -36,8 +39,9 @@ const FormCriarVendas = () => {
   const [alturaPupilar, setAlturaPupilar] = useState("");
 
   // busca do cliente
+  const [campoBuscaValor, setCampoBuscaValor] = useState('');
+
   const [isLoading, setIsLoading] = useState(false);
-  const [openFilterCpf, setOpenFilterCpf] = useState(false);
   const [cliente, setCliente] = useState({});
   const [clienteId, setClienteId] = useState(null);
 
@@ -49,7 +53,6 @@ const FormCriarVendas = () => {
   const [isInvalidoVendaData, setIsInvalidoVendaData] = useState(false);
   const [isInvalidoVendaEntrega, setIsInvalidoVendaEntrega] = useState(false);
   const [isInvalidoVendaCPF, setIsInvalidoVendaCPF] = useState(false);
-  const [isInvalidoVendaEndereco, setIsInvalidoVendaEndereco] = useState(false);
   const [isInvalidoVendaLentes, setIsInvalidoVendaLentes] = useState(false);
   const [isInvalidoVendaArmacao, setIsInvalidoVendaArmacao] = useState(false);
   const [isInvalidoVendaPreco, setIsInvalidoVendaPreco] = useState(false);
@@ -73,29 +76,18 @@ const FormCriarVendas = () => {
 
   const handleChange = (e) => {
     const value = e.target.value;
+    setCampoBuscaValor(value);
     setOpenFilterCpf(true);
-
-    if (value === "") {
-      setCliente(null);
-      setClienteId(null); // limpa também o ID do cliente
-      setVendaCPF(""); // limpa o campo
-      setFiltros({ campo: campoBusca, valor: "" });
-      setIsLoading(false);
-      return;
-    }
-
+  
+    const sanitizedValue = campoBusca === 'cpf' ? value.replace(/\D/g, '') : value;
+  
+    setFiltros({ campo: campoBusca, valor: sanitizedValue });
+  
     if (campoBusca === 'cpf') {
-      const somenteNumeros = value.replace(/\D/g, '');
-      setVendaCPF(somenteNumeros);
-      setFiltros({ campo: 'cpf', valor: somenteNumeros });
-    } else {
-      setVendaCPF(value); // <- reusando mesmo campo para busca por nome
-      setFiltros({ campo: 'nome', valor: value });
+      setVendaCPF(sanitizedValue);
     }
-
-    setIsLoading(true);
   };
-
+  
 
   const handleClick = async () => {
     setOpenFilterCpf(true);
@@ -105,34 +97,73 @@ const FormCriarVendas = () => {
     setIsLoading(true);
   };
 
-  const filterCpf = useCallback(async () => {
-    if (!vendaCPF || vendaCPF.length < 2) return;
-
+  const filterCpf = useCallback(async (logOnSuccess = false) => {
+    if (!filtros.valor || filtros.valor.length < 2) return;
+  
     setIsLoading(true);
     try {
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/clientes/filter`,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
           params: filtros,
         }
       );
+  
       if (response.data.clientes.length === 0) {
         setCliente({});
+        setClienteId(null);
       } else {
-        setCliente(response.data.clientes[0]);
-        setClienteId(response.data.clientes[0].id);
+        const clienteEncontrado = response.data.clientes[0];
+        setCliente(clienteEncontrado);
+        setClienteId(clienteEncontrado.id);
+  
+        if (logOnSuccess) {
+          console.log('✅ clientId atribuído via searchParams:', clienteEncontrado.id);
+        }
       }
     } catch (error) {
-      console.error("Erro ao buscar cliente", error);
+      console.error("Erro ao buscar cliente:", error);
       setCliente({});
     } finally {
       setIsLoading(false);
     }
-  }, [filtros, vendaCPF]);
+  }, [filtros, token]);
+  
 
+  useEffect(() => {
+    const campo = searchParams.get('campo');
+    const valor = searchParams.get('valor');
+  
+    if (campo && valor) {
+      setCampoBusca(campo);
+      setCampoBuscaValor(valor);
+      setFiltros({ campo, valor });
+      setOpenFilterCpf(false);
+  
+      // Chama diretamente sem esperar o estado sincronizar
+      axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/clientes/filter`, {
+        headers: { Authorization: `Bearer ${token}` },
+        params: { campo, valor }
+      })
+      .then((res) => {
+        const c = res.data.clientes[0];
+        if (c) {
+          setCliente(c);
+          setClienteId(c.id);
+          setVendaNome(c.nome);
+          setVendaCPF(c.cpf);
+          setVendaTelefone(c.telefone);
+          setVendaEndereco(c.endereco);
+          setVendaComplemento(c.complemento);
+        }
+      })
+      .catch((err) => {
+        console.error("Erro ao buscar cliente com searchParams:", err);
+      });
+    }
+  }, []);
+  
 
   const handleCriar = async () => {
     if (!clienteId) {
@@ -232,21 +263,21 @@ const FormCriarVendas = () => {
 
   return (<>
     <div className="w-full xl:max-w-screen-lg flex flex-col">
-      <h3 className="text-neutral-800 text-xl font-medium ">
+      <h3 className="text-neutral-800 text-xl font-medium dark:text-gray-200">
         {vendaData || "Data de venda"} - {vendaNome || "Nome do cliente"}
       </h3>
       <div className='flex flex-wrap my-4 transition-transform duration-500 ease-in'>
         {/* Buscar client */}
         <div className="w-full mt-3 mb-4 px-3">
-          <label className="block font-medium text-sm text-neutral-700 mb-1">
-            Buscar cliente por: <span className="text-red-600">*</span>
+          <label className="block font-medium text-sm text-neutral-700 dark:text-gray-200 mb-1">
+            Buscar cliente por: <span className="text-red-600 dark:text-red-600">*</span>
           </label>
           <div className="w-full flex items-center gap-2 mb-4 px-3">
             {/* Select pequeno */}
             <select
               value={campoBusca}
               onChange={(e) => setCampoBusca(e.target.value)}
-              className="border px-2 py-2 rounded text-sm font-medium text-neutral-700 flex-shrink-0 w-auto"
+              className="border px-2 py-2 rounded text-sm font-medium text-neutral-700 flex-shrink-0 w-auto dark:text-gray-200 dark:bg-zinc-800 dark:border-black/10"
             >
               <option value="cpf">CPF</option>
               <option value="nome">Nome</option>
@@ -258,13 +289,13 @@ const FormCriarVendas = () => {
                 onChange={handleChange}
                 onFocus={handleFocus}
                 onClick={handleClick}
-                value={vendaCPF || ""}
+                value={campoBuscaValor || ""}
                 type="text"
                 name="vendaBusca"
                 placeholder={`Digite o ${campoBusca === "cpf" ? "CPF" : "Nome"}`}
                 maxLength={campoBusca === "cpf" ? 11 : 200}
                 required
-                className={`peer w-full border px-3 py-2 rounded font-medium text-neutral-600 focus:outline-2 outline-blue-400 transition-all duration-300 ${isInvalidoVendaCPF ? "outline-red-500 focus:outline-red-500" : ""}`}
+                className={`peer w-full border px-3 py-2 rounded font-medium text-neutral-600 focus:outline-2 outline-blue-400 dark:text-gray-200 dark:bg-zinc-800 dark:border-black/10 transition-all duration-300 ${isInvalidoVendaCPF ? "outline-red-500 focus:outline-red-500" : ""}`}
               />
               <button
                 type="button"
@@ -278,7 +309,7 @@ const FormCriarVendas = () => {
           {openFilterCpf && (
             <div
               ref={dropdownRef}
-              className="bg-gray-100 shadow-lg rounded-md w-full max-w-lg absolute z-50 mt-1 p-3"
+              className="bg-gray-100 dark:text-white dark:bg-zinc-800 dark:border-black/10 shadow-lg rounded-md w-full max-w-lg absolute z-50 mt-1 p-3"
             >
               {isLoading ? (
                 <div className="flex justify-center items-center">
@@ -298,12 +329,16 @@ const FormCriarVendas = () => {
                     setVendaTelefone(c.telefone);
                     setVendaEndereco(c.endereco);
                     setVendaComplemento(c.complemento);
-                    setClienteId(c.id); // ESSENCIAL
+                    setClienteId(c.id);
                     setOpenFilterCpf(false);
 
-                    console.log("Cliente ID selecionado:", c.id);
+                    if (campoBusca === 'cpf') {
+                      setCampoBuscaValor(c.cpf);
+                    } else {
+                      setCampoBuscaValor(c.nome);
+                    }
                   }}
-                  className="cursor-pointer flex gap-3 items-center hover:bg-gray-200 transition rounded p-2"
+                  className="cursor-pointer flex gap-3 items-center hover:bg-gray-200 dark:text-white dark:bg-zinc-800 hover:dark:bg-black/10 dark:border-black/10 transition rounded p-2"
                 >
                   <div className="bg-orange-400 text-white rounded-full p-2">
                     <PersonIcon fontSize="small" />
@@ -335,14 +370,13 @@ const FormCriarVendas = () => {
           )}
         </div>
 
-
         {/* data */}
         <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
           <label
             htmlFor="vendaData"
-            className="block font-medium text-sm text-neutral-700"
+            className="block font-medium text-sm text-neutral-700 dark:text-gray-200"
           >
-            Data de venda: <span className="text-red-600">*</span>
+            Data de venda: <span className="text-red-600 dark:text-red-600">*</span>
           </label>
           <input
             type="date"
@@ -350,7 +384,7 @@ const FormCriarVendas = () => {
             value={vendaData || ""}
             name="vendaData"
             required
-            className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${isInvalidoVendaData
+            className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 dark:text-gray-200 dark:bg-zinc-800 dark:border-black/10 transition-all duration-500 ease-out ${isInvalidoVendaData
               ? "outline-red-500 focus:outline-red-500"
               : ""
               }`}
@@ -361,7 +395,7 @@ const FormCriarVendas = () => {
         <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
           <label
             htmlFor="vendaEntrega"
-            className="block font-medium text-sm text-neutral-700"
+            className="block font-medium text-sm text-neutral-700 dark:text-gray-200"
           >
             Data de entrega:
           </label>
@@ -370,7 +404,7 @@ const FormCriarVendas = () => {
             name="vendaEntrega"
             onChange={(e) => setVendaEntrega(e.target.value)}
             value={vendaEntrega || ""}
-            className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${isInvalidoVendaEntrega
+            className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 dark:text-gray-200 dark:bg-zinc-800 dark:border-black/10 transition-all duration-500 ease-out ${isInvalidoVendaEntrega
               ? "outline-red-500 focus:outline-red-500"
               : ""
               }`}
@@ -382,11 +416,11 @@ const FormCriarVendas = () => {
           className="w-full flex mt-5 mb-7 border-t pt-6 cursor-pointer"
           onClick={() => setShowLentesArmacao(!showLentesArmacao)}
         >
-          <span className="text-neutral-800 text-xl font-medium">Lentes e Armação</span>
+          <span className="text-neutral-800 dark:text-gray-200 text-xl font-medium">Lentes e Armação</span>
           {showLentesArmacao ? (
-            <KeyboardArrowUpIcon className="text-neutral-600" />
+            <KeyboardArrowUpIcon className="text-neutral-600 dark:text-gray-200" />
           ) : (
-            <KeyboardArrowDownIcon className="text-neutral-600" />
+            <KeyboardArrowDownIcon className="text-neutral-600 dark:text-gray-200" />
           )}
         </div>
         {showLentesArmacao && (
@@ -395,9 +429,9 @@ const FormCriarVendas = () => {
             <div className="w-full mt-3 mb-4 px-3">
               <label
                 htmlFor="vendaLentes"
-                className="block font-medium text-sm text-neutral-700"
+                className="block font-medium text-sm text-neutral-700 dark:text-gray-200"
               >
-                Lentes <span className="text-red-600">*</span>
+                Lentes <span className="text-red-600 dark:text-red-600">*</span>
               </label>
               <input
                 onChange={(e) => {
@@ -415,7 +449,7 @@ const FormCriarVendas = () => {
                 name="vendaLentes"
                 maxLength={100}
                 required
-                className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${isInvalidoVendaLentes ? "outline-red-500 focus:outline-red-500" : ""
+                className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 dark:text-gray-200 dark:bg-zinc-800 dark:border-black/10 transition-all duration-500 ease-out ${isInvalidoVendaLentes ? "outline-red-500 focus:outline-red-500" : ""
                   }`}
               />
             </div>
@@ -424,9 +458,9 @@ const FormCriarVendas = () => {
             <div className="w-full mt-3 mb-4 px-3">
               <label
                 htmlFor="vendaArmacao"
-                className="block font-medium text-sm text-neutral-700"
+                className="block font-medium text-sm text-neutral-700 dark:text-gray-200"
               >
-                Armação: <span className="text-red-600">*</span>
+                Armação: <span className="text-red-600 dark:text-red-600">*</span>
               </label>
               <input
                 onChange={(e) => {
@@ -444,14 +478,14 @@ const FormCriarVendas = () => {
                 name="vendaArmacao"
                 maxLength={100}
                 required
-                className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${isInvalidoVendaArmacao ? "outline-red-500 focus:outline-red-500" : ""
+                className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 dark:text-gray-200 dark:bg-zinc-800 dark:border-black/10 transition-all duration-500 ease-out ${isInvalidoVendaArmacao ? "outline-red-500 focus:outline-red-500" : ""
                   }`}
               />
             </div>
 
             <div className="overflow-x-auto">
-              <table className="min-w-full border text-sm text-left text-neutral-800">
-                <thead className="bg-neutral-200">
+              <table className="min-w-full border text-sm text-left text-neutral-800 dark:text-gray-200">
+                <thead className="bg-neutral-200 dark:text-gray-200 dark:bg-zinc-800 dark:border-black/10">
                   <tr>
                     <th className="px-4 py-2 border">Lentes</th>
                     <th className="px-4 py-2 border">Olho</th>
@@ -469,37 +503,37 @@ const FormCriarVendas = () => {
                     { lente: 'Perto', olho: 'OD' },
                     { lente: 'Perto', olho: 'OE' },
                   ].map((item, index) => (
-                    <tr key={index} className="bg-white">
+                    <tr key={index} className="bg-white dark:text-gray-200 dark:bg-zinc-800 dark:border-black/10">
                       <td className="px-4 py-2 border">{item.lente}</td>
                       <td className="px-4 py-2 border">{item.olho}</td>
                       <td className="px-2 py-1 border">
-                        <input type="text" name={`esferico_${item.lente}_${item.olho}`} className="w-full px-2 py-1 border rounded" />
+                        <input type="text" name={`esferico_${item.lente}_${item.olho}`} className="w-full px-2 py-1 border rounded dark:text-gray-200 dark:bg-zinc-800 dark:border-black/10" />
                       </td>
                       <td className="px-2 py-1 border">
-                        <input type="text" name={`cilindrico_${item.lente}_${item.olho}`} className="w-full px-2 py-1 border rounded" />
+                        <input type="text" name={`cilindrico_${item.lente}_${item.olho}`} className="w-full px-2 py-1 border rounded dark:text-gray-200 dark:bg-zinc-800 dark:border-black/10" />
                       </td>
                       <td className="px-2 py-1 border">
-                        <input type="text" name={`eixo_${item.lente}_${item.olho}`} className="w-full px-2 py-1 border rounded" />
+                        <input type="text" name={`eixo_${item.lente}_${item.olho}`} className="w-full px-2 py-1 border rounded dark:text-gray-200 dark:bg-zinc-800 dark:border-black/10" />
                       </td>
                       <td className="px-2 py-1 border">
-                        <input type="text" name={`add_${item.lente}_${item.olho}`} className="w-full px-2 py-1 border rounded" />
+                        <input type="text" name={`add_${item.lente}_${item.olho}`} className="w-full px-2 py-1 border rounded dark:text-gray-200 dark:bg-zinc-800 dark:border-black/10" />
                       </td>
                       <td className="px-2 py-1 border">
-                        <input type="text" name={`dp_${item.lente}_${item.olho}`} className="w-full px-2 py-1 border rounded" />
+                        <input type="text" name={`dp_${item.lente}_${item.olho}`} className="w-full px-2 py-1 border rounded dark:text-gray-200 dark:bg-zinc-800 dark:border-black/10" />
                       </td>
                     </tr>
                   ))}
 
                   {/* Altura Pupilar */}
-                  <tr className="bg-white">
-                    <td className="px-4 py-2 border bg-neutral-100" colSpan={6}>Altura Pupilar</td>
+                  <tr className="bg-white dark:text-gray-200 dark:bg-zinc-800 dark:border-black/10">
+                    <td className="px-4 py-2 border bg-neutral-100 dark:text-gray-200 dark:bg-zinc-800 dark:border-black/10" colSpan={6}>Altura Pupilar</td>
                     <td className="px-2 py-1 border">
                       <input
                         type="text"
                         name="altura_pupilar"
                         value={alturaPupilar}
                         onChange={(e) => setAlturaPupilar(e.target.value)}
-                        className="w-full px-2 py-1 border rounded bg-neutral-100"
+                        className="w-full px-2 py-1 border rounded bg-neutral-100 dark:text-gray-200 dark:bg-zinc-800 dark:border-black/10"
                       />
                     </td>
                   </tr>
@@ -511,7 +545,8 @@ const FormCriarVendas = () => {
       </div>
 
       <hr className="w-full my-6 border-t border-neutral-200" />
-      <span className="text-neutral-800 text-xl font-medium">Detalhes de venda</span>
+
+      <span className="text-neutral-800 text-xl font-medium dark:text-gray-200">Detalhes de venda</span>
 
       <div className='flex flex-wrap my-4 transition-transform duration-500 ease-in'>
         <InputMoeda
@@ -553,14 +588,14 @@ const FormCriarVendas = () => {
         <div className="w-full mt-3 mb-4 px-3">
           <label
             htmlFor="vendaObs"
-            className="block font-medium text-sm text-neutral-700"
+            className="block font-medium text-sm text-neutral-700 dark:text-gray-200"
           >
             Observação
           </label>
           <input
             onChange={(e) => {
               const value = e.target.value;
-              const regex = /^[A-Za-z0-9\s]+$/;
+              const regex = /^[A-Za-z0-9\s.,-]+$/;
               if (value === "" || regex.test(value)) {
                 setVendaObs(value);
                 setIsInvalidoVendaObs(false);
@@ -572,7 +607,7 @@ const FormCriarVendas = () => {
             type="text"
             name="vendaObs"
             maxLength={255}
-            className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${isInvalidoVendaObs
+            className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 dark:text-white dark:bg-zinc-800 dark:border-black/10 transition-all duration-500 ease-out ${isInvalidoVendaObs
               ? "outline-red-500 focus:outline-red-500"
               : ""
               }`}

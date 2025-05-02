@@ -16,20 +16,23 @@ const ModalVerificationLogout = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-gray-600 bg-opacity-50"
       onClick={handleCloseModal}
     >
       <div
-        className="bg-white py-5 px-6 rounded shadow-lg"
+        className="bg-white dark:bg-zinc-800 py-5 px-6 rounded shadow-lg border dark:border-black/10"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-gray-700">Confirmar Saída</h2>
+          <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-200">
+            Confirmar Saída
+          </h2>
           <button
             onClick={handleCloseModal}
-            className="text-gray-800 hover:text-gray-600"
+            className="text-gray-800 dark:text-gray-300 hover:text-gray-600 dark:hover:text-white"
           >
             <svg
               className="h-6 w-6"
@@ -45,21 +48,22 @@ const ModalVerificationLogout = () => {
               />
             </svg>
           </button>
-
         </div>
-        <p className="mt-5 ml-2 text-lg text-gray-700">
+
+        <p className="mt-5 ml-2 text-lg text-gray-700 dark:text-gray-200">
           Você tem certeza que deseja sair?
         </p>
+
         <div className="mt-8 flex gap-4 justify-end" onClick={(e) => e.stopPropagation()}>
           <button
             onClick={handleSignOut}
-            className="px-3 py-2 bg-segundaria-900 text-white rounded hover:bg-segundaria-800 cursor-pointer transition duration-300 ease-in-out"
+            className="px-3 py-2 bg-segundaria-900 text-white rounded hover:bg-segundaria-800 transition duration-300 ease-in-out"
           >
             Sim, sair
           </button>
           <button
             onClick={handleCloseModal}
-            className="px-3 py-2 font-medium border border-gray-300 hover:bg-gray-100 rounded-md cursor-pointer transition duration-300 ease-in-out"
+            className="px-3 py-2 font-medium border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition duration-300 ease-in-out"
           >
             Cancelar
           </button>
@@ -68,4 +72,5 @@ const ModalVerificationLogout = () => {
     </div>
   );
 };
+
 export default ModalVerificationLogout;

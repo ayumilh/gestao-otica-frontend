@@ -7,7 +7,7 @@ import NavbarContent from "@/components/Navbar/NavbarContent";
 
 
 export default async function Criar() {
-  const session = await checkSession();
+  await checkSession();
 
 
   return (        

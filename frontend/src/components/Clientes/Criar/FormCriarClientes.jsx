@@ -1,12 +1,7 @@
 "use client";
 import { useState } from "react";
 import axios from "axios";
-import SearchIcon from '@mui/icons-material/Search';
 import BtnActions from "@/components/Ui/Button/BtnActions";
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import SuccessNotification from "@/components/Ui/Notification/SuccessNotification";
-import ErrorNotification from "@/components/Ui/Notification/ErrorNotification";
 import { useRouter } from "next/navigation";
 import { useUserToken } from "@/utils/useUserToken";
 import { toast } from "react-toastify";
@@ -14,25 +9,12 @@ import { toast } from "react-toastify";
 const FormCriarClientes = () => {
     const { token } = useUserToken();
 
-    // variáveis para os dados do cliente
     const [cli_nome, setCli_nome] = useState("");
     const [cli_cpf, setCli_cpf] = useState("");
     const [cli_endereco, setCli_endereco] = useState("");
     const [cli_numero, setCli_numero] = useState("");
     const [cli_complemento, setCli_complemento] = useState(null);
     const [cli_telefone, setCli_telefone] = useState("");
-
-    // variáveis para os detalhes da venda
-    const [dataVenda, setDataVenda] = useState("");
-    const [dataEntrega, setDataEntrega] = useState("");
-    const [preco, setPreco] = useState("");
-    const [sinal, setSinal] = useState("");
-    const [aPagar, setAPagar] = useState("");
-    const [obs, setObs] = useState("");
-    const [vendaLentes, setVendaLentes] = useState('');
-    const [vendaArmacao, setVendaArmacao] = useState('');
-
-    const [alturaPupilar, setAlturaPupilar] = useState("");
 
     const [errorsInput, setErrorsInput] = useState({});
 
@@ -42,7 +24,7 @@ const FormCriarClientes = () => {
         endereco: cli_endereco,
         numero: cli_numero,
         complemento: cli_complemento,
-        telefone: cli_telefone,
+        cli_telefone: cli_telefone,
     };
 
     const [isInvalidoClienteNome, setIsInvalidoClienteNome] = useState(false);
@@ -172,12 +154,27 @@ const FormCriarClientes = () => {
     };
 
     const handleTelefoneChange = (e) => {
-        const value = e.target.value.trimStart();
-        const regex = /[^0-9]/g;
-        const sanitizedValue = sanitizeInput(value, regex);
+        const raw = e.target.value.replace(/\D/g, '').slice(0, 11); // Apenas números, até 11 dígitos
 
-        if (value === sanitizedValue) {
-            setCli_telefone(sanitizedValue);
+        const formatarTelefone = (valor) => {
+            if (valor.length <= 10) {
+                return valor.replace(/(\d{0,2})(\d{0,4})(\d{0,4})/, (match, p1, p2, p3) => {
+                    if (!p2) return p1;
+                    if (!p3) return `(${p1}) ${p2}`;
+                    return `(${p1}) ${p2}-${p3}`;
+                });
+            } else {
+                return valor.replace(/(\d{0,2})(\d{0,5})(\d{0,4})/, (match, p1, p2, p3) => {
+                    if (!p2) return p1;
+                    if (!p3) return `(${p1}) ${p2}`;
+                    return `(${p1}) ${p2}-${p3}`;
+                });
+            }
+        };
+
+        setCli_telefone(formatarTelefone(raw));
+
+        if (raw.length >= 10) {
             setErrorsInput((prevErrors) => {
                 const { cli_telefone, ...rest } = prevErrors;
                 return rest;
@@ -186,23 +183,30 @@ const FormCriarClientes = () => {
         } else {
             setErrorsInput((prevErrors) => ({
                 ...prevErrors,
-                cli_telefone: 'Telefone inválido. Apenas números são permitidos.',
+                cli_telefone: 'Telefone incompleto.',
             }));
             setIsInvalidoClienteTelefone(true);
         }
     };
 
+
     const handleSalvarCliente = async () => {
         try {
+            const clienteFormatado = {
+                ...cliente,
+                telefone: cliente.cli_telefone.replace(/\D/g, '')
+              };
+
             await axios.post(
                 `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/clientes/cadastrar`,
-                cliente,
+                clienteFormatado,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 }
             );
+            
             toast.success("Cliente criado com sucesso!");
             setTimeout(() => {
                 router.push("/clientes");
@@ -213,104 +217,8 @@ const FormCriarClientes = () => {
         }
     };
 
-    const handleSalvarGrau = async () => {
-        const grauData = [];
-
-        const lentesTipos = ['Longe', 'Perto'];
-        const olhos = ['OD', 'OE'];
-
-        lentesTipos.forEach((lente) => {
-            olhos.forEach((olho) => {
-                const esferico = document.querySelector(`[name=esferico_${lente}_${olho}]`)?.value || "";
-                const cilindrico = document.querySelector(`[name=cilindrico_${lente}_${olho}]`)?.value || "";
-                const eixo = document.querySelector(`[name=eixo_${lente}_${olho}]`)?.value || "";
-                const add = document.querySelector(`[name=add_${lente}_${olho}]`)?.value || "";
-                const dp = document.querySelector(`[name=dp_${lente}_${olho}]`)?.value || "";
-
-                grauData.push({
-                    lente,
-                    olho,
-                    esferico,
-                    cilindrico,
-                    eixo,
-                    add,
-                    dp
-                });
-            });
-        });
-
-        const payload = {
-            cpf: cli_cpf, // já preenchido no estado do cliente
-            data: new Date().toISOString().split('T')[0], // data atual no formato YYYY-MM-DD
-            lentes: vendaLentes,
-            armacao: vendaArmacao,
-            alturaPupilar: alturaPupilar,
-            graus: grauData
-        };
-
-        try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/graus/cadastrar`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`
-                },
-                body: JSON.stringify(payload)
-            });
-
-            const resJson = await response.json();
-
-            if (response.ok) {
-                toast.success("Grau salvo com sucesso!");
-            } else {
-                toast.error("Erro ao salvar grau");
-            }
-        } catch (error) {
-            console.error("Erro ao chamar API de grau:", error);
-            toast.error("Erro ao salvar grau");
-        }
-    };
-
-
-    const handleSalvarVenda = async () => {
-        try {
-            const payload = {
-                data: dataVenda,
-                entrega: dataEntrega,
-                cpf: cli_cpf,
-                lentes: vendaLentes,
-                armacao: vendaArmacao,
-                preco: parseFloat(preco),
-                sinal: parseFloat(sinal || 0),
-                a_pagar: parseFloat(aPagar || 0),
-                obs,
-            };
-
-            await axios.post(
-                `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/vendas/criar`,
-                payload,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
-
-            toast.success("Venda criada com sucesso!");
-
-            setTimeout(() => {
-                router.push("/vendas");
-            }, 2000);
-        } catch (error) {
-            console.error("Erro ao salvar venda:", error);
-            toast.error("Erro ao criar venda");
-        }
-    };
-
-
     return (<>
         <div className="w-full xl:max-w-screen-lg flex flex-col">
-            {/* <BtnBackPage title="Voltar" /> */}
             <h3 className="text-neutral-800 text-xl font-medium ">
                 {cli_nome || "Novo Cliente"}
             </h3>
@@ -321,9 +229,9 @@ const FormCriarClientes = () => {
                     <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
                         <label
                             htmlFor="cli_nome"
-                            className="block font-medium text-sm text-neutral-700"
+                            className="block font-medium text-sm text-neutral-700 dark:text-gray-200"
                         >
-                            Nome do cliente <span className="text-red-600">*</span>
+                            Nome do cliente <span className="text-red-600 dark:text-red-600">*</span>
                         </label>
                         <input
                             onChange={handleNomeChange}
@@ -333,13 +241,13 @@ const FormCriarClientes = () => {
                             required
                             maxLength={200}
                             minLength={1}
-                            className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${isInvalidoClienteNome
+                            className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 dark:text-white dark:bg-zinc-800 dark:border-black/10 transition-all duration-500 ease-out ${isInvalidoClienteNome
                                 ? "outline-red-500 focus:outline-red-500"
                                 : ""
                                 }`}
                         />
                         {errorsInput.cli_nome && (
-                            <p className="text-red-500 relative text-sm mt-1">{errorsInput.cli_nome}</p>
+                            <p className="text-red-500 dark:text-red-500 relative text-sm mt-1">{errorsInput.cli_nome}</p>
                         )}
                     </div>
 
@@ -347,9 +255,9 @@ const FormCriarClientes = () => {
                     <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
                         <label
                             htmlFor="cli_cpf"
-                            className="block font-medium text-sm text-neutral-700"
+                            className="block font-medium text-sm text-neutral-700 dark:text-gray-200"
                         >
-                            CPF 
+                            CPF
                         </label>
                         <input
                             onChange={handleCpfChange}
@@ -357,13 +265,13 @@ const FormCriarClientes = () => {
                             name="cli_cpf"
                             type="text"
                             maxLength={11}
-                            className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${isInvalidoClienteCpf
+                            className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 dark:text-white dark:bg-zinc-800 dark:border-black/10 transition-all duration-500 ease-out ${isInvalidoClienteCpf
                                 ? "outline-red-500 focus:outline-red-500"
                                 : ""
                                 }`}
                         />
                         {errorsInput.cli_cpf && (
-                            <p className="text-red-500 relative text-sm mt-1">{errorsInput.cli_cpf}</p>
+                            <p className="text-red-500 dark:text-red-500 relative text-sm mt-1">{errorsInput.cli_cpf}</p>
                         )}
                     </div>
 
@@ -371,9 +279,9 @@ const FormCriarClientes = () => {
                     <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
                         <label
                             htmlFor="cli_endereco"
-                            className="block font-medium text-sm text-neutral-700"
+                            className="block font-medium text-sm text-neutral-700 dark:text-gray-200"
                         >
-                            Endereço <span className="text-red-600">*</span>
+                            Endereço <span className="text-red-600 dark:text-red-600">*</span>
                         </label>
                         <input
                             onChange={handleEnderecoChange}
@@ -383,13 +291,13 @@ const FormCriarClientes = () => {
                             maxLength={200}
                             minLength={1}
                             required
-                            className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${isInvalidoClienteEndereco
+                            className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 dark:text-white dark:bg-zinc-800 dark:border-black/10 transition-all duration-500 ease-out ${isInvalidoClienteEndereco
                                 ? "outline-red-500 focus:outline-red-500"
                                 : ""
                                 }`}
                         />
                         {errorsInput.cli_endereco && (
-                            <p className="text-red-500 relative text-sm mt-1">{errorsInput.cli_endereco}</p>
+                            <p className="text-red-500 dark:text-red-500 relative text-sm mt-1">{errorsInput.cli_endereco}</p>
                         )}
                     </div>
 
@@ -397,9 +305,9 @@ const FormCriarClientes = () => {
                     <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
                         <label
                             htmlFor="cli_numero"
-                            className="block font-medium text-sm text-neutral-700"
+                            className="block font-medium text-sm text-neutral-700 dark:text-gray-200"
                         >
-                            Número <span className="text-red-600">*</span>
+                            Número <span className="text-red-600 dark:text-red-600">*</span>
                         </label>
                         <input
                             onChange={handleNumeroChange}
@@ -409,13 +317,13 @@ const FormCriarClientes = () => {
                             required
                             maxLength={10}
                             minLength={1}
-                            className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${isInvalidoClienteNumero
+                            className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 dark:text-white dark:bg-zinc-800 dark:border-black/10 transition-all duration-500 ease-out ${isInvalidoClienteNumero
                                 ? "outline-red-500 focus:outline-red-500"
                                 : ""
                                 }`}
                         />
                         {errorsInput.cli_numero && (
-                            <p className="text-red-500 relative text-sm mt-1">{errorsInput.cli_numero}</p>
+                            <p className="text-red-500 dark:text-red-500 relative text-sm mt-1">{errorsInput.cli_numero}</p>
                         )}
                     </div>
 
@@ -423,7 +331,7 @@ const FormCriarClientes = () => {
                     <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
                         <label
                             htmlFor="cli_complemento"
-                            className="block font-medium text-sm text-neutral-700"
+                            className="block font-medium text-sm text-neutral-700 dark:text-gray-200"
                         >
                             Complemento
                         </label>
@@ -434,13 +342,13 @@ const FormCriarClientes = () => {
                             name="cli_complemento"
                             maxLength={50}
                             minLength={1}
-                            className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${isInvalidoClienteComplemento
+                            className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 dark:text-white dark:bg-zinc-800 dark:border-black/10 transition-all duration-500 ease-out ${isInvalidoClienteComplemento
                                 ? "outline-red-500 focus:outline-red-500"
                                 : ""
                                 }`}
                         />
                         {errorsInput.cli_complemento && (
-                            <p className="text-red-500 relative text-sm mt-1">{errorsInput.cli_complemento}</p>
+                            <p className="text-red-500 dark:text-red-500 relative text-sm mt-1">{errorsInput.cli_complemento}</p>
                         )}
                     </div>
 
@@ -448,9 +356,9 @@ const FormCriarClientes = () => {
                     <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
                         <label
                             htmlFor="cli_telefone"
-                            className="block font-medium text-sm text-neutral-700"
+                            className="block font-medium text-sm text-neutral-700 dark:text-gray-200"
                         >
-                            Telefone <span className="text-red-600">*</span>
+                            Telefone <span className="text-red-600 dark:text-red-600">*</span>
                         </label>
                         <input
                             onChange={handleTelefoneChange}
@@ -458,15 +366,15 @@ const FormCriarClientes = () => {
                             type="text"
                             name="cli_telefone"
                             required
-                            maxLength={11}
+                            maxLength={15}
                             minLength={1}
-                            className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${isInvalidoClienteTelefone
+                            className={`peer rounded-sm w-full border px-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 dark:text-white dark:bg-zinc-800 dark:border-black/10 transition-all duration-500 ease-out ${isInvalidoClienteTelefone
                                 ? "outline-red-500 focus:outline-red-500"
                                 : ""
                                 }`}
                         />
                         {errorsInput.cli_telefone && (
-                            <p className="text-red-500 relative text-sm mt-1">{errorsInput.cli_telefone}</p>
+                            <p className="text-red-500 dark:text-red-500 relative text-sm mt-1">{errorsInput.cli_telefone}</p>
                         )}
                     </div>
 

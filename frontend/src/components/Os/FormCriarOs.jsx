@@ -6,8 +6,6 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import PersonIcon from '@mui/icons-material/Person';
 import CircularProgress from '@mui/material/CircularProgress';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import SuccessNotification from "@/components/Ui/Notification/SuccessNotification";
-import ErrorNotification from "@/components/Ui/Notification/ErrorNotification";
 import InputField from "@/components/Ui/Input/InputField";
 import { useRouter } from "next/navigation";
 import { useUserToken } from "@/utils/useUserToken";
@@ -42,7 +40,6 @@ const FormCriarOs = () => {
     // variáveis para controlar a exibição das seções
     const [showLentesArmacao, setShowLentesArmacao] = useState(false);
     const [showVendaDetails, setShowVendaDetails] = useState(false);
-    const [showGrauSection, setShowGrauSection] = useState(false);
     const [openFilterCpf, setOpenFilterCpf] = useState(false);
     const [errorsInput, setErrorsInput] = useState({});
     const [isLoading, setIsLoading] = useState(false);

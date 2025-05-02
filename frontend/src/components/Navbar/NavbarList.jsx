@@ -38,7 +38,7 @@ const NavbarList = () => {
                 <li className="w-40 mb-10 flex items-center mt-1 justify-between">
                     <BtnAtivado title="Home" onClick="/inicio" page="/inicio" size="sm" rounded="xl" padding="xl" />
                     <button onClick={handleClick} className="ml-2 flex justify-center items-center ">
-                        <NoteAddIcon fontSize="large" className="text-orange-400 hover:text-orange-500 dark:text-orange-300 transition ease-in-out duration-700" /> 
+                        <NoteAddIcon fontSize="large" className="text-orange-400 hover:text-segundaria-900 dark:text-orange-400 dark:hover:text-segundaria-900 transition ease-in-out duration-700" />
                     </button>
                 </li>
 
@@ -65,23 +65,32 @@ const NavbarList = () => {
                             <Link className="w-36" href={href}>
                                 <button
                                     className={`flex px-2 py-1 relative group items-center rounded-full transition duration-300 ease-in-out
-                                    ${isActive ? "text-orange-500 font-medium" : "text-neutral-600 hover:text-segundaria-900 dark:text-white"}
+                                        ${isActive
+                                            ? "text-orange-500 font-medium dark:text-orange-400"
+                                            : "text-neutral-600 hover:text-segundaria-900 dark:text-white"}
                                     `}
                                 >
                                     <span
                                         className={`w-6 flex justify-center mr-2 transition duration-300 ease-in-out
-                                        ${isActive ? "text-orange-500" : "text-neutral-600 group-hover:text-segundaria-900"}`}
+                                            ${isActive
+                                                ? "text-orange-500 dark:text-orange-400"
+                                                : "text-neutral-600 group-hover:text-segundaria-900 dark:text-white"}
+                                        `}
                                     >
                                         {iconsNav[index]}
                                     </span>
                                     <span
                                         className={`w-24 text-start text-sm transition duration-300 ease-in-out
-                                        ${isActive ? "text-orange-500" : "text-neutral-600 group-hover:text-segundaria-900 dark:text-white"}`}
+                                            ${isActive
+                                                ? "text-orange-500 dark:text-orange-400"
+                                                : "text-neutral-600 group-hover:text-segundaria-900 dark:text-white"}
+                                            `}
                                     >
                                         {text}
                                     </span>
                                 </button>
                             </Link>
+
                         </li>
                     );
                 })}

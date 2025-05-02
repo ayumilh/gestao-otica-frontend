@@ -43,7 +43,7 @@ const VendasTable = () => {
 
 
     return (
-        <div className="bg-segundaria-700 dark:bg-primaria-900 dark:border dark:border-zinc-800 shadow-lg rounded-2xl w-[345px] md:w-[728px] lg:w-[800px] xl:w-[1270px] flex flex-col my-10 overflow-x-auto">
+        <div className="bg-segundaria-700 dark:bg-primaria-900 dark:border-2 dark:border-black/10 shadow-lg rounded-2xl w-[345px] md:w-[728px] lg:w-[800px] xl:w-[1270px] flex flex-col my-10 overflow-x-auto">
             <VendasMenuMoreResponsive
                 currentPage={currentPage}
                 totalPages={totalPages}

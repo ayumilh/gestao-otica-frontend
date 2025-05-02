@@ -26,13 +26,13 @@ const InputMoeda = ({
     <div className="w-full md:w-1/5 mt-3 mb-4 px-3">
       <label
         htmlFor={name}
-        className="block font-medium text-sm text-neutral-700"
+        className="block font-medium text-sm text-neutral-700 dark:text-gray-200"
       >
         {label}
-        {required && <span className="text-red-600"> *</span>}
+        {required && <span className="text-red-600 dark:text-red-600"> *</span>}
       </label>
       <div className="relative">
-        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-500 font-medium">
+        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-500 dark:text-gray-200 font-medium">
           R$
         </span>
         <input
@@ -41,7 +41,7 @@ const InputMoeda = ({
           onChange={handleChange}
           type="text"
           required={required}
-          className={`peer rounded-sm w-full border pl-10 pr-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 transition-all duration-500 ease-out ${
+          className={`peer rounded-sm w-full border pl-10 pr-3 py-2 font-medium text-neutral-600 focus:rounded-lg focus:outline-2 outline-blue-400 focus:outline-blue-400 dark:text-white dark:bg-zinc-800 dark:border-black/10 transition-all duration-500 ease-out ${
             isInvalid ? "outline-red-500 focus:outline-red-500" : ""
           }`}
         />

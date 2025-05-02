@@ -6,16 +6,10 @@ import LaunchIcon from '@mui/icons-material/Launch';
 import { FaUser, FaList } from 'react-icons/fa'
 import BtnAtivado from '../Ui/Button/BtnAtivado';
 import TitlePage from '../Ui/TitlePage';
-import DropdownFilterWeek from '../Ui/Dropdown/DropdownFilterWeek';
 import { useRouter } from 'next/navigation';
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
-import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
-import PaymentsIcon from '@mui/icons-material/Payments';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import LocalShippingIcon from '@mui/icons-material/LocalShipping';
-import CancelIcon from '@mui/icons-material/Cancel';
 import { AuthContext } from '@/contexts/AuthContext';
 import { useUserToken } from '@/utils/useUserToken';
+
 
 const InicioContent = () => {
     const { currentUser } = useContext(AuthContext);
@@ -31,6 +25,7 @@ const InicioContent = () => {
             return "Boa noite";
         }
     };
+
     const saudacao = getSaudacao();
     const router = useRouter();
     const [clientes, setClientes] = useState([]);
@@ -53,7 +48,6 @@ const InicioContent = () => {
         fetchClientes();
     }, [token]);
 
-    const [lucros, setLucros] = useState([]);
     const [resumo, setResumo] = useState({
         totalVendas: 0,
         totalRecebido: 0,
@@ -72,7 +66,6 @@ const InicioContent = () => {
                     },
                 });
                 
-                setLucros(response.data.vendas || []);
                 setResumo(response.data.resumo || {});
             } catch (error) {
                 console.error("Erro ao buscar lucros:", error);
@@ -80,7 +73,7 @@ const InicioContent = () => {
         };
 
         fetchLucros();
-    }, []);
+    }, [token]);
 
 
     const [vendas, setVendas] = useState([]);
@@ -99,7 +92,7 @@ const InicioContent = () => {
             }
         };
         buscarVendas();
-    }, []);
+    }, [token]);
 
     return (
         <div className='w-full mt-4 lg:mt-6 lg:px-8 px-5'>
@@ -153,7 +146,7 @@ const InicioContent = () => {
                             ].map((item, index) => (
                                 <div
                                     key={index}
-                                    className="bg-segundaria-700 dark:bg-zinc-900 border border-gray-100 dark:border-zinc-700 rounded-xl p-4 flex flex-col justify-center items-center text-center h-full"
+                                    className="bg-segundaria-700 dark:bg-dark-primaria-800 border border-gray-100 dark:border-2 dark:border-black/10 rounded-xl p-4 flex flex-col justify-center items-center text-center h-full"
                                 >
                                     <div className="flex flex-col items-center gap-1 text-sm text-neutral-200 dark:text-neutral-300">
                                         <span className="font-medium leading-tight">{item.label}</span>
@@ -169,7 +162,7 @@ const InicioContent = () => {
 
                         <div className='flex flex-col xl:flex-row gap-5'>
                             {/* clientes */}
-                            <div className='bg-bg dark:bg-dark-primaria-800 w-full xl:w-1/2 flex flex-col h-full rounded-xl px-5 py-7 ring-1 ring-gray-100 dark:ring-1 dark:ring-black ring-opacity-5 shadow-md'>
+                            <div className='bg-bg dark:bg-dark-primaria-800 w-full xl:w-1/2 flex flex-col h-full rounded-xl px-5 py-7 border dark:border-2 dark:border-black/10 shadow-md'>
                                 <div className='flex justify-between items-center'>
                                     <div className="flex gap-3">
                                         <div className="flex justify-center items-center bg-amber-400 text-white rounded-full p-2">
@@ -203,11 +196,11 @@ const InicioContent = () => {
                                         <BtnAtivado title='Novo cliente' onClick="/clientes" page="/clientes/criar" size="sm" rounded="md" />
                                     </div>
                                 ) : (
-                                    <div className='w-full flex flex-col gap-3 h-[300px] overflow-y-auto scrollbar-thin scrollbar-thumb-orange-400 dark:scrollbar-thumb-orange-400 pr-2'>
+                                    <div className='w-full flex flex-col h-[300px] overflow-y-auto scrollbar-thin scrollbar-thumb-orange-400 dark:scrollbar-thumb-orange-400'>
                                         {clientes.slice(0, 5).map((cliente) => (
                                             <div
                                                 key={cliente.id}
-                                                className='flex justify-between items-center border-b border-gray-200 px-4 py-3'
+                                                className='flex justify-between items-center border-b border-gray-200 dark:border-black/20 px-4 py-3 hover:bg-gray-100 dark:hover:bg-black/20 transition duration-200 ease-in-out cursor-pointer'
                                             >
                                                 <div className='flex flex-col'>
                                                     <span className='font-semibold text-sm text-neutral-800 dark:text-white'>{cliente.nome}</span>
@@ -227,7 +220,7 @@ const InicioContent = () => {
                             </div>
 
                             {/* vendas */}
-                            <div className='bg-bg dark:bg-dark-primaria-800 w-full xl:w-1/2 flex flex-col h-full rounded-xl px-5 py-7 ring-1 ring-gray-100 dark:ring-1 dark:ring-black ring-opacity-5 shadow-md'>
+                            <div className='bg-bg dark:bg-dark-primaria-800 w-full xl:w-1/2 flex flex-col h-full rounded-xl px-5 py-7 border dark:border-2 dark:border-black/10 shadow-md'>
                                 <div className='flex justify-between items-center'>
                                     <div className="flex gap-3">
                                         <div className="flex justify-center items-center bg-blue-500 text-white rounded-full p-2">
@@ -261,11 +254,11 @@ const InicioContent = () => {
                                         <BtnAtivado title='Criar venda' onClick="/vendas/criar" page="/vendas/criar" size="sm" rounded="md" />
                                     </div>
                                 ) : (
-                                    <div className='w-full flex flex-col gap-3 h-[300px] overflow-y-auto scrollbar-thin scrollbar-thumb-orange-400 dark:scrollbar-thumb-orange-400 pr-2'>
+                                    <div className='w-full flex flex-col h-[300px] overflow-y-auto scrollbar-thin scrollbar-thumb-orange-400 dark:scrollbar-thumb-orange-400 pr-2'>
                                         {vendas.slice(0, 5).map((venda) => (
                                             <div
                                                 key={venda.id}
-                                                className='flex justify-between items-center border-b border-gray-200 px-4 py-3'
+                                                className='flex justify-between items-center border-b border-gray-200 dark:border-black/20 px-4 py-3 hover:bg-gray-100 dark:hover:bg-black/20 transition duration-200 ease-in-out cursor-pointer'
                                             >
                                                 <div className='flex flex-col'>
                                                     <span className='font-semibold text-sm text-neutral-800 dark:text-white'>
@@ -280,78 +273,6 @@ const InicioContent = () => {
                                         ))}
                                     </div>
                                 )}
-                            </div>
-                        </div>
-                    </div>
-
-                    <hr className='w-full' />
-
-
-                    {/* CONTA */}
-                    <div className='w-full flex flex-col xl:flex-row gap-7'>
-                        {/* contas a receber */}
-                        <div className='bg-bg dark:bg-dark-primaria-800 w-full xl:w-1/2 flex flex-col h-full rounded-xl px-5 py-7 ring-1 ring-gray-100 dark:ring-1 dark:ring-black ring-opacity-5 shadow-md'>
-                            <div className='flex justify-between items-center'>
-                                <p className='text-neutral-700 font-semibold pt-2 text-start'>Valor recebido</p>
-                                <div className='flex gap-2'>
-                                    {/* <HelpOutlineIcon className='text-neutral-700 dark:text-gray-200 w-6 h-6' /> */}
-                                    {/* <DropdownMore /> */}
-                                </div>
-                            </div>
-
-                            <div className='w-36 bg-green-100 px-4 py-3 rounded-lg mt-2'>
-                                <span className='block font-medium text-green-600 dark:text-green-600'>R$ 0,00</span>
-                                <span className='text-xs font-medium text dark:text-neutral-800'>Vencendo hoje</span>
-                            </div>
-
-                            <hr className='my-5' />
-
-                            <div className='flex justify-between mb-5'>
-                                <div className='flex'>
-                                    {/* <button className='text-neutral-700 font-medium text-sm'>Filtrar por:</button> */}
-                                    {/* <button className='border border-orange-500 bg-orange-200 bg-opacity-30 rounded-l-full text-orange-500 font-medium text-sm px-3 py-1'>Abertas</button> */}
-                                    {/* <button className='border border-gray-300 rounded-r-full text-neutral-500 font-medium text-sm px-3 py-1'>Atrasadas</button> */}
-                                </div>
-                                {/* <DropdownFilterWeek /> */}
-                            </div>
-                            <div className='w-full flex flex-col items-center justify-center gap-5'>
-                                <span className='text-center text-sm font-medium '>
-                                    Você não possui recebimentos em aberto <br /> nos próximos 3 dias.
-                                </span>
-                                <BtnAtivado title='Criar Recebimento' onClick="/clientes" page="/clientes/criar" size="sm" rounded="md" />
-                            </div>
-                        </div>
-
-                        {/* contas a pagar */}
-                        <div className='bg-bg dark:bg-dark-primaria-800 w-full xl:w-1/2 flex flex-col h-full rounded-xl px-5 py-7 ring-1 ring-gray-100 dark:ring-1 dark:ring-black ring-opacity-5 shadow-md'>
-                            <div className='flex justify-between items-center'>
-                                <p className='text-neutral-700 font-semibold pt-2 text-start'>A receber</p>
-                                <div className='flex gap-2'>
-                                    {/* <HelpOutlineIcon className='text-neutral-700 dark:text-gray-200 w-6 h-6' /> */}
-                                    {/* <DropdownMore /> */}
-                                </div>
-                            </div>
-
-                            <div className='w-36 bg-yellow-100 px-4 py-3 rounded-lg mt-2'>
-                                <span className='block font-medium text-yellow-600 dark:text-yellow-600'>R$ 0,00</span>
-                                <span className='text-xs font-medium text dark:text-neutral-800'>Vencendo hoje</span>
-                            </div>
-
-                            <hr className='my-5' />
-
-                            <div className='flex justify-between mb-5'>
-                                <div className='flex'>
-                                    {/* <button className='text-neutral-700 font-medium text-sm'>Filtrar por:</button> */}
-                                    {/* <button className='border border-orange-500 bg-orange-200 bg-opacity-30 rounded-l-full text-orange-500 font-medium text-sm px-3 py-1'>Abertas</button> */}
-                                    {/* <button className='border border-gray-300 rounded-r-full text-neutral-500 font-medium text-sm px-3 py-1'>Atrasadas</button> */}
-                                </div>
-                                {/* <DropdownFilterWeek /> */}
-                            </div>
-                            <div className='w-full flex flex-col items-center justify-center gap-5'>
-                                <span className='text-center text-sm font-medium '>
-                                    Você não possui pagamentos em aberto <br /> no próximos 30 dias.
-                                </span>
-                                <BtnAtivado title='Criar Pagamento' onClick="/clientes" page="/clientes/criar" size="sm" rounded="md" />
                             </div>
                         </div>
                     </div>

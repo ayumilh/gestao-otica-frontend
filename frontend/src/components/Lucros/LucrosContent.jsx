@@ -114,7 +114,7 @@ const LucrosContent = () => {
         </div>
 
 
-        <LucrosTable />
+        {/* <LucrosTable /> */}
       </div>
     </div>
   );

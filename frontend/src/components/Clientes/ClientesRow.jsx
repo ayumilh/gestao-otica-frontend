@@ -35,7 +35,7 @@ export default function ClientesRow({ clientes }) {
             <SkeletonLoader numColumns={6} />
         ) : clientes.length > 0 ? (
             clientes.map((cliente, index) => (
-                <tr key={index} onClick={() => handleButtonClick(cliente.id)} className="cursor-pointer border-t border-zinc-100 hover:bg-gray-200 dark:bg-primaria-900 dark:hover:bg-primaria-800 dark:border-zinc-800">
+                <tr key={index} onClick={() => handleButtonClick(cliente.id)} className="cursor-pointer border-t border-zinc-100 hover:bg-gray-200 dark:bg-primaria-900 dark:hover:bg-primaria-800 dark:border-black/10">
                     <td className="px-4 py-4 md:py-5 text-end whitespace-nowrap">
                         <div className="text-sm text-neutral-800 dark:text-slate-50">{cliente.id}</div>
                     </td>
