@@ -31,6 +31,7 @@ const VendasSelectFilter = ({ onVendas }) => {
                     params: filtros
                 },
             );
+            
             if (response.data && Array.isArray(response.data.vendas)) {
                 const vendasFormatadas = response.data.vendas.map((venda) => ({
                     ...venda,

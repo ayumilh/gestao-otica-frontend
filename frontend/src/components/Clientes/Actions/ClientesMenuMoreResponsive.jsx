@@ -2,6 +2,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTheme } from '@mui/material';
 import { useMediaQuery } from '@mui/material';
+import axios from 'axios';
+import { useUserToken } from '@/utils/useUserToken';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import ClientesSelectFilter from './ClientesSelectFilter';
@@ -12,12 +14,32 @@ import CloseIcon from '@mui/icons-material/Close';
 
 export const ClientesMenuMoreResponsive = ({ currentPage, totalPages, rowsPerPage, handlePageChange, handleRowsPerPageChange, onClientes }) => {
     const theme = useTheme();
+    const { token } = useUserToken();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const [isOpenMenu, setIsOpenMenu] = useState(false);
     const [clientes, setClientes] = useState([]);
     const [showMobileFilter, setShowMobileFilter] = useState(false);
     const dropdownRef = useRef(null);
 
+
+    useEffect(() => {
+        const fetchClientesIniciais = async () => {
+            try {
+                const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/clientes/listar`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                const clientesData = response.data?.clientes || [];
+                setClientes(clientesData);
+            } catch (error) {
+                console.error('Erro ao buscar clientes iniciais:', error);
+            }
+        };
+
+        fetchClientesIniciais();
+    }, []);
 
     const handleOpenMenu = () => {
         setIsOpenMenu(!isOpenMenu);

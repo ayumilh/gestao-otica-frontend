@@ -9,6 +9,7 @@ import TitlePage from '../Ui/TitlePage';
 import { useRouter } from 'next/navigation';
 import { AuthContext } from '@/contexts/AuthContext';
 import { useUserToken } from '@/utils/useUserToken';
+import ResumoCards from './ResumoCards';
 
 
 const InicioContent = () => {
@@ -65,7 +66,7 @@ const InicioContent = () => {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                
+
                 setResumo(response.data.resumo || {});
             } catch (error) {
                 console.error("Erro ao buscar lucros:", error);
@@ -111,54 +112,8 @@ const InicioContent = () => {
                             <p className='text-neutral-700 font-semibold text-start'>{saudacao}, {currentUser?.nome}</p>
                         </div>
 
-                        <div className="w-full max-w-[1270px] grid grid-cols-3 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-6 gap-4 mt-6">
-                            {[
-                                {
-                                    label: 'Valor Recebido',
-                                    value: resumo.totalRecebido,
-                                    color: 'text-green-400',
-                                },
-                                {
-                                    label: 'A Receber',
-                                    value: resumo.totalAPagar,
-                                    color: 'text-yellow-400',
-                                },
-                                {
-                                    label: 'Total de Vendas',
-                                    value: resumo.totalVendas,
-                                    color: 'text-blue-400',
-                                },
-                                {
-                                    label: 'Pagas Completas',
-                                    value: resumo.pagasTotais,
-                                    color: 'text-emerald-400',
-                                },
-                                {
-                                    label: 'Aguardando Entrega',
-                                    value: resumo.aguardandoEntrega,
-                                    color: 'text-orange-400',
-                                },
-                                {
-                                    label: 'Canceladas',
-                                    value: resumo.canceladas,
-                                    color: 'text-red-400',
-                                },
-                            ].map((item, index) => (
-                                <div
-                                    key={index}
-                                    className="bg-segundaria-700 dark:bg-dark-primaria-800 border border-gray-100 dark:border-2 dark:border-black/10 rounded-xl p-4 flex flex-col justify-center items-center text-center h-full"
-                                >
-                                    <div className="flex flex-col items-center gap-1 text-sm text-neutral-200 dark:text-neutral-300">
-                                        <span className="font-medium leading-tight">{item.label}</span>
-                                        <p className={`lg:text-xl text-sm font-bold ${item.color} dark:${item.color} mb-2`}>
-                                            R$ {parseFloat(item.value).toFixed(2)}
-                                        </p>
-                                        {item.icon}
-                                    </div>
-                                </div>
-                            ))}
+                        {/* <ResumoCards resumo={resumo} /> */}
 
-                        </div>
 
                         <div className='flex flex-col xl:flex-row gap-5'>
                             {/* clientes */}

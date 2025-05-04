@@ -2,6 +2,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTheme } from '@mui/material';
 import { useMediaQuery } from '@mui/material';
+import axios from 'axios';
+import { useUserToken } from '@/utils/useUserToken';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import VendasSelectFilter from './VendasSelectFilter';
@@ -11,6 +13,7 @@ import CloseIcon from '@mui/icons-material/Close';
 
 export const VendasMenuMoreResponsive = ({ currentPage, totalPages, rowsPerPage, handlePageChange, handleRowsPerPageChange, onVendas }) => {
     const theme = useTheme();
+    const { token } = useUserToken();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const [isOpenMenu, setIsOpenMenu] = useState(false);
     const [vendas, setVendas] = useState([]);
@@ -18,6 +21,42 @@ export const VendasMenuMoreResponsive = ({ currentPage, totalPages, rowsPerPage,
     const [showMobileFilter, setShowMobileFilter] = useState(false);
     const dropdownRef = useRef(null);
 
+    useEffect(() => {
+        const fetchVendasIniciais = async () => {
+            try {
+                const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/vendas/listar`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                const vendasData = response.data?.vendas || [];
+    
+                const formatarMoeda = (valor) => {
+                    if (valor === null || valor === undefined) return '';
+                    return Number(valor).toLocaleString('pt-BR', {
+                        style: 'currency',
+                        currency: 'BRL',
+                        minimumFractionDigits: 2
+                    }).replace('R$', '').trim();
+                };
+    
+                const vendasFormatadas = vendasData.map((venda) => ({
+                    ...venda,
+                    preco: formatarMoeda(venda.preco),
+                    sinal: formatarMoeda(venda.sinal),
+                    a_pagar: formatarMoeda(venda.a_pagar),
+                }));
+    
+                setVendas(vendasFormatadas);
+            } catch (error) {
+                console.error('Erro ao buscar vendas iniciais:', error);
+            }
+        };
+    
+        fetchVendasIniciais();
+    }, []);
+
+    
     useEffect(() => {
         onVendas(vendas);
     }, [onVendas, vendas]);

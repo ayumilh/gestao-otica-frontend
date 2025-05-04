@@ -114,6 +114,7 @@ const FormEditarVendas = ({ clienteId, vendaId }) => {
         );
 
         const grausData = resGrau.data;
+        console.log("grausData", grausData);
 
         if (grausData?.length > 0) {
           const mapped = grausData.flatMap((item) =>
