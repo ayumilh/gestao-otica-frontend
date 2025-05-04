@@ -32,7 +32,7 @@ export default function InputField({
   minLength,
   className = '',
 }) {
-  // 📞 Formata telefone para exibição
+  // Formata telefone para exibição
   const formatPhone = (val) => {
     const digits = val.replace(/\D/g, '').slice(0, 11);
     if (digits.length <= 10) {
@@ -45,7 +45,7 @@ export default function InputField({
       .replace(/(\d{5})(\d{1,4})$/, '$1-$2');
   };
 
-  // 🧾 Formata CPF para exibição
+  // Formata CPF para exibição
   const formatCpf = (val) => {
     const digits = val.replace(/\D/g, '').slice(0, 11);
     return digits
@@ -54,7 +54,7 @@ export default function InputField({
       .replace(/\.(\d{3})(\d)/, '.$1-$2');
   };
 
-  // 💰 Formata valor monetário para exibição
+  // Formata valor monetário para exibição
   const formatMoney = (val) => {
     const raw = String(val || '').replace(/\D/g, '');
     const floatVal = (parseFloat(raw) / 100).toFixed(2);
@@ -63,9 +63,9 @@ export default function InputField({
       currency: 'BRL',
     }).format(floatVal);
   };
-  
 
-  // 🔁 Manipula mudança de campos mascarados
+
+  // Manipula mudança de campos mascarados
   const handleMaskedChange = (e) => {
     const raw = e.target.value.replace(/\D/g, '');
     if (name === 'cli_telefone') {
@@ -78,7 +78,7 @@ export default function InputField({
     }
   };
 
-  // 🎯 Valor formatado para exibição
+  // Valor formatado para exibição
   const formattedValue = () => {
     if (name === 'cli_telefone') return formatPhone(value || '');
     if (name === 'cli_cpf') return formatCpf(value || '');
@@ -95,7 +95,7 @@ export default function InputField({
           htmlFor={name}
           className="block font-medium text-sm text-neutral-700 dark:text-neutral-300"
         >
-          {label} {required && <span className="text-red-600">*</span>}
+          {label} {required && <span className="text-red-600 dark:text-red-600">*</span>}
         </label>
       )}
       <input

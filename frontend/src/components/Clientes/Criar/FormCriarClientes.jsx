@@ -257,7 +257,7 @@ const FormCriarClientes = () => {
                             htmlFor="cli_cpf"
                             className="block font-medium text-sm text-neutral-700 dark:text-gray-200"
                         >
-                            CPF
+                            CPF (opcional)
                         </label>
                         <input
                             onChange={handleCpfChange}
@@ -333,7 +333,7 @@ const FormCriarClientes = () => {
                             htmlFor="cli_complemento"
                             className="block font-medium text-sm text-neutral-700 dark:text-gray-200"
                         >
-                            Complemento
+                            Complemento (opcional)
                         </label>
                         <input
                             onChange={handleComplementoChange}

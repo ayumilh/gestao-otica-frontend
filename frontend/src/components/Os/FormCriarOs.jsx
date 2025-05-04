@@ -352,7 +352,6 @@ const FormCriarOs = () => {
                         name="cli_nome"
                         value={cli_nome}
                         onChange={handleNomeChange}
-                        placeholder="Digite o nome do cliente"
                         required
                         maxLength={200}
                         error={errorsInput.cli_nome}
@@ -408,7 +407,7 @@ const FormCriarOs = () => {
 
                 {/* CPF e Telefone */}
                 <div className="w-full md:w-1/4 px-3 mb-4">
-                    <InputField label="CPF" name="cli_cpf" value={cli_cpf || ""} onChange={handleCpfChange} maxLength={15} error={errorsInput.cli_cpf} />
+                    <InputField label="CPF (opcional)" name="cli_cpf" value={cli_cpf || ""} onChange={handleCpfChange} maxLength={15} error={errorsInput.cli_cpf} />
                 </div>
                 <div className="w-full md:w-1/4 px-3 mb-4">
                     <InputField label="Telefone" name="cli_telefone" value={cli_telefone || ""} onChange={handleTelefoneChange} required maxLength={15} error={errorsInput.cli_telefone} />
@@ -424,7 +423,7 @@ const FormCriarOs = () => {
 
                 {/* Complemento */}
                 <div className="w-full md:w-1/2 px-3 mb-4">
-                    <InputField label="Complemento" name="cli_complemento" value={cli_complemento || ""} onChange={handleComplementoChange} maxLength={50} error={errorsInput.cli_complemento} />
+                    <InputField label="Complemento (opcional)" name="cli_complemento" value={cli_complemento || ""} onChange={handleComplementoChange} maxLength={50} error={errorsInput.cli_complemento} />
                 </div>
 
                 {/* Seção de lentes e armação */}
@@ -435,25 +434,25 @@ const FormCriarOs = () => {
 
                 {showLentesArmacao && (
                     <>
-                        <div className="w-full md:w-1/2 px-3 mb-4">
+                        <div className="w-full px-3 mb-4">
                             <InputField label="Lentes" name="vendaLentes" value={vendaLentes} required maxLength={100} onChange={handleLentesChange} error={isInvalidoVendaLentes && "Campo inválido. Use apenas letras e números."} />
                         </div>
-                        <div className="w-full md:w-1/2 px-3 mb-4">
+                        <div className="w-full px-3 mb-4">
                             <InputField label="Armação" name="vendaArmacao" value={vendaArmacao || ""} type="text" maxLength={100} required onChange={handleArmacaoChange} error={isInvalidoVendaArmacao && "Campo inválido. Use apenas letras e números."} />
                         </div>
 
                         {/* Tabela de medidas */}
                         <div className="w-full px-3 mb-4 overflow-x-auto">
-                            <table className="min-w-full border text-sm text-left text-neutral-800">
-                                <thead className="bg-neutral-200">
+                            <table className="min-w-full border text-sm text-left text-neutral-800 dark:text-gray-200">
+                                <thead className="bg-neutral-200 dark:text-gray-200 dark:bg-zinc-900 dark:border-black/10">
                                     <tr>
-                                        <th className="px-4 py-2 border">Lentes</th>
-                                        <th className="px-4 py-2 border">Olho</th>
-                                        <th className="px-4 py-2 border">Esférico</th>
-                                        <th className="px-4 py-2 border">Cilíndrico</th>
-                                        <th className="px-4 py-2 border">Eixo</th>
-                                        <th className="px-4 py-2 border">ADD</th>
-                                        <th className="px-4 py-2 border">DP / DNP</th>
+                                        <th className="px-4 py-2 border dark:border-black/20 text-neutral-800 dark:text-gray-200">Lentes</th>
+                                        <th className="px-4 py-2 border dark:border-black/20 text-neutral-800 dark:text-gray-200">Olho</th>
+                                        <th className="px-4 py-2 border dark:border-black/20 text-neutral-800 dark:text-gray-200">Esférico</th>
+                                        <th className="px-4 py-2 border dark:border-black/20 text-neutral-800 dark:text-gray-200">Cilíndrico</th>
+                                        <th className="px-4 py-2 border dark:border-black/20 text-neutral-800 dark:text-gray-200">Eixo</th>
+                                        <th className="px-4 py-2 border dark:border-black/20 text-neutral-800 dark:text-gray-200">ADD</th>
+                                        <th className="px-4 py-2 border dark:border-black/20 text-neutral-800 dark:text-gray-200">DP / DNP</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -463,25 +462,45 @@ const FormCriarOs = () => {
                                         { lente: 'Perto', olho: 'OD' },
                                         { lente: 'Perto', olho: 'OE' },
                                     ].map((item, index) => (
-                                        <tr key={index} className="bg-white">
-                                            <td className="px-4 py-2 border">{item.lente}</td>
-                                            <td className="px-4 py-2 border">{item.olho}</td>
-                                            <td className="px-2 py-1 border"><input type="text" name={`esferico_${item.lente}_${item.olho}`} className="w-full px-2 py-1 border rounded" /></td>
-                                            <td className="px-2 py-1 border"><input type="text" name={`cilindrico_${item.lente}_${item.olho}`} className="w-full px-2 py-1 border rounded" /></td>
-                                            <td className="px-2 py-1 border"><input type="text" name={`eixo_${item.lente}_${item.olho}`} className="w-full px-2 py-1 border rounded" /></td>
-                                            <td className="px-2 py-1 border"><input type="text" name={`add_${item.lente}_${item.olho}`} className="w-full px-2 py-1 border rounded" /></td>
-                                            <td className="px-2 py-1 border"><input type="text" name={`dp_${item.lente}_${item.olho}`} className="w-full px-2 py-1 border rounded" /></td>
+                                        <tr key={index} className="bg-white dark:text-gray-200 dark:bg-zinc-800 dark:border-black/20">
+                                            <td className="px-4 py-2 border dark:border-black/20">{item.lente}</td>
+                                            <td className="px-4 py-2 border dark:border-black/20">{item.olho}</td>
+                                            <td className="px-2 py-1 border dark:border-black/20">
+                                                <input type="text" name={`esferico_${item.lente}_${item.olho}`} className="w-full px-2 py-1 border rounded dark:text-gray-200 dark:bg-zinc-800 dark:border-black/10" />
+                                            </td>
+                                            <td className="px-2 py-1 border dark:border-black/20">
+                                                <input type="text" name={`cilindrico_${item.lente}_${item.olho}`} className="w-full px-2 py-1 border rounded dark:text-gray-200 dark:bg-zinc-800 dark:border-black/10" />
+                                            </td>
+                                            <td className="px-2 py-1 border dark:border-black/20">
+                                                <input type="text" name={`eixo_${item.lente}_${item.olho}`} className="w-full px-2 py-1 border rounded dark:text-gray-200 dark:bg-zinc-800 dark:border-black/10" />
+                                            </td>
+                                            <td className="px-2 py-1 border dark:border-black/20">
+                                                <input type="text" name={`add_${item.lente}_${item.olho}`} className="w-full px-2 py-1 border rounded dark:text-gray-200 dark:bg-zinc-800 dark:border-black/10" />
+                                            </td>
+                                            <td className="px-2 py-1 border dark:border-black/20">
+                                                <input type="text" name={`dp_${item.lente}_${item.olho}`} className="w-full px-2 py-1 border rounded dark:text-gray-200 dark:bg-zinc-800 dark:border-black/10" />
+                                            </td>
                                         </tr>
                                     ))}
-                                    <tr className="bg-white">
-                                        <td className="px-4 py-2 border bg-neutral-100" colSpan={6}>Altura Pupilar</td>
-                                        <td className="px-2 py-1 border">
-                                            <input type="text" name="altura_pupilar" value={alturaPupilar} onChange={(e) => setAlturaPupilar(e.target.value)} className="w-full px-2 py-1 border rounded bg-neutral-100" />
+                                    {/* Altura Pupilar */}
+                                    <tr className="bg-white border dark:text-gray-200 dark:bg-zinc-800 dark:border-black/10">
+                                        <td className="px-4 py-1 border bg-neutral-100 dark:text-gray-200 dark:bg-zinc-900 dark:border-black/20 whitespace-nowrap" colSpan={1}>Altura Pupilar</td>
+                                        <td className="px-2 py-1 border dark:border-black/20 dark:bg-zinc-800">
+                                            <input
+                                                type="text"
+                                                name="altura_pupilar"
+                                                value={alturaPupilar}
+                                                onChange={(e) => setAlturaPupilar(e.target.value)}
+                                                className="w-full px-2 py-1 border rounded bg-neutral-100 dark:text-gray-200 dark:bg-zinc-900 dark:border-black/20"
+                                            />
                                         </td>
+                                        <td className="px-4 py-1 border bg-neutral-100 dark:text-gray-200 dark:bg-zinc-900 dark:border-black/20 whitespace-nowrap" colSpan={5}></td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
+
+
                     </>
                 )}
 
@@ -494,13 +513,31 @@ const FormCriarOs = () => {
                 {showVendaDetails && (
                     <>
                         <div className="w-full md:w-1/2 px-3 mb-4">
-                            <label className="block font-medium text-sm text-neutral-700">Data da Venda <span className="text-red-600">*</span></label>
-                            <input type="date" value={dataVenda} onChange={(e) => setDataVenda(e.target.value)} className="peer rounded-lg w-full border px-3 py-2 font-medium text-neutral-600 focus:outline-none focus:ring-2 focus:ring-blue-400" required />
+                            <label className="block font-medium text-sm text-neutral-700 dark:text-gray-200">
+                                Data da Venda <span className="text-red-600 dark:text-red-600">*</span>
+                            </label>
+                            <input
+                                type="date"
+                                value={dataVenda}
+                                onChange={(e) => setDataVenda(e.target.value)}
+                                className="peer rounded-lg w-full border px-3 py-2 font-medium text-neutral-600 dark:text-gray-200 dark:bg-zinc-800 dark:border-black/20 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                required
+                            />
                         </div>
+
                         <div className="w-full md:w-1/2 px-3 mb-4">
-                            <label className="block font-medium text-sm text-neutral-700">Previsão de Entrega <span className="text-red-600">*</span></label>
-                            <input type="date" value={dataEntrega} onChange={(e) => setDataEntrega(e.target.value)} className="peer rounded-lg w-full border px-3 py-2 font-medium text-neutral-600 focus:outline-none focus:ring-2 focus:ring-blue-400" required />
+                            <label className="block font-medium text-sm text-neutral-700 dark:text-gray-200">
+                                Previsão de Entrega <span className="text-red-600 dark:text-red-600">*</span>
+                            </label>
+                            <input
+                                type="date"
+                                value={dataEntrega}
+                                onChange={(e) => setDataEntrega(e.target.value)}
+                                className="peer rounded-lg w-full border px-3 py-2 font-medium text-neutral-600 dark:text-gray-200 dark:bg-zinc-800 dark:border-black/20 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                required
+                            />
                         </div>
+
                         <div className="w-full md:w-1/2 px-3 mb-4">
                             <InputField label="Preço Total" name="preco" value={preco} onChange={(e) => setPreco(e.target.value)} error={errorsInput?.preco} required />
                         </div>

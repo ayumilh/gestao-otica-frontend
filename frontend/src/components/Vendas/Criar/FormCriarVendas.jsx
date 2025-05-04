@@ -397,7 +397,7 @@ const FormCriarVendas = () => {
             htmlFor="vendaEntrega"
             className="block font-medium text-sm text-neutral-700 dark:text-gray-200"
           >
-            Data de entrega:
+            Data de entrega: (opcional)
           </label>
           <input
             type="date"
@@ -485,15 +485,15 @@ const FormCriarVendas = () => {
 
             <div className="overflow-x-auto">
               <table className="min-w-full border text-sm text-left text-neutral-800 dark:text-gray-200">
-                <thead className="bg-neutral-200 dark:text-gray-200 dark:bg-zinc-800 dark:border-black/10">
-                  <tr>
-                    <th className="px-4 py-2 border">Lentes</th>
-                    <th className="px-4 py-2 border">Olho</th>
-                    <th className="px-4 py-2 border">Esférico</th>
-                    <th className="px-4 py-2 border">Cilíndrico</th>
-                    <th className="px-4 py-2 border">Eixo</th>
-                    <th className="px-4 py-2 border">ADD</th>
-                    <th className="px-4 py-2 border">DP / DNP</th>
+                <thead className="bg-neutral-200 dark:text-gray-200 dark:bg-zinc-900 dark:border-black/10">
+                  <tr >
+                    <th className="px-4 py-2 border dark:border-black/20 text-neutral-800 dark:text-gray-200">Lentes</th>
+                    <th className="px-4 py-2 border dark:border-black/20 text-neutral-800 dark:text-gray-200">Olho</th>
+                    <th className="px-4 py-2 border dark:border-black/20 text-neutral-800 dark:text-gray-200">Esférico</th>
+                    <th className="px-4 py-2 border dark:border-black/20 text-neutral-800 dark:text-gray-200">Cilíndrico</th>
+                    <th className="px-4 py-2 border dark:border-black/20 text-neutral-800 dark:text-gray-200">Eixo</th>
+                    <th className="px-4 py-2 border dark:border-black/20 text-neutral-800 dark:text-gray-200">ADD</th>
+                    <th className="px-4 py-2 border dark:border-black/20 text-neutral-800 dark:text-gray-200">DP / DNP</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -503,40 +503,42 @@ const FormCriarVendas = () => {
                     { lente: 'Perto', olho: 'OD' },
                     { lente: 'Perto', olho: 'OE' },
                   ].map((item, index) => (
-                    <tr key={index} className="bg-white dark:text-gray-200 dark:bg-zinc-800 dark:border-black/10">
-                      <td className="px-4 py-2 border">{item.lente}</td>
-                      <td className="px-4 py-2 border">{item.olho}</td>
-                      <td className="px-2 py-1 border">
+                    <tr key={index} className="bg-white dark:text-gray-200 dark:bg-zinc-800 dark:border-black/20">
+                      <td className="px-4 py-2 border dark:border-black/20">{item.lente}</td>
+                      <td className="px-4 py-2 border dark:border-black/20">{item.olho}</td>
+                      <td className="px-2 py-1 border dark:border-black/20">
                         <input type="text" name={`esferico_${item.lente}_${item.olho}`} className="w-full px-2 py-1 border rounded dark:text-gray-200 dark:bg-zinc-800 dark:border-black/10" />
                       </td>
-                      <td className="px-2 py-1 border">
+                      <td className="px-2 py-1 border dark:border-black/20">
                         <input type="text" name={`cilindrico_${item.lente}_${item.olho}`} className="w-full px-2 py-1 border rounded dark:text-gray-200 dark:bg-zinc-800 dark:border-black/10" />
                       </td>
-                      <td className="px-2 py-1 border">
+                      <td className="px-2 py-1 border dark:border-black/20">
                         <input type="text" name={`eixo_${item.lente}_${item.olho}`} className="w-full px-2 py-1 border rounded dark:text-gray-200 dark:bg-zinc-800 dark:border-black/10" />
                       </td>
-                      <td className="px-2 py-1 border">
+                      <td className="px-2 py-1 border dark:border-black/20">
                         <input type="text" name={`add_${item.lente}_${item.olho}`} className="w-full px-2 py-1 border rounded dark:text-gray-200 dark:bg-zinc-800 dark:border-black/10" />
                       </td>
-                      <td className="px-2 py-1 border">
+                      <td className="px-2 py-1 border dark:border-black/20">
                         <input type="text" name={`dp_${item.lente}_${item.olho}`} className="w-full px-2 py-1 border rounded dark:text-gray-200 dark:bg-zinc-800 dark:border-black/10" />
                       </td>
                     </tr>
                   ))}
 
                   {/* Altura Pupilar */}
-                  <tr className="bg-white dark:text-gray-200 dark:bg-zinc-800 dark:border-black/10">
-                    <td className="px-4 py-2 border bg-neutral-100 dark:text-gray-200 dark:bg-zinc-800 dark:border-black/10" colSpan={6}>Altura Pupilar</td>
-                    <td className="px-2 py-1 border">
+                  <tr className="bg-white border dark:text-gray-200 dark:bg-zinc-800 dark:border-black/10">
+                    <td className="px-4 py-1 border bg-neutral-100 dark:text-gray-200 dark:bg-zinc-900 dark:border-black/20 whitespace-nowrap" colSpan={1}>Altura Pupilar</td>
+                    <td className="px-2 py-1 border dark:border-black/20 dark:bg-zinc-800">
                       <input
                         type="text"
                         name="altura_pupilar"
                         value={alturaPupilar}
                         onChange={(e) => setAlturaPupilar(e.target.value)}
-                        className="w-full px-2 py-1 border rounded bg-neutral-100 dark:text-gray-200 dark:bg-zinc-800 dark:border-black/10"
+                        className="w-full px-2 py-1 border rounded bg-neutral-100 dark:text-gray-200 dark:bg-zinc-900 dark:border-black/20"
                       />
                     </td>
+                    <td className="px-4 py-1 border bg-neutral-100 dark:text-gray-200 dark:bg-zinc-900 dark:border-black/20 whitespace-nowrap" colSpan={5}></td>
                   </tr>
+
                 </tbody>
               </table>
             </div>
@@ -563,7 +565,7 @@ const FormCriarVendas = () => {
         />
 
         <InputMoeda
-          label="Sinal"
+          label="Sinal (opcional)"
           name="vendaSinal"
           value={vendaSinal}
           onChange={(formatted, raw) => {
@@ -574,7 +576,7 @@ const FormCriarVendas = () => {
         />
 
         <InputMoeda
-          label="Apagar"
+          label="Apagar (opcional)"
           name="vendaApagar"
           value={vendaApagar}
           onChange={(formatted, raw) => {
@@ -590,7 +592,7 @@ const FormCriarVendas = () => {
             htmlFor="vendaObs"
             className="block font-medium text-sm text-neutral-700 dark:text-gray-200"
           >
-            Observação
+            Observação (opcional)
           </label>
           <input
             onChange={(e) => {

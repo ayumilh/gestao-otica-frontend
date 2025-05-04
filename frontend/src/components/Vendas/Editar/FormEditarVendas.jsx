@@ -4,6 +4,8 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import BtnActions from "@/components/Ui/Button/BtnActions";
 import InputMoeda from "@/components/Ui/Input/InputMoeda";
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { useUserToken } from "@/utils/useUserToken";
 import { FaTrash } from "react-icons/fa";
 import { MdPrint } from "react-icons/md";
@@ -26,6 +28,8 @@ const FormEditarVendas = ({ clienteId, vendaId }) => {
     usuarioId: "",
     statusPagamento: "",
   });
+
+  const [showLentesArmacao, setShowLentesArmacao] = useState(true);
 
   const dropdownRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -234,7 +238,7 @@ const FormEditarVendas = ({ clienteId, vendaId }) => {
           <div className="relative inline-block text-left" ref={dropdownRef}>
             <button
               onClick={toggleDropdown}
-              className="flex items-center justify-center hover:bg-segundaria-700 text-neutral-700 hover:text-neutral-800 transition duration-200"
+              className="flex items-center justify-center hover:bg-segundaria-700 text-neutral-700 hover:text-neutral-800 dark:hover:bg-transparent dark:text-gray-300 dark:hover:text-gray-100 transition duration-200"
               title="Gerar Comprovante"
               aria-label="Gerar Comprovante"
             >
@@ -242,29 +246,29 @@ const FormEditarVendas = ({ clienteId, vendaId }) => {
             </button>
 
             {isOpen && (
-              <div className="absolute right-0 mt-2 w-60 rounded-md border border-gray-200 bg-white shadow-md z-50">
-                <ul className="py-1 text-sm text-primaria-900">
+              <div className="absolute right-0 mt-2 w-60 rounded-md border border-gray-200 bg-white shadow-md z-50 dark:bg-zinc-800 dark:border-black/20">
+                <ul className="py-1 text-sm text-primaria-900 dark:text-gray-200">
                   <li>
                     <button
                       onClick={async () => {
                         await gerarComprovante();
                         setIsOpen(false);
                       }}
-                      className="block w-full text-left px-4 py-2 hover:bg-segundaria-700 hover:text-primaria-900 transition-colors rounded-md"
+                      className="block w-full text-left px-4 py-2 hover:bg-segundaria-700 hover:text-primaria-900 transition-colors rounded-md dark:hover:bg-zinc-700"
                     >
                       Emitir Comprovante
                     </button>
                   </li>
                   {/* <li>
-                    <a
-                      href={comprovante.whatsapp}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block px-4 py-2 hover:bg-segundaria-700 hover:text-primaria-900 transition-colors rounded-md"
-                    >
-                      Enviar via WhatsApp
-                    </a>
-                  </li> */}
+            <a
+              href={comprovante.whatsapp}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block px-4 py-2 hover:bg-segundaria-700 hover:text-primaria-900 transition-colors rounded-md dark:hover:bg-zinc-700"
+            >
+              Enviar via WhatsApp
+            </a>
+          </li> */}
                 </ul>
               </div>
             )}
@@ -273,22 +277,25 @@ const FormEditarVendas = ({ clienteId, vendaId }) => {
           {/* deletar venda */}
           <button
             onClick={handleDeleteVenda}
-            className="text-red-600 hover:text-red-800 transition-colors"
+            className="text-red-600 hover:text-red-800 transition-colors dark:text-red-500 dark:hover:text-red-600"
             title="Deletar venda"
           >
             <FaTrash className="text-xl" />
           </button>
         </div>
+
       </div>
 
 
       <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
-        <label className="block font-medium text-sm text-neutral-700">Status do Pagamento</label>
+        <label className="block font-medium text-sm text-neutral-700 dark:text-gray-200">
+          Status do Pagamento
+        </label>
         <select
           name="statusPagamento"
           value={input.statusPagamento || ""}
           onChange={inputChange}
-          className="w-full border rounded px-3 py-2 bg-white"
+          className="w-full border rounded px-3 py-2 bg-white dark:bg-zinc-800 dark:text-gray-200 dark:border-black/20"
         >
           <option value="PENDENTE">Pendente</option>
           <option value="PAGO_TOTAL">Pago Total</option>
@@ -297,168 +304,198 @@ const FormEditarVendas = ({ clienteId, vendaId }) => {
         </select>
       </div>
 
+
       <div className="flex flex-wrap mt-5 mb-7">
         {/* Data da Venda */}
         <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
-          <label className="block font-medium text-sm text-neutral-700">Data da Venda</label>
+          <label className="block font-medium text-sm text-neutral-700 dark:text-gray-200">Data da Venda <span className="text-red-600 dark:text-red-600">*</span></label>
           <input
             onChange={inputChange}
             value={input.data?.split("T")[0]}
             name="data"
+            required
             type="date"
-            className="w-full border rounded px-3 py-2"
+            className="w-full border rounded px-3 py-2 bg-white dark:bg-zinc-800 dark:text-gray-200 dark:border-black/20"
           />
         </div>
 
         {/* Data de Entrega */}
         <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
-          <label className="block font-medium text-sm text-neutral-700">Data de Entrega</label>
+          <label className="block font-medium text-sm text-neutral-700 dark:text-gray-200">Data de Entrega</label>
           <input
             onChange={inputChange}
             value={input.entrega?.split("T")[0]}
             name="entrega"
             type="date"
-            className="w-full border rounded px-3 py-2"
+            className="w-full border rounded px-3 py-2 bg-white dark:bg-zinc-800 dark:text-gray-200 dark:border-black/20"
           />
         </div>
 
-        {/* Lentes */}
-        <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
-          <label className="block font-medium text-sm text-neutral-700">Lentes</label>
-          <input
-            onChange={inputChange}
-            value={input.lentes || ""}
-            name="lentes"
-            type="text"
-            className="w-full border rounded px-3 py-2"
-          />
+        <div
+          className="w-full flex mt-5 mb-7 border-t pt-6 cursor-pointer"
+          onClick={() => setShowLentesArmacao(!showLentesArmacao)}
+        >
+          <span className="text-neutral-800 dark:text-gray-200 text-xl font-medium">Lentes e Armação</span>
+          {showLentesArmacao ? (
+            <KeyboardArrowUpIcon className="text-neutral-600 dark:text-gray-200" />
+          ) : (
+            <KeyboardArrowDownIcon className="text-neutral-600 dark:text-gray-200" />
+          )}
         </div>
+        {showLentesArmacao && (
+          <>
 
-        {/* Armação */}
-        <div className="w-full md:w-1/2 mt-3 mb-4 px-3">
-          <label className="block font-medium text-sm text-neutral-700">Armação</label>
-          <input
-            onChange={inputChange}
-            value={input.armacao || ""}
-            name="armacao"
-            type="text"
-            className="w-full border rounded px-3 py-2"
-          />
-        </div>
+            {/* Lentes */}
+            <div className="w-full mt-3 mb-4 px-3">
+              <label className="block font-medium text-sm text-neutral-700 dark:text-gray-200">Lentes <span className="text-red-600 dark:text-red-600">*</span></label>
+              <input
+                onChange={inputChange}
+                value={input.lentes || ""}
+                name="lentes"
+                required
+                maxLength={100}
+                type="text"
+                className="w-full border rounded px-3 py-2 bg-white dark:bg-zinc-800 dark:text-gray-200 dark:border-black/20"
+              />
+            </div>
 
-        {/* Observações */}
-        <div className="w-full md:w-full mt-3 mb-4 px-3">
-          <label className="block font-medium text-sm text-neutral-700">Observações</label>
-          <input
-            onChange={inputChange}
-            value={input.obs || ""}
-            name="obs"
-            type="text"
-            className="w-full border rounded px-3 py-2"
-          />
-        </div>
+            {/* Armação */}
+            <div className="w-full  mt-3 mb-4 px-3">
+              <label className="block font-medium text-sm text-neutral-700 dark:text-gray-200">Armação <span className="text-red-600 dark:text-red-600">*</span></label>
+              <input
+                onChange={inputChange}
+                value={input.armacao || ""}
+                name="armacao"
+                type="text"
+                required
+                maxLength={100}
+                className="w-full border rounded px-3 py-2 bg-white dark:bg-zinc-800 dark:text-gray-200 dark:border-black/20"
+              />
+            </div>
 
-        <div className="flex w-full">
-          {/* Preço */}
-          <InputMoeda
-            label="Preço"
-            name="vendaPreco"
-            value={input.preco}
-            onChange={(formatted, raw) => {
-              setInputs((prev) => ({ ...prev, preco: formatted }));
-            }}
-            required
-          />
+            <div className="w-full flex flex-wrap mt-5 mb-7">
+              <div className="w-full rounded-lg shadow-lg p-6 relative overflow-auto">
+                <h2 className="text-xl font-semibold mb-4 text-neutral-800 dark:text-gray-200">
+                  Informações Oftalmológicas
+                </h2>
+                <div className="mb-6 overflow-x-auto">
+                  <table className="min-w-full border text-sm text-left text-neutral-800 dark:text-gray-200">
+                    <thead className="bg-gray-200 dark:bg-zinc-900 dark:border-black/10">
+                      <tr>
+                        <th className="px-4 py-2 border dark:border-black/20 text-neutral-800 dark:text-gray-200">Lente</th>
+                        <th className="px-4 py-2 border dark:border-black/20 text-neutral-800 dark:text-gray-200">Olho</th>
+                        <th className="px-4 py-2 border dark:border-black/20 text-neutral-800 dark:text-gray-200">Esférico</th>
+                        <th className="px-4 py-2 border dark:border-black/20 text-neutral-800 dark:text-gray-200">Cilíndrico</th>
+                        <th className="px-4 py-2 border dark:border-black/20 text-neutral-800 dark:text-gray-200">Eixo</th>
+                        <th className="px-4 py-2 border dark:border-black/20 text-neutral-800 dark:text-gray-200">ADD</th>
+                        <th className="px-4 py-2 border dark:border-black/20 text-neutral-800 dark:text-gray-200">DP / DNP</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {[
+                        { lente: 'Longe', olho: 'OD' },
+                        { lente: 'Longe', olho: 'OE' },
+                        { lente: 'Perto', olho: 'OD' },
+                        { lente: 'Perto', olho: 'OE' },
+                      ].map((item, i) => (
+                        <tr key={i} className="bg-white dark:bg-zinc-800 dark:border-black/20 dark:text-gray-200">
+                          <td className="px-2 py-1 border dark:border-black/20">{item.lente}</td>
+                          <td className="px-2 py-1 border dark:border-black/20">{item.olho}</td>
 
-          {/* Sinal */}
-          <InputMoeda
-            label="Sinal"
-            name="vendaSinal"
-            value={input.sinal}
-            onChange={(formatted, raw) => {
-              setInputs((prev) => ({ ...prev, sinal: formatted }));
-            }}
-          />
+                          {['esferico', 'cilindrico', 'eixo', 'add', 'dp'].map((campo) => (
+                            <td key={campo} className="px-2 py-1 border dark:border-black/20">
+                              <input
+                                type="text"
+                                name={`${campo}_${item.lente}_${item.olho}`}
+                                value={grauData[`${campo}_${item.lente}_${item.olho}`] || ""}
+                                onChange={(e) =>
+                                  setGrauData((prev) => ({
+                                    ...prev,
+                                    [`${campo}_${item.lente}_${item.olho}`]: e.target.value,
+                                  }))
+                                }
+                                className="w-full px-2 py-1 border rounded dark:text-gray-200 dark:bg-zinc-800 dark:border-black/10"
+                              />
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
 
-          {/* A pagar */}
-          <InputMoeda
-            label="Apagar"
-            name="vendaApagar"
-            value={input.a_pagar}
-            onChange={(formatted, raw) => {
-              setInputs((prev) => ({ ...prev, a_pagar: formatted }));
-            }}
-
-          />
-        </div>
-
-
-        <div className="w-full flex flex-wrap mt-5 mb-7">
-          <div className="w-full rounded-lg shadow-lg p-6 relative overflow-auto">
-
-            <h2 className="text-xl font-semibold mb-4 text-neutral-800">Informações Oftalmológicas</h2>
-            <div className="mb-6">
-              <table className="min-w-full border text-sm text-left text-neutral-800 mt-2">
-                <thead className="bg-gray-200">
-                  <tr>
-                    <th className="px-2 py-1 border">Lente</th>
-                    <th className="px-2 py-1 border">Olho</th>
-                    <th className="px-2 py-1 border">Esférico</th>
-                    <th className="px-2 py-1 border">Cilíndrico</th>
-                    <th className="px-2 py-1 border">Eixo</th>
-                    <th className="px-2 py-1 border">ADD</th>
-                    <th className="px-2 py-1 border">DP / DNP</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {[
-                    { lente: 'Longe', olho: 'OD' },
-                    { lente: 'Longe', olho: 'OE' },
-                    { lente: 'Perto', olho: 'OD' },
-                    { lente: 'Perto', olho: 'OE' },
-                  ].map((item, i) => (
-                    <tr key={i} className="bg-white">
-                      <td className="px-2 py-1 border">{item.lente}</td>
-                      <td className="px-2 py-1 border">{item.olho}</td>
-
-                      {['esferico', 'cilindrico', 'eixo', 'add', 'dp'].map((campo) => (
-                        <td key={campo} className="px-2 py-1 border">
+                      {/* Linha de Altura Pupilar */}
+                      <tr className="bg-white border dark:text-gray-200 dark:bg-zinc-800 dark:border-black/10">
+                        <td className="px-4 py-1 border bg-neutral-100 dark:text-gray-200 dark:bg-zinc-900 dark:border-black/20 whitespace-nowrap" colSpan={1}>
+                          Alt Pupilar:
+                        </td>
+                        <td className="px-2 py-1 border dark:border-black/20 dark:bg-zinc-800">
                           <input
                             type="text"
-                            name={`${campo}_${item.lente}_${item.olho}`}
-                            value={grauData[`${campo}_${item.lente}_${item.olho}`] || ""}
-                            onChange={(e) =>
-                              setGrauData((prev) => ({
-                                ...prev,
-                                [`${campo}_${item.lente}_${item.olho}`]: e.target.value,
-                              }))
-                            }
-                            className="w-full border px-1 py-0.5"
+                            name="alturaPupilar"
+                            value={input.alturaPupilar || ""}
+                            onChange={inputChange}
+                            className="w-full px-2 py-1 border rounded bg-neutral-100 dark:text-gray-200 dark:bg-zinc-900 dark:border-black/20"
                           />
                         </td>
-                      ))}
-                    </tr>
-                  ))}
-
-                  {/* Linha de Altura Pupilar */}
-                  <tr className="bg-white">
-                    <td className="px-2 py-1 border whitespace-nowrap" colSpan={1}>
-                      Alt Pupilar:
-                    </td>
-                    <td className="px-2 py-1 border">
-                      <input
-                        type="text"
-                        name="alturaPupilar"
-                        value={input.alturaPupilar || ""}
-                        onChange={inputChange}
-                        className="w-full border px-1 py-0.5"
-                      />
-                    </td>
-                  </tr>
-
-                </tbody>
-              </table>
+                        <td className="px-4 py-1 border bg-neutral-100 dark:text-gray-200 dark:bg-zinc-900 dark:border-black/20 whitespace-nowrap" colSpan={5}></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
+          </>
+        )}
+
+
+        <hr className="w-full my-6 border-t border-neutral-200" />
+
+        <span className="text-neutral-800 text-xl font-medium dark:text-gray-200">Detalhes de venda</span>
+
+        <div className='flex flex-wrap my-4 transition-transform duration-500 ease-in'>
+          <div className="flex w-full">
+            {/* Preço */}
+            <InputMoeda
+              label="Preço"
+              name="vendaPreco"
+              value={input.preco}
+              onChange={(formatted, raw) => {
+                setInputs((prev) => ({ ...prev, preco: formatted }));
+              }}
+              required
+            />
+
+            {/* Sinal */}
+            <InputMoeda
+              label="Sinal"
+              name="vendaSinal"
+              value={input.sinal}
+              onChange={(formatted, raw) => {
+                setInputs((prev) => ({ ...prev, sinal: formatted }));
+              }}
+            />
+
+            {/* A pagar */}
+            <InputMoeda
+              label="Apagar"
+              name="vendaApagar"
+              value={input.a_pagar}
+              onChange={(formatted, raw) => {
+                setInputs((prev) => ({ ...prev, a_pagar: formatted }));
+              }}
+
+            />
+          </div>
+
+          {/* Observações */}
+          <div className="w-full md:w-full mt-3 mb-4 px-3">
+            <label className="block font-medium text-sm text-neutral-700 dark:text-gray-200">Observações</label>
+            <input
+              onChange={inputChange}
+              value={input.obs || ""}
+              name="obs"
+              type="text"
+              maxLength={255}
+              className="w-full border rounded px-3 py-2 bg-white dark:bg-zinc-800 dark:text-gray-200 dark:border-black/20"
+            />
           </div>
         </div>
 
@@ -466,7 +503,7 @@ const FormEditarVendas = ({ clienteId, vendaId }) => {
           <BtnActions title="Salvar Alterações" onClick={handleEditar} color="ativado" />
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 

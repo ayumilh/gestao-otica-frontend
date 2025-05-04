@@ -55,67 +55,67 @@ const LucrosContent = () => {
       </div>
 
 
-      <div className="w-full flex flex-col items-center" style={{ height: '850px' }}>
-        {/* Totais com novo design */}
-        <div className="w-full max-w-[1270px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-6">
-          {/* Valor Recebido */}
-          <div className="bg-segundaria-700 dark:bg-zinc-900 p-5 rounded-xl shadow border border-gray-200 dark:border-zinc-500">
-            <div className="flex items-center gap-2 text-sm text-neutral-500 dark:text-neutral-400 mb-1">
-              <AttachMoneyIcon className="text-green-600 dark:text-green-400" fontSize="small" />
-              Valor Recebido
-            </div>
-            <p className="text-2xl font-semibold text-green-600 dark:text-green-400">R$ {parseFloat(resumo.totalRecebido).toFixed(2)}</p>
-          </div>
+      <div className="w-full flex flex-col items-center min-h-[600px]">
+  <div className="w-full max-w-[1270px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6 px-4">
+    {[
+      {
+        label: 'Valor Recebido',
+        value: resumo.totalRecebido,
+        color: 'text-green-400',
+        barColor: 'bg-green-500',
+      },
+      {
+        label: 'A Receber',
+        value: resumo.totalAPagar,
+        color: 'text-yellow-400',
+        barColor: 'bg-yellow-500',
+      },
+      {
+        label: 'Total de Vendas',
+        value: resumo.totalVendas,
+        color: 'text-blue-400',
+        barColor: 'bg-blue-500',
+      },
+      {
+        label: 'Pagas Completas',
+        value: resumo.pagasTotais,
+        color: 'text-emerald-400',
+        barColor: 'bg-emerald-500',
+      },
+      {
+        label: 'Aguardando Entrega',
+        value: resumo.aguardandoEntrega,
+        color: 'text-orange-400',
+        barColor: 'bg-orange-500',
+      },
+      {
+        label: 'Canceladas',
+        value: resumo.canceladas,
+        color: 'text-red-400',
+        barColor: 'bg-red-500',
+      },
+    ].map((item, index) => (
+      <div
+        key={index}
+        className="flex flex-row w-full h-full bg-segundaria-700 dark:bg-dark-primaria-800 border border-gray-100 dark:border-black/10 rounded-2xl shadow-sm"
+      >
+        {/* Barra lateral */}
+        <div className={`w-2 rounded-l-2xl ${item.barColor}`} />
 
-          {/* A Receber */}
-          <div className="bg-segundaria-700 dark:bg-zinc-900 p-5 rounded-xl shadow border border-gray-200 dark:border-zinc-500">
-            <div className="flex items-center gap-2 text-sm text-neutral-500 dark:text-neutral-400 mb-1">
-              <MonetizationOnIcon className="text-yellow-500 dark:text-yellow-400" fontSize="small" />
-              A Receber
-            </div>
-            <p className="text-2xl font-semibold text-yellow-500 dark:text-yellow-400">R$ {parseFloat(resumo.totalAPagar).toFixed(2)}</p>
+        {/* Conteúdo */}
+        <div className="flex flex-col p-4 justify-center flex-1">
+          <div className="text-sm font-medium text-neutral-800 dark:text-neutral-200">
+            {item.label}
           </div>
-
-          {/* Total de Vendas */}
-          <div className="bg-segundaria-700 dark:bg-zinc-900 p-5 rounded-xl shadow border border-gray-200 dark:border-zinc-500">
-            <div className="flex items-center gap-2 text-sm text-neutral-500 dark:text-neutral-400 mb-1">
-              <PaymentsIcon className="text-blue-600 dark:text-blue-400" fontSize="small" />
-              Total de Vendas
-            </div>
-            <p className="text-2xl font-semibold text-blue-600 dark:text-blue-400">R$ {parseFloat(resumo.totalVendas).toFixed(2)}</p>
-          </div>
-
-          {/* Pagas Completas */}
-          <div className="bg-segundaria-700 dark:bg-zinc-900 p-5 rounded-xl shadow border border-gray-200 dark:border-zinc-500">
-            <div className="flex items-center gap-2 text-sm text-neutral-500 dark:text-neutral-400 mb-1">
-              <CheckCircleIcon className="text-emerald-600 dark:text-emerald-400" fontSize="small" />
-              Pagas Completas
-            </div>
-            <p className="text-2xl font-semibold text-emerald-600 dark:text-emerald-400">R$ {parseFloat(resumo.pagasTotais).toFixed(2)}</p>
-          </div>
-
-          {/* Aguardando Entrega */}
-          <div className="bg-segundaria-700 dark:bg-zinc-900 p-5 rounded-xl shadow border border-gray-200 dark:border-zinc-500">
-            <div className="flex items-center gap-2 text-sm text-neutral-500 dark:text-neutral-400 mb-1">
-              <LocalShippingIcon className="text-orange-600 dark:text-orange-400" fontSize="small" />
-              Aguardando Entrega
-            </div>
-            <p className="text-2xl font-semibold text-orange-600 dark:text-orange-400">R$ {parseFloat(resumo.aguardandoEntrega).toFixed(2)}</p>
-          </div>
-
-          {/* Canceladas */}
-          <div className="bg-segundaria-700 dark:bg-zinc-900 p-5 rounded-xl shadow border border-gray-200 dark:border-zinc-500">
-            <div className="flex items-center gap-2 text-sm text-neutral-500 dark:text-neutral-400 mb-1">
-              <CancelIcon className="text-red-600 dark:text-red-400" fontSize="small" />
-              Canceladas
-            </div>
-            <p className="text-2xl font-semibold text-red-600 dark:text-red-400">R$ {parseFloat(resumo.canceladas).toFixed(2)}</p>
-          </div>
+          <p className={`text-xl font-bold mt-1 ${item.color} dark:${item.color}`}>
+            R$ {parseFloat(item.value).toFixed(2)}
+          </p>
         </div>
-
-
-        {/* <LucrosTable /> */}
       </div>
+    ))}
+  </div>
+</div>
+
     </div>
   );
 };
