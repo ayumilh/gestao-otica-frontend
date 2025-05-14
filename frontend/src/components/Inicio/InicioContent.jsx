@@ -112,6 +112,32 @@ const InicioContent = () => {
                             <p className='text-neutral-700 font-semibold text-start'>{saudacao}, {currentUser?.nome}</p>
                         </div>
 
+                        <div className="w-full mt-4">
+                            <div className="w-full bg-bg dark:bg-dark-primaria-800 border dark:border-2 border-gray-200 dark:border-black/10 rounded-xl shadow-md p-5 flex items-center justify-between transition">
+                                <div className="flex items-center gap-4">
+                                    <div className="bg-orange-500 text-white p-3 rounded-full shadow">
+                                        <FaList className="w-5 h-5" />
+                                    </div>
+                                    <div>
+                                        <h2 className="font-semibold text-md text-neutral-800 dark:text-white">Registrar nova ordem de serviço</h2>
+                                        <p className="text-sm text-neutral-600 dark:text-neutral-300">
+                                            Clique aqui para iniciar uma nova ordem.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <button
+                                        onClick={() => router.push('/os')}
+                                        className="bg-orange-500 hover:bg-orange-600 text-white font-medium px-4 py-2 rounded-lg text-sm transition"
+                                    >
+                                        Nova Ordem
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+
+
                         {/* <ResumoCards resumo={resumo} /> */}
 
 
