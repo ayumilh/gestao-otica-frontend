@@ -15,7 +15,7 @@ const VendasContent = () => {
     <div className="w-full px-4 lg:px-0 lg:mx-4 lg:mt-6 xl:mx-8 xl:flex xl:flex-col xl:items-center">
 
       {/* Cabeçalho */}
-      <div className="w-full lg:w-[800px] xl:w-[1270px] flex justify-between items-center pt-5 pb-4 border-b border-gray-200 dark:border-zinc-700">
+      <div className="w-full lg:w-[800px] xl:w-[1270px] flex justify-between items-center pt-5 pb-4">
         <div className="flex items-center">
           <NavbarMobile />
           <TitlePage title="Vendas" />
