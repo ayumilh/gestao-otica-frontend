@@ -17,7 +17,7 @@ export const nextAuthOptions = {
             headers: {
               'Content-Type': 'application/json'
             },
-            credentials: 'include', // 👈 isso garante que cookies e headers sejam mantidos
+            credentials: 'include',
             body: JSON.stringify({
               email: credentials.email,
               senha: credentials.password
@@ -47,10 +47,9 @@ export const nextAuthOptions = {
 
   callbacks: {
     async session({ session, token }) {
-      // Adiciona o ID do usuário na sessão
       if (token) {
         session.user.id = token.id;
-        session.user.nome = token.nome; // opcional
+        session.user.nome = token.nome;
         session.user.email = token.email;
         session.user.token = token.token; // se quiser usar no client depois
       }
@@ -58,12 +57,11 @@ export const nextAuthOptions = {
       return session;
     },
     async jwt({ token, user }) {
-      // Quando o usuário loga, "user" está disponível
       if (user) {
         token.id = user.id;
         token.nome = user.nome;
         token.email = user.email;
-        token.token = user.token; // token JWT do backend, se quiser usar
+        token.token = user.token; 
       }
   
       return token;

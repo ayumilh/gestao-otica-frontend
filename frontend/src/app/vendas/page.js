@@ -5,7 +5,7 @@ import VendasContent from "@/components/Vendas/VendasContent";
 
 
 export default async function Vendas() {
-  const session = await checkSession();
+  await checkSession();
 
   return (
     <main className="flex max-w-full h-screen"> 
