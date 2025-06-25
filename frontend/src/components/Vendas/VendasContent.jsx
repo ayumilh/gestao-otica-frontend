@@ -7,7 +7,6 @@ import TableContent from '@/components/Ui/Table/TableContent';
 import TableRowRenderer from '@/components/Ui/Table/TableRowRenderer';
 import VendasSelectFilter from './Actions/VendasSelectFilter';
 import axios from 'axios';
-import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 
 const VendasContent = () => {
@@ -35,7 +34,6 @@ const VendasContent = () => {
 
 
 const VendasTable = () => {
-  const { data: session } = useSession();
   const [filtros, setFiltros] = useState({ campo: 'cliente', valor: '' });
   const [pagina, setPagina] = useState(1);
   const [limite, setLimite] = useState(10);
@@ -50,7 +48,7 @@ const VendasTable = () => {
     try {
       const params = filtros.valor ? filtros : {};
       const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/vendas/filter`, {
-        headers: { Authorization: `Bearer ${session?.user?.token}` },
+        headers: { Authorization: `Bearer ${fvvd}` },
         params: { ...params, page, limit },
       });
 

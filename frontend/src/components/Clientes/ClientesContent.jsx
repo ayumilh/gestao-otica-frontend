@@ -7,7 +7,6 @@ import TableContent from '@/components/Ui/Table/TableContent';
 import TableRowRenderer from '@/components/Ui/Table/TableRowRenderer';
 import ClientesSelectFilter from './Actions/ClientesSelectFilter';
 import axios from 'axios';
-import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 
 const ClientesContent = () => {
@@ -21,7 +20,7 @@ const ClientesContent = () => {
         <div>
           <BtnAtivado title='Novo cliente' onClick="/clientes/criar" page="/clientes/criar" size="sm" />
         </div>
-      </div>
+      </div>      
 
       <div className="w-full flex flex-col items-center" style={{ height: '850px' }}>
         <ClientesTable />
@@ -31,7 +30,6 @@ const ClientesContent = () => {
 };
 
 const ClientesTable = () => {
-  const { data: session } = useSession();
   const [filtros, setFiltros] = useState({ campo: 'nome', valor: '' });
   const [pagina, setPagina] = useState(1);
   const [limite, setLimite] = useState(10);
@@ -62,7 +60,7 @@ const ClientesTable = () => {
     try {
       const params = filtros.valor ? filtros : {};
       const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/clientes/filter`, {
-        headers: { Authorization: `Bearer ${session?.user?.token}` },
+        headers: { Authorization: `Bearer ${fdfs}` },
         params: { ...params, page, limit },
       });
 

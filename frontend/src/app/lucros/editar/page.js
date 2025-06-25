@@ -1,14 +1,7 @@
-import { redirect } from 'next/navigation';
-import { nextAuthOptions } from '../../api/auth/[...nextauth]/route';
-import { getServerSession } from 'next-auth';
 import { FormEditarLucros } from '@/components/Lucros/Editar/FormEditarLucros';
 import BtnBackPage from '@/components/Ui/Button/BtnBackPage';
 
 export default async function Editar() {
-  const session = await getServerSession(nextAuthOptions)
-  if(!session) {
-    redirect('/login')
-  }
 
   return (
     <main className="px-4 pt-4 lg:px-6 mx-auto flex flex-col items-center">

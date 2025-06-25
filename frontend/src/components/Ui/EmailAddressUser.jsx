@@ -1,13 +1,11 @@
 'use client'
 import { useContext, useRef, useEffect } from "react";
-import { useSession } from "next-auth/react";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LinkIcon from '@mui/icons-material/Link';
 
 export const EmailAddressUser = ({ menuOpen, toggleMenu }) => {
-    const { data: session } = useSession();
-    const nome = session?.user?.nome;
+    const nome = "Nome do Usuário"; // Substitua pelo nome real do usuário ou passe como prop
 
     const dropdownRef = useRef(null);
     useEffect(() => {

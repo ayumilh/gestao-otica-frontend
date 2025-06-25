@@ -2,7 +2,6 @@
 import "./globals.css";
 import { Poppins } from "next/font/google"
 import { AuthContextProvider } from "../contexts/AuthContext";
-import NextAuthSessionProvider from "../providers/sessionProvider";
 import ModalVerificationLogout from "@/components/Config/ModalVerificationLogout";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { ThemeProvider as ThemeMuiProvider } from "@/contexts/ThemeMuiContext";
@@ -28,7 +27,6 @@ export default function RootLayout({ children }) {
       </head>
 
       <body className={`${poppins.className} max-w-full h-screen`}>
-        <NextAuthSessionProvider>
           <AuthContextProvider>
             <ThemeProvider>
               <ThemeMuiProvider>
@@ -41,7 +39,6 @@ export default function RootLayout({ children }) {
               </ThemeMuiProvider>
             </ThemeProvider>
           </AuthContextProvider>
-        </NextAuthSessionProvider>
       </body>
     </html>
   );

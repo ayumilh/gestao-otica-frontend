@@ -1,8 +1,7 @@
 'use client'
-import { useContext, useState, useRef, useEffect } from 'react'
-import { AuthContext } from '@/contexts/AuthContext'
+import { useState, useRef, useEffect } from 'react'
+import { signIn } from '@/lib/auth-api';
 import { useRouter } from 'next/navigation';
-import { signIn } from 'next-auth/react';
 import { Email } from "@mui/icons-material"
 import LockIcon from "@mui/icons-material/Lock"
 import { IconButton } from "@mui/material"
@@ -13,10 +12,9 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 const FormContent = () => {
   const router = useRouter();
-  const { login } = useContext(AuthContext)
   const [errorMessage, setErrorMessage] = useState(null)
   const [email, setEmail] = useState('');
-  const [senha, setSenha] = useState('');
+  const [password, setPassword] = useState('');
   const [loggingLoading, setLoggingLoading] = useState(false)
   const [errors, setErrors] = useState({});
 
@@ -24,41 +22,23 @@ const FormContent = () => {
     event.preventDefault()
     setLoggingLoading(true)
     setErrorMessage('')
+    setErrors({})
 
     try {
-      const result = await signIn('credentials', {
+      await signIn({
         email,
-        password: senha, // 👈 aqui está o segredo
-        redirect: false
-      });
+        password
+      })
 
-      if (result?.error) {
-        setErrorMessage('Login inválido. Verifique seu e-mail e senha.')
-        return
-      } else {
-        router.push('/inicio')
-      }
-
+      router.push('/inicio') // ✅ Redireciona se deu certo
     } catch (error) {
-      if (error.response) {
-        if (error.response.status === 401) {
-          setErrors({ login: 'Credenciais inválidas. Por favor, verifique seu email e senha.' })
-        } else if (error.response.status === 500) {
-          setErrors({ login: 'Erro interno do servidor. Por favor, tente novamente mais tarde.' })
-        } else {
-          setErrors({ login: `Erro: ${error.response.status}. ${error.response.data.message || 'Por favor, tente novamente mais tarde.'}` })
-        }
-      } else if (error.request) {
-        // A requisição foi feita, mas nenhuma resposta foi recebida
-        setErrors({ login: 'Nenhuma resposta do servidor. Por favor, verifique sua conexão e tente novamente.' })
-      } else {
-        // Algo aconteceu ao configurar a requisição que acionou um erro
-        setErrors({ login: `Erro: ${error.message}. Por favor, tente novamente mais tarde.` })
-      }
+      console.error('❌ Erro no login:', error)
+      setErrorMessage('Email ou senha inválidos.')
     } finally {
       setLoggingLoading(false)
     }
   }
+
 
   const [showPassword, setShowPassword] = useState(false)
   const handleClickShowPassword = () => (
@@ -103,7 +83,7 @@ const FormContent = () => {
           </div>
 
           <div className="w-full">
-            <label className="block text-sm font-normal mb-2 dark:text-neutral-800" htmlFor="senha">
+            <label className="block text-sm font-normal mb-2 dark:text-neutral-800" htmlFor="password">
               Senha
             </label>
             <div className="mt-1 relative rounded-md hover:bg-transparent">
@@ -113,10 +93,10 @@ const FormContent = () => {
               <input
                 className="self-stretch form-input block w-full pl-10 pt-3 pb-2 border-2 dark:text-neutral-800 border-gray-600 rounded-xl bg-transparent hover:border-amber-700 focus:border-segundaria-900 focus:outline-none"
                 type={showPassword ? 'text' : 'password'}
-                name="senha"
-                value={senha}
+                name="password"
+                value={password}
                 placeholder='*******'
-                onChange={(e) => setSenha(e.target.value)}
+                onChange={(e) => setPassword(e.target.value)}
                 required
               />
               <div className="absolute inset-y-0 right-0 pr-3 pt-3 pb-2 flex items-center mb-1 md:mb-2 cursor-pointer">
