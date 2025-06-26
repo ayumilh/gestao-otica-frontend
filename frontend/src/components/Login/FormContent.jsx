@@ -19,25 +19,48 @@ const FormContent = () => {
   const [errors, setErrors] = useState({});
 
   const handleLogin = async (event) => {
-    event.preventDefault()
-    setLoggingLoading(true)
-    setErrorMessage('')
-    setErrors({})
+    event.preventDefault();
+    setLoggingLoading(true);
+    setErrorMessage('');
+    setErrors({});
 
     try {
-      await signIn({
-        email,
-        password
-      })
+      const response = await fetch('http://localhost:4000/api/auth/sign-in/email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',  // ✅ ESSENCIAL para gravar o cookie no navegador
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
 
-      router.push('/inicio') // ✅ Redireciona se deu certo
+      if (!response.ok) {
+        console.error('❌ Erro na resposta:', response.status);
+        setErrorMessage('Email ou senha inválidos.');
+        return;
+      }
+
+      const data = await response.json();
+      console.log('✅ Login bem-sucedido:', data);
+
+      // Se quiser, pode validar se veio o token também:
+      if (data.token) {
+        router.push('/inicio');  // ✅ Redireciona se deu certo
+      } else {
+        setErrorMessage('Falha ao realizar login. Tente novamente.');
+      }
+
     } catch (error) {
-      console.error('❌ Erro no login:', error)
-      setErrorMessage('Email ou senha inválidos.')
+      console.error('❌ Erro no login:', error);
+      setErrorMessage('Erro interno. Tente novamente.');
     } finally {
-      setLoggingLoading(false)
+      setLoggingLoading(false);
     }
-  }
+  };
+
 
 
   const [showPassword, setShowPassword] = useState(false)
