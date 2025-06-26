@@ -25,12 +25,12 @@ const FormContent = () => {
     setErrors({});
 
     try {
-      const response = await fetch('http://localhost:4000/api/auth/sign-in/email', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/sign-in/email`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include',  // ✅ ESSENCIAL para gravar o cookie no navegador
+        credentials: 'include',
         body: JSON.stringify({
           email,
           password,
